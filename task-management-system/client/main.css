@@ -1,0 +1,73 @@
+/*COLOUR CODES*/
+:root {
+    --black: #282828;
+    --dark-grey: #747474;
+
+    --button-grey: #757B81;
+    --button-grey-hover: #404346;
+
+    --light-grey: #E0E0E0;
+    --light-grey-hover: #a1a1a1;
+
+    --white: #FFFFFF;
+
+    --cream: #F2E9E4;
+
+    --brown: #A38274;
+    --brown-hover: #725245;
+
+    --navy: #4A4E69;
+    --navy-hover: #b3b7d9;
+    --light-blue: #B0CCF3;
+
+    --red: #F45151;
+    --red-hover: #8c3636;
+
+    --light-red: #FDC1C1;
+    --dark-red: #B74C4C;
+    --green: #5BBB6A;
+}
+
+
+* {
+    box-sizing: border-box;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    /* this attribute makes sure by default words break at a space, excessively long words can break the middle */
+    word-break: break-word;
+}
+
+
+body {
+    padding: 5px;
+    background-color: var(--cream) !important;
+}
+
+body h1 {
+    margin-bottom: 30px;
+    color: var(--black);
+}
+
+body h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: var(--navy);
+    /*text-decoration: underline;*/
+    /*text-underline: var(--navy);*/
+}
+
+body .center-spaced {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+
+}
+
+body .table {
+    margin-bottom: 50px;
+    max-width: 80%;
+    min-width: 50%;
+    width: fit-content;
+}

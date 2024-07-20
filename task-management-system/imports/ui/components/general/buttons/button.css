@@ -1,0 +1,85 @@
+/* BUTTON STYLES */
+body .btn-base {
+    display: flex;
+    min-width: 160px;
+    width: fit-content;
+    height: 40px;
+    padding: 10px 16px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9999px;
+    transition: background-color 0.5s;
+    transition-timing-function: ease-in-out;
+    font-weight: 550;
+}
+
+body .btn-square {
+    border-radius: 9px;
+
+}
+
+body .btn-brown {
+    background-color: var(--brown);
+    color: var(--white);
+    border: none;
+}
+
+body .btn-brown:hover,
+body .btn-brown:focus-visible,
+body .btn-brown:hover:active {
+    background-color: var(--brown-hover);
+    color: var(--white);
+}
+
+body .btn-grey {
+    background-color: var(--button-grey);
+    color: var(--white);
+    border: none;
+}
+
+body .btn-grey:hover,
+body .btn-grey:focus-visible,
+body .btn-grey:hover:active {
+    background-color: var(--button-grey-hover);
+    color: var(--white);
+}
+
+body .btn-light-grey {
+    background-color: var(--light-grey);
+    color: var(--black);
+    border: none;
+}
+
+body .btn-light-grey:hover,
+body .btn-light-grey:focus-visible,
+body .btn-light-grey:hover:active {
+    background-color: var(--light-grey-hover);
+    color: var(--black);
+}
+
+body .btn-red {
+    background-color: var(--dark-red);
+    color: var(--white);
+    border: none;
+}
+
+body .btn-red:hover,
+body .btn-red:focus-visible,
+body .btn-red:hover:active {
+    background-color: var(--red-hover);
+    color: var(--white);
+}
+
+body .btn-back {
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    min-width: 120px;
+}
+
+body .btn-back:hover,
+body .btn-back:focus-visible,
+body .btn-back:hover:active {
+    border: 2px solid var(--navy);
+    background-color: var(--navy-hover);
+    color: var(--navy);
+}

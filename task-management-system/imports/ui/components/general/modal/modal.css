@@ -1,0 +1,9 @@
+/* MODAL (POPUP) STYLES */
+.modal-base {
+    background: var(--white);
+    width: fit-content;
+    min-width: 500px;
+    min-height: 500px;
+    padding: 50px;
+    border-radius: 25px;
+}
