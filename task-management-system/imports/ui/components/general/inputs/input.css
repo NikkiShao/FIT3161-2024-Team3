@@ -1,0 +1,19 @@
+/* INPUT STYLES */
+body .input-base {
+    background: var(--white);
+    display: flex;
+    min-width: 300px;
+    height: 45px;
+    padding: 5px 15px;
+    align-items: center;
+    border-radius: 6px;
+    border: 2px solid var(--light-grey);
+}
+
+body .input::placeholder {
+    color: var(--dark-grey);
+}
+
+body label {
+    color: red;
+}

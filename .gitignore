@@ -1,0 +1,6 @@
+
+task-management-system/node_modules/
+
+task-management-system/.meteor/
+
+.idea
