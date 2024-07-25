@@ -6,19 +6,20 @@ import "../../client/main.css"
 
 // import Button from 'react-bootstrap/Button';
 import ExamplesPage from "./components/pages/examples/Examples";
+import TeamsListPage from './components/pages/team/TeamsListPage';
 
 
 export const App = () => (
     <div className={""}>
+
         <Router>
             <Routes>
 
                 <Route path="/examples" element={<ExamplesPage/>}/>
-
+                <Route path="/team-list" element={<TeamsListPage/>}/>
 
             </Routes>
         </Router>
-
 
         {/*<h1>Welcome to Meteor!</h1>*/}
 
