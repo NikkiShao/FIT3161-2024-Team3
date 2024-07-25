@@ -10,10 +10,12 @@ import RegistrationPage from "./components/pages/registration/RegistrationPage";
 import AccountCreatedPage from "./components/pages/registration/AccountCreatedPage";
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 import HomePage from "./components/pages/HomePage";
+import TeamsListPage from './components/pages/team/TeamsListPage';
 
 
 export const App = () => (
     <div className={""}>
+
         <Router>
             <Routes>
 
@@ -24,6 +26,7 @@ export const App = () => (
                 <Route path="/register" element={<RegistrationPage/>}/>
                 <Route path="/account-created/:username" element={<AccountCreatedPage/>}/>
                 <Route path="/verify-email/:token" element={<EmailVerificationPage/>}/>
+                <Route path="/team-list" element={<TeamsListPage/>}/>
 
             </Routes>
         </Router>
