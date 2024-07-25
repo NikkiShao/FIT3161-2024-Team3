@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import '../imports/api/collections/team';
-import '../imports/api/methods/teams'; 
-import '../imports/api/publications/teams';
+import '/imports/api/collections/team.js';
+import '/imports/api/publications/team.js';
+import '/imports/api/methods/team.js';
 
 import '/imports/api/collections/user.js';
 import '/imports/api/publications/user.js';
