@@ -15,5 +15,5 @@ body .input::placeholder {
 }
 
 body label {
-    color: red;
+    margin-bottom: 5px;
 }

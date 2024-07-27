@@ -1,11 +1,15 @@
 import React from 'react';
-import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../client/main.css"
 
 // import Button from 'react-bootstrap/Button';
 import ExamplesPage from "./components/pages/examples/Examples";
+import RegistrationPage from "./components/pages/registration/RegistrationPage";
+import AccountCreatedPage from "./components/pages/registration/AccountCreatedPage";
+import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
+import HomePage from "./components/pages/HomePage";
 
 
 export const App = () => (
@@ -15,49 +19,14 @@ export const App = () => (
 
                 <Route path="/examples" element={<ExamplesPage/>}/>
 
+                <Route path="/dashboard" element={<HomePage/>}/>
+
+                <Route path="/register" element={<RegistrationPage/>}/>
+                <Route path="/account-created/:username" element={<AccountCreatedPage/>}/>
+                <Route path="/verify-email/:token" element={<EmailVerificationPage/>}/>
 
             </Routes>
         </Router>
-
-
-        {/*<h1>Welcome to Meteor!</h1>*/}
-
-        {/*<Hello/>*/}
-        {/*<Info/>*/}
-
-        {/*<Button variant="brown">*/}
-        {/*    brown button*/}
-        {/*</Button>*/}
-
-        {/*<Button variant="grey">*/}
-        {/*    grey button*/}
-        {/*</Button>*/}
-
-        {/*<Button variant="red">*/}
-        {/*    red button*/}
-        {/*</Button>*/}
-
-        {/*<Button variant="light-grey">*/}
-        {/*    light grey button*/}
-        {/*</Button>*/}
-
-        {/*<Button variant="navy-outline">*/}
-        {/*    navy outline button*/}
-        {/*</Button>*/}
-
-        {/*<Form>*/}
-        {/*    <Form.Group controlId="formBasicEmail">*/}
-
-        {/*        <Form.Label>Email address</Form.Label>*/}
-
-        {/*        <Form.Control type="email" placeholder="Enter email" />*/}
-
-        {/*        <Form.Text className="">*/}
-        {/*            We'll never share your email with anyone else.*/}
-        {/*        </Form.Text>*/}
-
-        {/*    </Form.Group>*/}
-        {/*</Form>*/}
 
     </div>
 );
