@@ -11,5 +11,5 @@ import {TeamCollection} from "/imports/api/collections/team.js";
  * Publishes all of a specific user's teams
  */
 Meteor.publish("all_user_teams", function (username) {
-    return TeamCollection.find({ teamMembers: {$in: [temp_username ]} });
+    return TeamCollection.find({ teamMembers: {$in: [username ]} });
 });
