@@ -1,8 +1,8 @@
 /**
  * File Description: Email verification page
- * Updated Date:
- * Contributors:
- * Version:
+ * Updated Date: 29/07/2024
+ * Contributors: Nikki
+ * Version: 1.0
  */
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
@@ -15,6 +15,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {Accounts} from "meteor/accounts-base";
 import Spinner from "react-bootstrap/Spinner";
 import {getUserInfo} from "../../util";
+import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 /**
  * Email verification page component
@@ -69,7 +70,7 @@ export const EmailVerificationPage = () => {
                     <br/>
                     <Button className={"btn-brown"}
                             onClick={() => {
-                                navigate('/dashboard')
+                                navigate("/" + BaseUrlPath.DASHBOARD)
                             }}>
                         Return to Dashboard
                     </Button>

@@ -18,6 +18,7 @@ export function getUserInfo() {
     // get current user information
     const [userInfo, setUserInfo] = useState(
         {
+            "id": null,
             "name": null,
             "username": null,
             "email": null,
@@ -28,9 +29,11 @@ export function getUserInfo() {
     // tracker for the required user data updates
     Tracker.autorun(() => {
         const user = Meteor.user();
+        const userId = Meteor.userId();
 
         if (user) {
             // user data is returned (sometimes it takes a while)
+            const fetchedUserId = userId;
             const fetchedUsername = user.username;
             const fetchedEmail = user.emails[0].address;
             const fetchedEmailVerification = user.emails[0].verified;
@@ -38,6 +41,7 @@ export function getUserInfo() {
 
             // check if an update to the current user info is required or not (this is needed to prevent inf loop)
             if (
+                userInfo.id !== fetchedUserId ||
                 userInfo.username !== fetchedUsername ||
                 userInfo.email !== fetchedEmail ||
                 userInfo.verified !== fetchedEmailVerification ||
@@ -45,6 +49,7 @@ export function getUserInfo() {
             ) {
                 setUserInfo(
                     {
+                        "id": fetchedUserId,
                         "username": fetchedUsername,
                         "email": fetchedEmail,
                         "verified": fetchedEmailVerification,

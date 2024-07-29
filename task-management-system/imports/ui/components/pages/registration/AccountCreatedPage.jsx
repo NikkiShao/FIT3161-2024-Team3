@@ -1,8 +1,8 @@
 /**
  * File Description: Account created page
- * Updated Date:
- * Contributors:
- * Version:
+ * Updated Date: 29/07/2024
+ * Contributors: Nikki
+ * Version: 1.0
  */
 
 

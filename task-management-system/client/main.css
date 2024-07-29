@@ -40,7 +40,6 @@
 }
 
 body {
-    padding: 5px;
     background-color: var(--cream) !important;
 }
 
@@ -87,9 +86,9 @@ body .small-text {
 }
 
 body .menu-text {
-    font-size: 24px;
+    font-size: 20px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     line-height: normal;
     cursor: default;
 }
@@ -113,4 +112,19 @@ body .error-box {
     /*padding: 20px;*/
     color: var(--red);
     cursor: default;
+}
+
+.hidden {
+    display: none;
+}
+
+.default__heading1 {
+    margin-top: 20px;
+}
+
+.default__form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
 }

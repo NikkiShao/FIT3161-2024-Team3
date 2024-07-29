@@ -1,6 +1,6 @@
 /**
  * File Description: Registration form page
- * Updated Date:
+ * Updated Date: 28/07/2024
  * Contributors: Nikki
  * Version: 1.0
  */
@@ -101,9 +101,9 @@ export const RegistrationPage = () => {
                 Back
             </Button>
 
-            <h1 id={"reg1__heading"}>Create an Account</h1>
+            <h1 className={"default__heading1"}>Create an Account</h1>
 
-            <form id={"reg1__form"}>
+            <form className={"default__form"}>
             <Input type={"text"}
                        label={<label className={"main-text"}>Username</label>}
                        onChange={(e) => setUsername(e.target.value.trim())}/>
