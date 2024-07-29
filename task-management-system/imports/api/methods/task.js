@@ -18,7 +18,7 @@ Meteor.methods({
      * @param {string} status - status of the task
      * @param {[string]} tagNames - array of tag names that the task has
      * @param {string} desc - full description of the task     */
-    "add_service": function (name, desc, deadline, isPinned, boardId, status, tagNames) {
+    "add_task": function (name, desc, deadline, isPinned, boardId, status, tagNames) {
         TaskCollection.insert(
             {
                 "taskName": name,
