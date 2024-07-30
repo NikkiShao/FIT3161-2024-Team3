@@ -18,6 +18,7 @@ import {useNavigate} from "react-router-dom";
  * @param {string} taskId - ID of the task
  * @param {string} taskName - Name of the task
  * @param {string} taskDeadline - deadline date of the task, ISO format date string
+ * @param {string} taskStatus - status of the task
  * @param {boolean} isPinned - if the card is pinned to dashboard
  * @param {[Object]} tags - an array of tags. Type: objects, with the attribute: tagName and tagColour
  * @param {string} boardId - ID of the board the tag belongs to
@@ -30,6 +31,7 @@ const TaskCard = ({
                       taskId,
                       taskName,
                       taskDeadline,
+                      taskStatus,
                       isPinned,
                       tags,
                       boardId,
@@ -79,17 +81,35 @@ const TaskCard = ({
         </svg>
     )
 
+    // checking deadline date to determine if overdue/urgent
+    const taskDeadlineDate = new Date(taskDeadline);
+    const today = new Date();
+    let urgentStartDate = new Date();
+    urgentStartDate.setTime(today.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
+
+    let displayText = null;
+    if (taskDeadlineDate <= today && taskStatus !== "done") {
+        // after current datetime and NOT done
+        displayText = <div style={{color: "var(--dark-red)", marginRight: "25px"}} className={"text-center small-text"}>OVERDUE</div>
+
+    } else if (taskDeadlineDate >= urgentStartDate && taskStatus !== "done") {
+        displayText = <div style={{color: "var(--dark-red)", marginRight: "25px"}} className={"text-center small-text"}>URGENT</div>
+    }
+
     return (
         <Card className={taskCardClasses} {...cardProps} onClick={taskClickHandler}>
 
             {/* card top div */}
             <div id="card__header">
                 {isPinned ? pinFilledIcon : pinEmptyIcon}
-                <div className="main-text three-line">{taskName}</div>
+                <div id={"card__header-inner"}>
+                    {displayText}
+                    <div className="main-text three-line">{taskName}</div>
+                </div>
             </div>
 
             {/* card middle div */}
-            <div className="small-text" id={"task__deadline"}>{new Date(taskDeadline).toLocaleString()}</div>
+            <div className="small-text" id={"task__deadline"}>{taskDeadlineDate.toLocaleString()}</div>
 
             {/* card bottom div */}
             <div id="task__tag-div">

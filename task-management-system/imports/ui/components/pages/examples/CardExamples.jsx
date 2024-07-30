@@ -25,7 +25,7 @@ const CardExamples = () => {
             </span>
             <TaskCard
                 taskName={"Task 1 aaaaaaaaa aaaaaa aaaaaaaaaa aa aaaaaaaaaaaaa  aaaaa aaa aaaaaaaaa"}
-                taskDeadline={"2024-07-30T06:23:34.733Z"}
+                taskDeadline={"2024-07-31T06:23:34.733Z"}
                 isPinned={false}
                 onDashboard={true}
                 tags={[{
@@ -50,7 +50,7 @@ const CardExamples = () => {
             </span>
             <TaskCard
                 taskName={"BBB"}
-                taskDeadline={"2024-07-30T06:23:34.733Z"}
+                taskDeadline={"2024-07-25T06:23:34.733Z"}
                 isPinned={true}
                 onDashboard={false}
                 tags={[{
@@ -66,6 +66,25 @@ const CardExamples = () => {
                 ]}
                 boardId={"222222"}>
             </TaskCard>
+            <TaskCard
+                taskName={"BBB"}
+                taskDeadline={"2024-08-12T06:23:34.733Z"}
+                isPinned={true}
+                onDashboard={false}
+                tags={[{
+                    tagName: "a",
+                    tagColour: "#f5f0d7",
+                }, {
+                    tagName: "b",
+                    tagColour: "#ccb7e3",
+                }, {
+                    tagName: "c",
+                    tagColour: "#e7adc0",
+                }
+                ]}
+                boardId={"222222"}>
+            </TaskCard>
+
         </div>
     );
 };
