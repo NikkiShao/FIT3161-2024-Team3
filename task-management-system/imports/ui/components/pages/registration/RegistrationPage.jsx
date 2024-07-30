@@ -103,25 +103,25 @@ export const RegistrationPage = () => {
 
             <h1 className={"default__heading1"}>Create an Account</h1>
 
-            <form className={"default__form"}>
-            <Input type={"text"}
+            <form className={"default__form"} onSubmit={handleRegister}>
+            <Input type={"text"} required
                        label={<label className={"main-text"}>Username</label>}
                        onChange={(e) => setUsername(e.target.value.trim())}/>
 
-                <Input type={"text"}
+                <Input type={"text"} required
                        label={<label className={"main-text"}>Name</label>}
                        onChange={(e) => setName(e.target.value.trim())}/>
 
-                <Input type={"email"}
+                <Input type={"email"} required
                        label={<label className={"main-text"}>Email</label>}
                        onChange={(e) => setEmail(e.target.value.trim())}
                 />
 
-                <Input type={"password"}
+                <Input type={"password"} required
                        label={<label className={"main-text"}>Password</label>}
                        onChange={(e) => setPassword(e.target.value.trim())}/>
 
-                <Input type={"password"}
+                <Input type={"password"} required
                        label={<label className={"main-text"}>Retype Password</label>}
                        onChange={(e) => setPassword2(e.target.value.trim())}/>
 
@@ -145,9 +145,7 @@ export const RegistrationPage = () => {
                         null
                 }
 
-                <Button type={"submit"}
-                        className={"btn-brown"}
-                        onClick={handleRegister}>
+                <Button type={"submit"} className={"btn-brown"}>
                     Register
                 </Button>
             </form>
