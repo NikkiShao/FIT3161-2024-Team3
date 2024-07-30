@@ -31,6 +31,7 @@
 
 * {
     box-sizing: border-box;
+    /*    by default main-text style*/
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
@@ -66,7 +67,7 @@ body .main-text {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    cursor: default;
+    cursor: inherit;
 }
 
 body .large-text {
@@ -74,15 +75,15 @@ body .large-text {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    cursor: default;
+    cursor: inherit;
 }
 
 body .small-text {
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    cursor: default;
+    cursor: inherit;
 }
 
 body .menu-text {
@@ -90,7 +91,7 @@ body .menu-text {
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-    cursor: default;
+    cursor: inherit;
 }
 
 body .center-spaced {
