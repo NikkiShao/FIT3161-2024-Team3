@@ -41,14 +41,7 @@ body .task-card {
     flex-direction: row;
     column-gap: 10px;
     justify-content: start;
-    align-items: start;
-    width: 100%;
-}
-
-#card__header-inner {
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
+    align-items: center;
     width: 100%;
 }
 
