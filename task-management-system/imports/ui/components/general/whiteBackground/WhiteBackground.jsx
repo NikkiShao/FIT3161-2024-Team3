@@ -24,7 +24,7 @@ export const WhiteBackground = ({children, className, pageLayout, ...divProps}) 
 
     // the classes for the div outside the actual white page, determines its alignment (left/right/center)
     let outerDivStyle = {
-        height: "95vh",
+        minHeight: "95vh",
         display: "flex",
         flexDirection: "row",
         justifyContent: "center"
