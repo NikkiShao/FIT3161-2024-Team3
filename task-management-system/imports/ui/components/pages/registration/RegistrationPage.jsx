@@ -58,6 +58,28 @@ export const RegistrationPage = () => {
             return;
         }
 
+        const alphanumericRegex = /^[A-Za-z0-9]+$/i;
+        // Validate username using Meteor's built-in function
+        if (!alphanumericRegex.test(username)) {
+            setErrorString("Username can only consist of alphabet characters and numbers");
+            setDisplayError(true);
+            return;
+        } else if (username.length > 20) {
+            setErrorString("Username can not exceed 20 characters");
+            setDisplayError(true);
+            return;
+        }
+        // Validate name using Meteor's built-in function
+        if (!alphanumericRegex.test(name)) {
+            setErrorString("Name can only consist of alphabet characters and numbers");
+            setDisplayError(true);
+            return;
+        } else if (name.length > 30) {
+            setErrorString("Name can not exceed 30 characters");
+            setDisplayError(true);
+            return;
+        }
+
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         // Validate email using Meteor's built-in function
         if (!emailRegex.test(email)) {
