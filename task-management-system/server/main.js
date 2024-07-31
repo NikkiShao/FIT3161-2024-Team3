@@ -1,13 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import '/imports/api/collections/team.js';
-import '/imports/api/methods/teams.js'; // 确保导入方法文件
-import '/imports/api/publications/team.js';
-import '/imports/api/collections/board.js';
-import '/imports/api/publications/board.js';
-import '/imports/api/methods/board.js';
-import '/imports/api/collections/user.js';
-import '/imports/api/publications/user.js';
-import '/imports/api/methods/user.js';
+import '../imports/api/collections/team';
+import '../imports/api/methods/teams'; 
+import '../imports/api/publications/teams';
 
 import '/imports/api/collections/user.js';
 import '/imports/api/publications/user.js';
