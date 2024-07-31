@@ -1,6 +1,12 @@
 /* additional css for aligning text */
 .center-text{
     text-align : center;
+    vertical-align: middle;
+}
+
+.teams-button{
+    display: flex;
+    align-items: center;
 }
 
 .center-container{
@@ -11,11 +17,18 @@
 }
 
 .side-container {
-    display:inline-flex;
-    align-content: center;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    flex-direction: row;
 }
 
-.right-padding {
-    margin-right: 10px;
+.team-padding {
+    margin-top: 20px;
+    margin-right: 30px;
+
+}
+
+.team-padding .btn-grey{
+    min-width: 10px;
 }
