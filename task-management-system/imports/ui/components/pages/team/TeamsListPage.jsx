@@ -51,10 +51,10 @@ export const TeamsListPage = (...tableProps) => {
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
                 <div className="side-container">
-                <h1 className='right-padding'>Teams</h1> 
-                    <Button className={"btn-grey"}><PlusIcon strokeWidth={4} viewBox="0 0 23 23" width={20} height={20} style={{paddingRight: "5px"}}/> Add</Button>
-                </div>
-    
+                <h1 className='team-padding'>Teams</h1> 
+                <div>
+                    <Button className={"btn-grey"} style={{minWidth:"85px"}}><PlusIcon strokeWidth={4} viewBox="0 0 23 23" width={20} height={20} style={{paddingRight: "5px"}}/> Add</Button>
+                </div></div>
                 <table className={"table table-striped table-bordered"} {...tableProps}>
                 <thead>
                 <tr className="center-text">
@@ -65,20 +65,21 @@ export const TeamsListPage = (...tableProps) => {
                     <th></th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody className="center-text">
                     {teamsData.map((team)=>(            
-                        <tr className="center-text">
+                        <tr>
                         <td>{team.teamName}</td>
                         <td>{team.teamLeader}</td>
                         <td>{team.teamMembers.length}</td>
                         <td>{getBoard(team._id)}</td>
-                        <td><div className="center-spaced"><Button className={"btn-brown"}>View Detail</Button></div></td>
+                        <td>
+                            <Button className={"btn-brown"} style={{minWidth:"117px", display:"inline-flex"}}>View Detail</Button>
+                        </td>
                         </tr>
                     ))}
     
                 </tbody>
             </table>
-    
             </WhiteBackground>
         );
     }
