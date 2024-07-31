@@ -1,5 +1,5 @@
 import {Meteor} from 'meteor/meteor'
-import {TeamCollection} from '/imports/api/collections/team.js';
+import {TeamCollection} from '../collections/team';
 
 Meteor.methods({
 

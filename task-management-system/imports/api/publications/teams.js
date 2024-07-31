@@ -1,15 +1,15 @@
-import {Meteor} from 'meteor/meteor'
-import {TeamCollection} from '/imports/api/collections/team.js';
+/**
+ * File Description: Team database entity
+ * File version: 1.0
+ * Contributors: Audrey, Nikki
+ */
 
-Meteor.methods({
+import { Meteor } from "meteor/meteor";
+import {TeamCollection} from "/imports/api/collections/team.js";
 
-    "add_team": function (name, members, leader) {
-        TeamCollection.insert(
-            {
-                "teamName": name,
-                "teamMembers": members,                
-                "teamLeader": leader
-            }
-        )
-    }
-})
+/**
+ * Publishes all of a specific user's teams
+ */
+Meteor.publish("all_user_teams", function (username) {
+    return TeamCollection.find({ teamMembers: {$in: [username ]} });
+});
