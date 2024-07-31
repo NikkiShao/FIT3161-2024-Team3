@@ -1,9 +1,9 @@
 /* BUTTON STYLES */
 body .btn-base {
     display: flex;
-    min-width: 160px;
+    min-width: 200px;
     width: fit-content;
-    height: 40px;
+    height: 45px;
     padding: 10px 16px;
     justify-content: center;
     align-items: center;
@@ -71,9 +71,11 @@ body .btn-red:hover:active {
 }
 
 body .btn-back {
-    border: 2px solid var(--navy);
-    color: var(--navy);
+    border: 2px solid var(--dark-grey);
+    color: var(--dark-grey);
+    background-color: var(--white);
     min-width: 120px;
+    height: 40px;
 }
 
 body .btn-back:hover,

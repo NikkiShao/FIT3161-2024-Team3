@@ -19,7 +19,7 @@ import "./button.css"
  * @param buttonProps - includes all other properties such as styles, width, height, fill, etc.
  */
 const Button = forwardRef(({children, className, ...buttonProps}, ref) => {
-    const buttonClasses = classNames("btn-base", className);
+    const buttonClasses = classNames("btn-base main-text", className);
     return (
         <button ref={ref} className={buttonClasses} type="button" {...buttonProps}>
             {children}
