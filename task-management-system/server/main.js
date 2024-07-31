@@ -1,4 +1,13 @@
 import { Meteor } from 'meteor/meteor';
+import '/imports/api/collections/team.js';
+import '/imports/api/methods/teams.js'; // 确保导入方法文件
+import '/imports/api/publications/team.js';
+import '/imports/api/collections/board.js';
+import '/imports/api/publications/board.js';
+import '/imports/api/methods/board.js';
+import '/imports/api/collections/user.js';
+import '/imports/api/publications/user.js';
+import '/imports/api/methods/user.js';
 
 import '/imports/api/collections/user.js';
 import '/imports/api/publications/user.js';
@@ -25,6 +34,6 @@ Accounts.emailTemplates.verifyEmail = {
 Meteor.startup(async () => {
 //   start up functions in the future potentially
 //     Meteor.call('add_team', 'team name 3', ['team member1', 'team member2', 'team member3', 'leader'], 'leader');
-    console.log('merry christmas good kids');
 
+    console.log('Meteor server has started');
 });

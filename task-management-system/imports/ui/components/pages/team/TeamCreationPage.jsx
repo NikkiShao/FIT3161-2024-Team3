@@ -1,20 +1,13 @@
-/**
- * File Description: Examples page
- * Updated Date: 20/07/2024
- * Contributors: Mark
- * Version: 1.0
- */
-
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import classNames from "classnames";
-import {Modal} from 'react-responsive-modal';
+import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import '../../general/modal/modal.css'
-
-import {XCircleIcon, TrashIcon, PlusCircleIcon} from "@heroicons/react/24/outline";
-
+import { XCircleIcon, TrashIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import Input from "../../general/inputs/Input";
 import Button from "../../general/buttons/Button";
+import { Meteor } from 'meteor/meteor'; 
+
 
 import "./team.css"
 
@@ -51,11 +44,17 @@ export const TeamCreationPage = () => {
 
     const handleCreateTeam = () => {
         if (teamName && members.length > 0) {
-            console.log('Team Created:', { teamName, members });
-            setTeamName('');
-            setMembers([]);
-            setOpen(false);
-            setError('');
+            // 调用Meteor方法将团队信息插入数据库
+            Meteor.call('add_team', teamName, members, members[0], (error) => {
+                if (error) {
+                    setError(error.reason);
+                } else {
+                    setTeamName('');
+                    setMembers([]);
+                    setOpen(false);
+                    setError('');
+                }
+            });
         } else {
             setError('Team name and members are required');
         }
