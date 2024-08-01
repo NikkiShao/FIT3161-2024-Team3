@@ -53,7 +53,7 @@ export const TeamsListPage = (...tableProps) => {
                 <div className="side-container">
                 <h1 className='team-padding'>Teams</h1> 
                 <div>
-                    <Button className={"btn-grey"} style={{height:"50px", minWidth:"85px"}}><PlusIcon strokeWidth={4} viewBox="0 0 23 23" width={20} height={20} style={{paddingRight: "5px"}}/> Add</Button>
+                    <Button className={"btn-grey"} style={{height:"40px", minWidth:"85px"}}><PlusIcon strokeWidth={4} viewBox="0 0 23 23" width={20} height={20} style={{paddingRight: "5px"}}/> Add</Button>
                 </div></div>
                 <table className={"table table-striped table-bordered"} {...tableProps}>
                 <thead>
