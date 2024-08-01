@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import '/imports/api/collections/team.js';
 import '/imports/api/publications/team.js';
 import '/imports/api/methods/team.js';
+
 import '/imports/api/collections/board.js';
 import '/imports/api/publications/board.js';
 import '/imports/api/methods/board.js';
@@ -32,5 +33,8 @@ Meteor.startup(async () => {
 //   start up functions in the future potentially
 //     Meteor.call('add_team', 'team name 3', ['team member1', 'team member2', 'team member3', 'leader'], 'leader');
     console.log('merry christmas good kids');
+
+
+    console.log(process.env.MONGO_URL)
 
 });
