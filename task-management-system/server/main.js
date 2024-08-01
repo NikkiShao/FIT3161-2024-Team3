@@ -5,6 +5,8 @@ import '/imports/api/methods/team.js';
 import '/imports/api/collections/board.js';
 import '/imports/api/publications/board.js';
 import '/imports/api/methods/board.js';
+import '/imports/api/methods/task.js';
+import '/imports/api/publications/task.js';
 
 import '/imports/api/collections/user.js';
 import '/imports/api/publications/user.js';
