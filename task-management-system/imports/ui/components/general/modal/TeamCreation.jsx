@@ -21,7 +21,7 @@ export const TeamCreation = () => {
 
     // State variables for team creation form
     const [teamName, setTeamName] = useState('');
-    const [members, setMembers] = useState(['creeper@qq.com']);
+    const [members, setMembers] = useState([ " damn@damn.com "]);
     const [email, setEmail] = useState('');
     const [open, setOpen] = useState(false);
     const [error, setError] = useState('');
@@ -63,7 +63,7 @@ export const TeamCreation = () => {
                     setError(error.reason);
                 } else {
                     setTeamName('');
-                    setMembers([]);
+                    setMembers([  " damn@damn.com "  ]);
                     setOpen(false);
                     setError('');
                 }
