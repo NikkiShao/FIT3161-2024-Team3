@@ -64,6 +64,7 @@ export const TeamCreation = () => {
                 } else {
                     setTeamName('');
                     setMembers([  " damn@damn.com "  ]);
+                    setEmail('');
                     setOpen(false);
                     setError('');
                 }
