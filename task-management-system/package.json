@@ -20,7 +20,7 @@
     "react-router-dom": "^6.22.3",
     "react-responsive-modal": "^6.4.2",
     "bcrypt": "^5.1.1",
-    "check-password-strength": "^2.0.10"，
+    "check-password-strength": "^2.0.10",
     "sass": "^1.77.8"
   },
   "meteor": {

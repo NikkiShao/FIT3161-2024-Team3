@@ -31,7 +31,7 @@ export const TeamCreationPage = () => {
     const onCloseModal = () => setOpen(false);
 
     // Regex for validating email addresses
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;;
 
     // Icons for UI elements
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
