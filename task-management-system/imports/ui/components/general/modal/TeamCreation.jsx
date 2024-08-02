@@ -5,23 +5,23 @@
  * Version: 2.0
  */
 
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import classNames from "classnames";
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import '../../general/modal/modal.css';
 import { XCircleIcon, TrashIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import Input from "../../general/inputs/Input";
-import Button from "../../general/buttons/Button";
+import Input from "../inputs/Input";
+import Button from "../buttons/Button";
 import { Meteor } from 'meteor/meteor';  // Import Meteor for method calls
 
-import "./team.css"
+import "../../general/modal/modal";
 
-export const TeamCreationPage = () => {
+export const TeamCreation = () => {
 
     // State variables for team creation form
     const [teamName, setTeamName] = useState('');
-    const [members, setMembers] = useState(['creeper@qq.com', 'cc@cc.com']);
+    const [members, setMembers] = useState(['creeper@qq.com']);
     const [email, setEmail] = useState('');
     const [open, setOpen] = useState(false);
     const [error, setError] = useState('');
@@ -88,42 +88,66 @@ export const TeamCreationPage = () => {
                 onClose={onCloseModal}
                 center>
                 <h1>Create New Team</h1>
-                {error && 
-                <div className='inputGroup'>
-                    <p style={{ color: 'red' }}>{error}</p>
-                </div>
-                }
+
                 {/* Input field for team name */}
                 <div className='inputGroup'>
-                    <label className="inputGroup-label">Team Name:</label>
+                    <label>Team Name:</label>
                     <Input
-                        className="input"
                         type="text"
                         placeholder="Enter your team name"
                         value={teamName}
                         onChange={(e) => setTeamName(e.target.value)}
                     />
+                    <div></div>
                 </div>
 
                 {/* Display and remove team members */}
+
+                {/* Display team leader info, which is the 1st member */}
+                {/* // todo: not working right now */}
                 <div className='inputGroup'>
-                    <label className="inputGroup-label">Invite Members:</label>
+                    <label>Invite Members:</label>
                     {
-                        members.map((member, index) => (
-                            <div key={index} className="memberItem">
-                                {member}
-                                <button className="insertedButton" onClick={() => handleRemoveMember(member)}>
-                                    {trashIcon}
-                                </button>
-                            </div>
+                        members
+                            .filter((_, index) => index === 0)
+                            .map((member, index) => (
+                            <Fragment key={index}>
+                                <div className="memberItem">
+                                    {member}
+                                </div>
+                                <div></div>
+                            </Fragment>
                         ))
                     }
                 </div>
 
+                {/* Display team members email address */}
+
+                <div className='inputGroup'>
+                    {
+                        members
+                            .filter((_, index) => index > 0) 
+                            .map((member, index) => (
+                                <Fragment key={index + 1}> {/* +1 to ensure unique key */}
+                                    <div></div>
+                                    <div className="memberItem">
+                                        {member}
+                                        <button className="insertedButton" onClick={() => handleRemoveMember(member)}>
+                                            {trashIcon}
+                                        </button>
+                                    </div>
+                                    <div></div>
+                                </Fragment>
+                            ))
+                    }
+                </div>
+
+
+
                 {/* Input field to add new members */}
                 <div className='inputGroup'>
+                    <div></div>
                     <Input
-                        className="input"
                         type="email"
                         placeholder="Enter Email Address"
                         value={email}
@@ -134,6 +158,13 @@ export const TeamCreationPage = () => {
                     </button>
                 </div>
 
+                {/* Error display*/}
+                {error &&
+                    <div className='error-display'>
+                        <p style={{ color: 'red' }}>{error}</p>
+                    </div>
+                }
+
                 {/* Button to create the team */}
                 <div className='buttonGroup'>
                     <Button
@@ -142,9 +173,10 @@ export const TeamCreationPage = () => {
                         Create Team
                     </Button>
                 </div>
+
             </Modal>
         </>
     );
 };
 
-export default TeamCreationPage;
+export default TeamCreation;

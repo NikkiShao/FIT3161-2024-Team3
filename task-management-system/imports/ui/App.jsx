@@ -10,7 +10,7 @@ import RegistrationPage from "./components/pages/registration/RegistrationPage";
 import AccountCreatedPage from "./components/pages/registration/AccountCreatedPage";
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 import HomePage from "./components/pages/HomePage";
-import TeamCreationPage from './components/pages/team/TeamCreationPage';
+import TeamCreation from './components/general/modal/TeamCreation';
 
 export const App = () => (
     <div className={""}>
@@ -24,7 +24,7 @@ export const App = () => (
                 <Route path="/account-created/:username" element={<AccountCreatedPage/>}/>
                 <Route path="/verify-email/:token" element={<EmailVerificationPage/>}/>
 
-                <Route path="/team-creation" element={<TeamCreationPage/>}/>
+                <Route path="/team-creation" element={<TeamCreation/>}/>
             </Routes>
         </Router>
 
