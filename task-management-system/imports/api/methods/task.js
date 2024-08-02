@@ -8,6 +8,8 @@ import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { TaskCollection } from "/imports/api/collections/task.js";
 
+const ObjectId = Mongo.ObjectID || require('mongodb').ObjectID;
+
 Meteor.methods({
   /**
    * Adds a new task to the database. Keep in mind this is an async method.
@@ -41,7 +43,9 @@ Meteor.methods({
     check(taskId, String);
     check(isPinned, Boolean);
 
-    TaskCollection.update(taskId, {
+    const objectId = new ObjectId(taskId);
+
+    TaskCollection.update({ _id: objectId }, {
       $set: {
         taskIsPinned: isPinned,
       },

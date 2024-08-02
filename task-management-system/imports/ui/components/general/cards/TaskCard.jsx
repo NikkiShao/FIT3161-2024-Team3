@@ -56,7 +56,7 @@ const TaskCard = ({
 
   // handler function of clicking pin/unpin
   const setIsPinned = (newPinState) => {
-    Meteor.call("set_is_pinned", taskId, newPinState);
+    Meteor.call("set_is_pinned", String(taskId), newPinState);
   }
 
   // check if more than 4 tags, if yes only display 4 days and truncate with ... tag
