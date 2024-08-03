@@ -17,7 +17,7 @@ import WhiteBackground from "../../general/whiteBackground/WhiteBackground.jsx";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
 import {getUserInfo} from "../../util";
-import "/team.css"
+import "./team.css"
 
 export const TeamsListPage = (...tableProps) => {
 
