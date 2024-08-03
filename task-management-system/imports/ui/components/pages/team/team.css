@@ -1,0 +1,15 @@
+/**
+ * File Description: Examples page
+ * Updated Date: 20/07/2024
+ * Contributors: Mark
+ * Version: 2.0
+ */
+
+
+#teams__top-div {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
