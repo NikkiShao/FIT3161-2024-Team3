@@ -1,4 +1,7 @@
 import { Meteor } from 'meteor/meteor';
+import '../imports/api/collections/team';
+import '../imports/api/methods/teams'; 
+import '../imports/api/publications/teams';
 
 import '/imports/api/collections/user.js';
 import '/imports/api/publications/user.js';
@@ -25,6 +28,6 @@ Accounts.emailTemplates.verifyEmail = {
 Meteor.startup(async () => {
 //   start up functions in the future potentially
 //     Meteor.call('add_team', 'team name 3', ['team member1', 'team member2', 'team member3', 'leader'], 'leader');
-    console.log('merry christmas good kids');
 
+    console.log('Meteor server has started');
 });
