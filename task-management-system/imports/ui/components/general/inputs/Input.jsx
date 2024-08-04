@@ -18,7 +18,7 @@ import "./input.css"
  * @param inputProps - includes all other properties such as styles, width, height, fill, etc.
  */
 const Input = ({children, className, label, ...inputProps}) => {
-    const inputClasses = classNames("input-base", className);
+    const inputClasses = classNames("input-base main-text", className);
 
     if (label) {
         // label given
