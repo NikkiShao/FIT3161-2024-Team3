@@ -11,12 +11,15 @@ import AccountCreatedPage from "./components/pages/registration/AccountCreatedPa
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 import HomePage from "./components/pages/HomePage";
 import TeamCreation from './components/general/modal/TeamCreation';
+import TeamsListPage from './components/pages/team/TeamsListPage';
 
 export const App = () => (
     <div className={""}>
+
         <Router>
             <Routes>
                 <Route path="/examples" element={<ExamplesPage/>}/>
+                <Route path="/team-list" element={<TeamsListPage/>}/>
 
                 <Route path="/dashboard" element={<HomePage/>}/>
 

@@ -13,3 +13,11 @@ import {TaskCollection} from "/imports/api/collections/task.js";
 Meteor.publish("pinned_tasks", function () {
     return TaskCollection.find({ taskIsPinned: true });
 });
+
+/**
+ * Publishes all tasks.
+ */
+Meteor.publish('tasks', function publishTasks() {
+  return TaskCollection.find();
+});
+

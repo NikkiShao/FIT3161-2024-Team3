@@ -10,7 +10,6 @@ body .btn-base {
     border-radius: 9999px;
     transition: background-color 0.5s;
     transition-timing-function: ease-in-out;
-    font-weight: 550;
 }
 
 body .btn-square {
