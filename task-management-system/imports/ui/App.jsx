@@ -12,7 +12,6 @@ import EmailVerificationPage from "./components/pages/registration/EmailVerifica
 import HomePage from "./components/pages/HomePage";
 import TeamCreation from './components/general/modal/TeamCreation';
 import TeamsListPage from './components/pages/team/TeamsListPage';
-import TaskCardTest from '/imports/ui/components/general/cards/TaskCardTesting';
 
 export const App = () => (
     <div className={""}>
@@ -21,7 +20,6 @@ export const App = () => (
             <Routes>
                 <Route path="/examples" element={<ExamplesPage/>}/>
                 <Route path="/team-list" element={<TeamsListPage/>}/>
-                <Route path="/test-task-card" element={<TaskCardTest />} />
 
                 <Route path="/dashboard" element={<HomePage/>}/>
 
