@@ -24,6 +24,8 @@ import '/imports/api/collections/team.js';
 import '/imports/api/methods/team.js';
 import '/imports/api/publications/team.js';
 
+import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import PollCollection from "../imports/api/collections/poll";
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {

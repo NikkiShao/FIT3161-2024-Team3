@@ -9,6 +9,7 @@ import {UserCollection} from "../collections/user";
 
 /**
  * Publishes all users.
+ * todo: remove this is for develop
  */
 Meteor.publish('all_users', function() {
     return UserCollection.find();

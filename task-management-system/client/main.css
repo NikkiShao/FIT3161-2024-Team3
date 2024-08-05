@@ -45,9 +45,10 @@ body {
 }
 
 body h1 {
-    font-size: 40px;
+    font-size: 35px;
     font-style: normal;
     font-weight: 500;
+    margin-top: 0;
     margin-bottom: 20px;
     color: var(--black);
     cursor: default;
@@ -109,6 +110,14 @@ body .text-red {
     color: var(--red);
 }
 
+.default__heading1 {
+    margin-top: 20px;
+}
+
+.default__heading2 {
+    margin-bottom: 0;
+}
+
 /* general classes used application wide */
 body .table {
     margin-bottom: 50px;
@@ -119,10 +128,6 @@ body .table {
 
 .hidden {
     display: none;
-}
-
-.default__heading1 {
-    margin-top: 20px;
 }
 
 .default__form {
