@@ -5,7 +5,7 @@
  * Version: 1.3
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
 import {PlusIcon} from "@heroicons/react/24/outline";
 import {useNavigate} from "react-router-dom";
@@ -21,11 +21,17 @@ import baseUrlPath from "../../../enums/BaseUrlPath";
 import Button from "../../general/buttons/Button";
 import {getUserInfo} from "../../util";
 import "./team.css"
+import TeamCreationModal from "../../general/modal/TeamCreationModal";
 
 export const TeamsListPage = () => {
 
     const navigate = useNavigate();
     const userInfo = getUserInfo();
+
+    // Handlers for opening and closing team creation modal
+    const [modalOpen, setModalOpen] = useState(false);
+    const onOpenModal = () => setModalOpen(true);
+    const onCloseModal = () => setModalOpen(false);
 
     // fetch team's data
     const isLoadingTeams = useSubscribe('all_user_teams', userInfo.email);
@@ -87,11 +93,19 @@ export const TeamsListPage = () => {
 
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+
+                <TeamCreationModal
+                    open={modalOpen}
+                    closeHandler={onCloseModal}
+                />
+
+
                 <div id="teams__top-div">
                     <Button className={"btn-grey"}
                             style={{minWidth: "75px", width: "120px", visibility: "hidden"}}>{plusIcon} Add</Button>
                     <h1 className={"text-center default__heading1"}>Teams</h1>
-                    <Button className={"btn-grey"} style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                    <Button className={"btn-grey"} style={{minWidth: "75px", width: "120px"}}
+                            onClick={onOpenModal}>{plusIcon} Add</Button>
                 </div>
 
                 <table className={"table table-striped table-bordered table-hover"}>

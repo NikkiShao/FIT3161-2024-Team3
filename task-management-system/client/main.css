@@ -68,7 +68,6 @@ body .main-text {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    cursor: inherit;
 }
 
 body .large-text {
@@ -156,6 +155,16 @@ body .table {
     align-items: center;
 }
 
+.icon-btn {
+    border: none;
+    background-color: white;
+}
+
+.non-clickable {
+    cursor: default;
+}
+
+
 /* form input ERROR related classes */
 .input-error-div {
     display: flex;
@@ -163,6 +172,3 @@ body .table {
     gap: 4px;
 }
 
-.error-text {
-    color: var(--red);
-}

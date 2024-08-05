@@ -7,13 +7,19 @@
 
 import React from 'react';
 import Button from "../../general/buttons/Button";
-import {ChevronLeftIcon} from "@heroicons/react/24/outline";
+import {ChevronLeftIcon, PlusCircleIcon} from "@heroicons/react/24/outline";
 
 const ButtonExamples = () => {
-
+    const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
+                                     height={30}/>;
     return (
         <div className="center-spaced">
+            icon button:
+            <button className="icon-btn">
+                {plusIcon}
+            </button>
 
+            normal buttons:
             <Button className={"btn-brown"}>Brown button</Button>
             <Button className={"btn-grey"}>Grey Button</Button>
             <Button className={"btn-light-grey"}>Light Grey Button</Button>

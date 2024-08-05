@@ -188,35 +188,35 @@ export const RegistrationPage = () => {
                     <Input type={"text"}
                            label={<label className={"main-text"}>Username</label>}
                            onChange={(e) => setUsername(e.target.value.trim())}/>
-                    {errors.username && <span className="error-text small-text">{errors.username}</span>}
+                    {errors.username && <span className="text-red small-text">{errors.username}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"text"}
                            label={<label className={"main-text"}>Name</label>}
                            onChange={(e) => setName(e.target.value.trim())}/>
-                    {errors.name && <span className="error-text small-text">{errors.name}</span>}
+                    {errors.name && <span className="text-red small-text">{errors.name}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"email"}
                            label={<label className={"main-text"}>Email</label>}
                            onChange={(e) => setEmail(e.target.value.trim())}/>
-                    {errors.email && <span className="error-text small-text">{errors.email}</span>}
+                    {errors.email && <span className="text-red small-text">{errors.email}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"password"}
                            label={<label className={"main-text"}>Password</label>}
                            onChange={(e) => setPassword(e.target.value.trim())}/>
-                    {errors.password && <span className="error-text small-text">{errors.password}</span>}
+                    {errors.password && <span className="text-red small-text">{errors.password}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"password"}
                            label={<label className={"main-text"}>Retype Password</label>}
                            onChange={(e) => setPassword2(e.target.value.trim())}/>
-                    {errors.password2 && <span className="error-text small-text">{errors.password2}</span>}
+                    {errors.password2 && <span className="text-red small-text">{errors.password2}</span>}
                 </div>
 
                 {/* Password requirements message */}
