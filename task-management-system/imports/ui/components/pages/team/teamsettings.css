@@ -1,0 +1,89 @@
+.modal-base {
+    background: var(--white);
+    min-width: 500px;
+    padding: 30px;
+    border-radius: 15px; 
+}
+
+h1 {
+    text-align: middle; 
+    margin-top:0%;
+    top: 30px;
+    padding-bottom: 30px;
+    font-weight: normal; 
+}
+
+.back-button{
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.inputGroup {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.inputGroup>label {
+    color: dimgray;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+    flex: 0 0 120px;
+}
+
+.inputGroup>input{
+    padding: 10px;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+    flex-grow: 1;
+}
+
+.inputGroup>select {
+    padding: 10px;
+    margin-left: 5px;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+    flex-grow: 1;
+}
+
+.inputGroup ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.memberItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 5x 10px; 
+    border-radius: 5px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+
+.insertedButton {
+    margin-left: 10px;
+    border: none;
+  }
+  
+
+.addMemberButton {
+    margin-left: 20px;
+    border: none;
+  }
+
+  .buttonGroup {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: space-between;
+  }
+
+.error-display {
+    text-align: center;
+}

@@ -1,6 +1,6 @@
 /**
  * File Description: Team database entity
- * File version: 1.1
+ * File version: 1.2
  * Contributors: Audrey, Nikki
  */
 
@@ -32,3 +32,9 @@ Meteor.publish("all_teams", function () {
     return TeamCollection.find();
 });
 
+// /**
+//  * publishes update team for a specific team
+//  */
+// Meteor.publish("update_team", function(teamId, teamsData){
+//     TeamCollection.update(teamId, {$set: teamsData});
+// });

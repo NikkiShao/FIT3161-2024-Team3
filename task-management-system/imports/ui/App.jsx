@@ -22,7 +22,7 @@ import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
-
+import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
 
 /**
  * Main application component
@@ -80,7 +80,15 @@ export const App = () => (
                             <TeamsListPage/>
                         </ProtectedRoute>
                     }/>
-
+                    
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId' +'/settings'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <TeamSettingsPage/>
+                        </ProtectedRoute>
+                    
+                        // onClick={() => navigate('/' + baseUrlPath.TEAMS + '/' + team._id + '/settings')}
+                    }/>
+                    
 
                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
