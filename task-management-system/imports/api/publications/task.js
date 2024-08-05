@@ -1,11 +1,11 @@
 /**
  * File Description: Task database entity
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Nikki
  */
 
 import { Meteor } from "meteor/meteor";
-import {TaskCollection} from "/imports/api/collections/task.js";
+import {TaskCollection} from "../collections/task.js";
 
 /**
  * Publishes all pinned services.
@@ -15,9 +15,8 @@ Meteor.publish("pinned_tasks", function () {
 });
 
 /**
- * Publishes all tasks.
+ * todo: remove, this is for testing
  */
-Meteor.publish('tasks', function publishTasks() {
-  return TaskCollection.find();
+Meteor.publish("all_tasks", function () {
+    return TaskCollection.find();
 });
-

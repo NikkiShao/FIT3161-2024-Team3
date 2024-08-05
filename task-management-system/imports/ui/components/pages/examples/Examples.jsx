@@ -6,6 +6,9 @@
  */
 
 import React from 'react';
+import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import Spinner from "react-bootstrap/Spinner";
+
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground.jsx";
 import PageLayout from "../../../enums/PageLayout";
 import ButtonExamples from "./ButtonExamples";
@@ -13,12 +16,51 @@ import CardExamples from "./CardExamples";
 import ModalExamples from "./ModalExamples";
 import InputExamples from "./InputExamples";
 import TableExample from "./TableExample";
-import Spinner from "react-bootstrap/Spinner";
+import BoardCollection from "../../../../api/collections/board";
+import PollCollection from "../../../../api/collections/poll";
+import TaskCollection from "../../../../api/collections/task";
+import TeamCollection from "../../../../api/collections/team";
+import UserCollection from "../../../../api/collections/user";
 
 /**
  * Examples page component
  */
 export const ExamplesPage = () => {
+    //     loads all data here (for testing purposes)
+    const isLoadingBoards = useSubscribe('all_boards')
+    let boardsData = useTracker(() => {
+        return BoardCollection.find().fetch();
+    });
+    console.log("boardsData", boardsData);
+
+    const isLoadingPolls = useSubscribe('all_polls')
+    let pollsData = useTracker(() => {
+        return PollCollection.find().fetch();
+    });
+    console.log("pollsData", pollsData);
+
+    const isLoadingTasks = useSubscribe('all_tasks')
+    let tasksData = useTracker(() => {
+        return TaskCollection.find().fetch();
+    });
+    console.log("tasksData", tasksData);
+
+    const isLoadingTeams = useSubscribe('all_teams')
+    let teamsData = useTracker(() => {
+        return TeamCollection.find().fetch();
+    });
+    console.log("teamsData", teamsData);
+
+    const isLoadingUsers = useSubscribe('all_users')
+    let usersData = useTracker(() => {
+        return UserCollection.find().fetch();
+    });
+    console.log("usersData", usersData);
+
+    const isLoading = isLoadingBoards() || isLoadingPolls() || isLoadingUsers() || isLoadingTeams() || isLoadingTasks();
+    console.log(isLoading)
+
+
     return (
         <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
 

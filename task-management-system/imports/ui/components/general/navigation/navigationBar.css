@@ -1,0 +1,76 @@
+#nav__outer {
+    background: var(--navy);
+
+    margin: 0;
+    padding: 80px 30px 30px;
+    width: 300px;
+    height: 100%; /* Full height */
+    position: fixed; /* Make it stick, even on scroll */
+    overflow: auto; /* Enable scrolling if the sidenav has too much content */
+}
+
+#nav__ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    justify-items: center;
+    align-items: start;
+}
+
+li a {
+    display: block;
+    width: 100%;
+    color: var(--white);
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: color 0.5s;
+    transition-timing-function: ease-in-out;
+}
+
+/* Change the link color on hover */
+li a:hover {
+    color: var(--light-blue);
+    border-bottom: 3px solid var(--light-blue);
+    transition: color 0.5s;
+    transition-timing-function: ease-in-out;
+}
+
+.nav__active {
+    color: var(--light-blue);
+}
+
+#nav__link {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    justify-items: center;
+    align-items: center;
+    width: 200px;
+}
+
+#nav__hr {
+    border-bottom: 3px solid var(--white);
+    border-color: var(--white);
+}
+
+#nav__welcome {
+    color: var(--white);
+
+}
+
+#nav__name {
+    color: var(--white);
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* for protected route */
+#pr__div {
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

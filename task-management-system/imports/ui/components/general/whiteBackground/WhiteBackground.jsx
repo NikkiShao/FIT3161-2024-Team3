@@ -1,12 +1,13 @@
 /**
  * File Description: Background card for all pages
- * Updated Date: 20/07/2024
+ * Updated Date: 30/07/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import classNames from "classnames";
+import {Tracker} from 'meteor/tracker';
 import "./whiteBackground.css"
 
 import PageLayout from "../../../enums/PageLayout";
@@ -27,7 +28,25 @@ export const WhiteBackground = ({children, className, pageLayout, ...divProps}) 
         minHeight: "95vh",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "center"
+        justifyContent: "center",
+        marginLeft: "300px"
+    }
+
+    // this part ensures that margin is correct when user logged in vs not logged in (when logged in left side has a menu bar)
+    const [loggedInUserId, setLoggedInUserId] = useState(Meteor.userId());
+
+    // When login status changes, this is automatically ran
+    Tracker.autorun(() => {
+        const userId = Meteor.userId();
+
+        if (userId !== loggedInUserId) {
+            setLoggedInUserId(Meteor.userId());
+        }
+    })
+
+    if (!loggedInUserId) {
+    // if user is NOT logged in, nav bar is NOT displayed, move display to the center right
+        outerDivStyle.marginLeft = "0";
     }
 
     // all pages will have a background with white-glass-base, and the standard shadow

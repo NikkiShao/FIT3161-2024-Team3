@@ -4,7 +4,7 @@
  * Contributors: Nikki
  */
 
-import React, {useState} from "react";
+import {useState} from "react";
 import {Tracker} from "meteor/tracker";
 import {Meteor} from "meteor/meteor";
 
@@ -19,10 +19,11 @@ export function getUserInfo() {
     const [userInfo, setUserInfo] = useState(
         {
             "id": null,
-            "name": null,
             "username": null,
             "email": null,
-            "verified": false
+            "verified": false,
+            "name": null,
+            "notificationOn": false
         }
     );
 
@@ -38,6 +39,7 @@ export function getUserInfo() {
             const fetchedEmail = user.emails[0].address;
             const fetchedEmailVerification = user.emails[0].verified;
             const fetchedName = user.profile.name;
+            const fetchedNotificationOn = user.profile.notificationOn;
 
             // check if an update to the current user info is required or not (this is needed to prevent inf loop)
             if (
@@ -45,7 +47,8 @@ export function getUserInfo() {
                 userInfo.username !== fetchedUsername ||
                 userInfo.email !== fetchedEmail ||
                 userInfo.verified !== fetchedEmailVerification ||
-                userInfo.name !== fetchedName
+                userInfo.name !== fetchedName ||
+                userInfo.notificationOn !== fetchedNotificationOn
             ) {
                 setUserInfo(
                     {
@@ -54,6 +57,7 @@ export function getUserInfo() {
                         "email": fetchedEmail,
                         "verified": fetchedEmailVerification,
                         "name": fetchedName,
+                        "notificationOn": fetchedNotificationOn
                     }
                 )
             }
