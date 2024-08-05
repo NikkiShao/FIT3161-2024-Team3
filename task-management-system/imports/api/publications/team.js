@@ -10,6 +10,6 @@ import {TeamCollection} from "/imports/api/collections/team.js";
 /**
  * Publishes all of a specific user's teams
  */
-Meteor.publish("all_user_teams", function (username) {
-    return TeamCollection.find({ teamMembers: {$in: [username ]} });
+Meteor.publish("all_user_teams", function (email) {
+    return TeamCollection.find({ teamMembers: {$in: [email]} });
 });

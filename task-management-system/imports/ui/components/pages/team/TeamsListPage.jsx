@@ -2,7 +2,7 @@
  * File Description: Teams list page
  * Updated Date: 24/7/2024
  * Contributors: Audrey, Nikki
- * Version: 1.1
+ * Version: 1.2
  */
 
 import React from 'react';
@@ -24,14 +24,14 @@ export const TeamsListPage = (...tableProps) => {
     const userInfo = getUserInfo();
 
     // set up a subscriber
-    const isLoadingTeams = useSubscribe('all_user_teams', userInfo.username);
+    const isLoadingTeams = useSubscribe('all_user_teams', userInfo.email);
     useSubscribe('all_user_boards');
 
     //fetch team's data
     const teamsData = useTracker(() => {
         return TeamCollection.find({
             teamMembers: {
-                $in: [userInfo.username ]
+                $in: [userInfo.email]
             }
         }).fetch();
     });

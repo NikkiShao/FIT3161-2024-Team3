@@ -12,7 +12,6 @@ import EmailVerificationPage from "./components/pages/registration/EmailVerifica
 import HomePage from "./components/pages/HomePage";
 import TeamsListPage from './components/pages/team/TeamsListPage';
 import TeamCreation from './components/general/modal/TeamCreation';
-import TeamsListPage from './components/pages/team/TeamsListPage';
 
 export const App = () => (
     <div className={""}>
@@ -20,7 +19,6 @@ export const App = () => (
         <Router>
             <Routes>
                 <Route path="/examples" element={<ExamplesPage/>}/>
-                <Route path="/team-list" element={<TeamsListPage/>}/>
 
                 <Route path="/dashboard" element={<HomePage/>}/>
 
