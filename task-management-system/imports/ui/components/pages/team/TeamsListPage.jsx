@@ -19,7 +19,7 @@ import Button from "../../general/buttons/Button";
 import {getUserInfo} from "../../util";
 import "./team.css"
 
-export const TeamsListPage = (...tableProps) => {
+export const TeamsListPage = () => {
 
     const userInfo = getUserInfo();
 
@@ -64,7 +64,8 @@ export const TeamsListPage = (...tableProps) => {
                     <h1 className={"text-center default__heading1"}>Teams</h1>
                     <Button className={"btn-grey"} style={{minWidth:"75px", width:"120px"}}>{plusIcon} Add</Button>
                 </div>
-                <table className={"table table-striped table-bordered"} {...tableProps}>
+    
+                <table className={"table table-striped table-bordered"}>
                 <thead>
                 <tr className="text-center">
                     <th>Team Name</th>

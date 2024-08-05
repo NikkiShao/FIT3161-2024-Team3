@@ -13,17 +13,11 @@ import {EnvelopeOpenIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
+import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 
 export const AccountCreatedPage = () => {
     const navigate = useNavigate();
-
-    // grab the username ID from the URL
-    const {username} = useParams();
-
-
-    // method called to email user verification email
-    Meteor.call("send_verify_email", username);
 
     return (
         <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
@@ -40,7 +34,7 @@ export const AccountCreatedPage = () => {
             <br/>
             <Button className={"btn-brown"}
                     onClick={() => {
-                        navigate('/login')
+                        navigate('/' + BaseUrlPath.LOGIN)
                     }}>
                 Return to Login
             </Button>

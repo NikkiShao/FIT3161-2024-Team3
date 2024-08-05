@@ -53,7 +53,7 @@ export const EmailVerificationPage = () => {
                     <br/>
                     <Button className={"btn-brown"}
                             onClick={() => {
-                                navigate('/login')
+                                navigate('/' + BaseUrlPath.LOGIN)
                             }}>
                         Return to Login
                     </Button>

@@ -6,30 +6,91 @@ import "../../client/main.css"
 
 // import Button from 'react-bootstrap/Button';
 import ExamplesPage from "./components/pages/examples/Examples";
+
+import EmptyPage from "./components/pages/EmptyPage";
+import LandingPage from "./components/pages/LandingPage";
+
+import SignInPage from "./components/pages/SignInPage";
 import RegistrationPage from "./components/pages/registration/RegistrationPage";
 import AccountCreatedPage from "./components/pages/registration/AccountCreatedPage";
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
-import HomePage from "./components/pages/HomePage";
+
+import DashboardPage from "./components/pages/DashboardPage";
+import TeamCreation from './components/general/modal/TeamCreation';
 import TeamsListPage from './components/pages/team/TeamsListPage';
 import TeamCreation from './components/general/modal/TeamCreation';
 
+import NavigationBar from "./components/general/navigation/NavigationBar";
+import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
+import RoutingAccess from "./enums/RoutingAccess";
+import BaseUrlPath from "./enums/BaseUrlPath";
+
+/**
+ * Main application component
+ */
 export const App = () => (
     <div className={""}>
 
         <Router>
-            <Routes>
-                <Route path="/examples" element={<ExamplesPage/>}/>
+            <NavigationBar/>
+            <main>
+                <Routes>
 
-                <Route path="/dashboard" element={<HomePage/>}/>
+                    {/* todo: remove examples page after development */}
+                    <Route path="/examples" element={<ExamplesPage/>}/>
 
-                <Route path="/register" element={<RegistrationPage/>}/>
-                <Route path="/account-created/:username" element={<AccountCreatedPage/>}/>
-                <Route path="/verify-email/:token" element={<EmailVerificationPage/>}/>
+                    {/* base & home routes */}
+                    <Route path="/" element={<LandingPage/>}/>
+                    <Route path="*" element={<EmptyPage/>}/>
                 <Route path="/teams" element={<TeamsListPage/>}/>
 
-                <Route path="/team-creation" element={<TeamCreation/>}/>
-            </Routes>
-        </Router>
+                    {/* Register/Sign in related pages */}
+                    <Route path={'/' + BaseUrlPath.LOGIN} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_OUT_ONLY}>
+                            <SignInPage/>
+                        </ProtectedRoute>
+                    }/>
 
+                    <Route path={'/' + BaseUrlPath.REGISTER} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_OUT_ONLY}>
+                            <RegistrationPage/>
+                        </ProtectedRoute>
+                    }/>
+
+                    <Route path={'/' + BaseUrlPath.REGISTER + "/account-created"} element={
+                        <AccountCreatedPage/>
+                    }/>
+
+                    <Route path="/verify-email/:token" element={
+                        <EmailVerificationPage/>
+                    }/>
+
+                    {/* Account related pages  */}
+                    <Route path={'/' + BaseUrlPath.DASHBOARD} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <DashboardPage/>
+                        </ProtectedRoute>
+                    }/>
+
+                    {/* Teams related routes */}
+                    <Route path="/team-creation" element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <TeamCreation/>
+                        </ProtectedRoute>
+                    }/>
+
+                    <Route path={'/' + BaseUrlPath.TEAMS} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <TeamsListPage/>
+                        </ProtectedRoute>
+                    }/>
+
+
+                    {/* Boards related routes */}
+
+
+                </Routes>
+            </main>
+        </Router>
     </div>
 );

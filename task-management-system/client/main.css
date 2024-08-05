@@ -62,6 +62,7 @@ body h2 {
     cursor: default;
 }
 
+/* here are text classes */
 body .main-text {
     font-size: 18px;
     font-style: normal;
@@ -81,7 +82,7 @@ body .large-text {
 body .small-text {
     font-size: 15px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 480;
     line-height: normal;
     cursor: inherit;
 }
@@ -100,19 +101,12 @@ body .center-spaced {
     row-gap: 30px;
 }
 
+/* general classes used application wide */
 body .table {
     margin-bottom: 50px;
     max-width: 80%;
     min-width: 50%;
     width: fit-content;
-}
-
-body .error-box {
-    /*border-radius: 20px;*/
-    /*background: var(--light-red);*/
-    /*padding: 20px;*/
-    color: var(--red);
-    cursor: default;
 }
 
 .hidden {
@@ -126,7 +120,7 @@ body .error-box {
 .default__form {
     display: flex;
     flex-direction: column;
-    row-gap: 15px;
+    row-gap: 25px;
     align-items: center;
 }
 
@@ -144,4 +138,22 @@ body .error-box {
 
 .non-clickable {
     cursor: default;
+}
+
+.default__button-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    align-items: center;
+}
+
+/* form input ERROR related classes */
+.input-error-div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.error-text {
+    color: var(--red);
 }

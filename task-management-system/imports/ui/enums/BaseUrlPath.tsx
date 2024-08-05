@@ -1,8 +1,8 @@
 /**
  * File Description: BaseUrlPath Status enum
- * Updated Date: 20/07/2024
+ * Updated Date: 02/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 /**
@@ -12,6 +12,8 @@ export enum BaseUrlPath {
     DASHBOARD = 'dashboard',
     TEAMS = 'teams',
     SETTINGS = 'settings',
+    LOGIN = 'login',
+    REGISTER = 'register'
 }
 
 export default BaseUrlPath;

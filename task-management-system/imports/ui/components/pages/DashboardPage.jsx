@@ -1,5 +1,5 @@
 /**
- * File Description: Home page
+ * File Description: Dashboard page
  * File version: 1.0
  * Contributors:
  */
@@ -9,14 +9,14 @@ import WhiteBackground from "../../components/general/whiteBackground/WhiteBackg
 import PageLayout from "../../enums/PageLayout";
 
 /**
- * Page of a list of Artist cards for users to see
+ * Page for user dashbaord
  */
-export const HomePage = () => {
+export const DashboardPage = () => {
     return (
         <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
-            <span>Home Page to be done!!</span>
+            <span>Dashboard Page to be done!!</span>
         </WhiteBackground>
     );
 };
 
-export default HomePage;
+export default DashboardPage;
