@@ -1,6 +1,6 @@
 /**
  * File Description: User database entity
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Nikki
  */
 
@@ -16,12 +16,12 @@ Meteor.publish('all_users', function() {
 
 
 /**
- * Publishes all bookings associated with a specific user to the client.
+ * Publishes users with given username.
  *
  * @param {string} username - The username of the user to be published.
  * @returns {Mongo.Cursor} - A cursor representing the result of the user to be published.
  */
-Meteor.publish('specific_user', function(username) {
-    // Check if the username matches either the user
+Meteor.publish('specific_username_user', function(username) {
+    // Check if the username matches the user
     return UserCollection.find({username:username});
 });

@@ -1,26 +1,28 @@
 import { Meteor } from 'meteor/meteor';
 
-import '/imports/api/collections/team.js';
-import '/imports/api/publications/team.js';
-import '/imports/api/methods/team.js';
-
+// Here should be all the imports
 import '/imports/api/collections/board.js';
 import '/imports/api/publications/board.js';
 import '/imports/api/methods/board.js';
 
+import '/imports/api/collections/poll.js';
+import '/imports/api/publications/poll.js';
+
+import '/imports/api/collections/task.js';
 import '/imports/api/methods/task.js';
 import '/imports/api/publications/task.js';
-import '/imports/api/collections/task.js';
 
 import '/imports/api/collections/board.js';
 import '/imports/api/publications/board.js';
 import '/imports/api/methods/board.js';
 
 import '/imports/api/collections/user.js';
-import '/imports/api/publications/user.js';
 import '/imports/api/methods/user.js';
+import '/imports/api/publications/user.js';
 
-
+import '/imports/api/collections/team.js';
+import '/imports/api/methods/team.js';
+import '/imports/api/publications/team.js';
 
 
 Accounts.emailTemplates.verifyEmail = {

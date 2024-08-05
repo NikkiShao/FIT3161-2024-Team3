@@ -18,7 +18,6 @@ import EmailVerificationPage from "./components/pages/registration/EmailVerifica
 import DashboardPage from "./components/pages/DashboardPage";
 import TeamCreation from './components/general/modal/TeamCreation';
 import TeamsListPage from './components/pages/team/TeamsListPage';
-import TeamCreation from './components/general/modal/TeamCreation';
 
 import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
@@ -42,7 +41,6 @@ export const App = () => (
                     {/* base & home routes */}
                     <Route path="/" element={<LandingPage/>}/>
                     <Route path="*" element={<EmptyPage/>}/>
-                <Route path="/teams" element={<TeamsListPage/>}/>
 
                     {/* Register/Sign in related pages */}
                     <Route path={'/' + BaseUrlPath.LOGIN} element={

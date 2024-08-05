@@ -101,11 +101,20 @@ body .center-spaced {
     row-gap: 30px;
 }
 
+
+body .text-grey{
+    color: var(--dark-grey);
+}
+
+body .text-red {
+    color: var(--red);
+}
+
 /* general classes used application wide */
 body .table {
     margin-bottom: 50px;
-    max-width: 80%;
-    min-width: 50%;
+    max-width: 100%;
+    min-width: 80%;
     width: fit-content;
 }
 
