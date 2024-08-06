@@ -176,6 +176,10 @@ export const TeamLobbyPage = () => {
                                 {displayedPollCards.length ? displayedPollCards :
                                     <span className={"main-text"}>There are no polls yet!</span>}
                             </div>
+
+                            <div className={"teams__leave-div"}>
+                                <span className={"text-grey underline clickable"}>Leave Team</span>
+                            </div>
                         </WhiteBackground>
                     </div>
                 )

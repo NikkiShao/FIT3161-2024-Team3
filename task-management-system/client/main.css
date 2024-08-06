@@ -118,6 +118,11 @@ body .text-red {
     margin-bottom: 0;
 }
 
+.underline {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
 /* general classes used application wide */
 body .table {
     margin-bottom: 50px;
