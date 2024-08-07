@@ -1,0 +1,86 @@
+/*Board card css */
+
+.board-card {
+    border: 1px #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: white;
+    transition: box-shadow 0.3s ease;
+    width: 364px !important;
+    height: 247px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.board-card:hover {
+    box-shadow: 0 0 11px rgba(33, 33, 33, .2);
+}
+
+#card__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-text {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    flex: 1;
+}
+
+.small-text {
+    font-size: 0.8em;
+    color: #666;
+    flex: 1;
+    text-align: center;
+}
+
+#board__deadline {
+    font-weight: normal;
+    text-align: center;
+    color: black;
+}
+
+.board-description {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 10px;
+    flex: 1;
+    text-align: left;
+}
+
+.view-button {
+    background-color: var(--brown);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.9em;
+    cursor: pointer;
+    margin-top: auto;
+    width: 141px;
+    align-self: center;
+}
+
+.view-button:hover {
+    background-color: var(--brown-hover);
+}
+
+.board-list-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.small-text.overdue {
+    font-weight: bold;
+}
+
