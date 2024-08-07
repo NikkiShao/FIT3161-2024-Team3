@@ -2,14 +2,18 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey
- * Version: 1.0
+ * Version: 1.1
  */
 import React from 'react';
 import { useState, Fragment} from 'react';
 import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
-import Modal from 'react-bootstrap/Modal';
+
+import classNames from "classnames";
+import {Modal} from 'react-responsive-modal';
+import 'react-responsive-modal/styles.css';
+import '../../general/modal/modal.css'
 
 import TeamCollection from '../../../../api/collections/team.js'
 import UserCollection from "../../../../api/collections/user";
@@ -24,7 +28,6 @@ import { XCircleIcon, MinusCircleIcon, ChevronLeftIcon, PlusCircleIcon } from "@
 
 export const TeamSettingsPage = () => {
     const navigate = useNavigate();
-    const userInfo = getUserInfo();
     const { teamId } = useParams();
 
     const [newMember, setNewMember] = useState('');
@@ -45,15 +48,27 @@ export const TeamSettingsPage = () => {
             setTeamLeader(team.teamLeader);
             setTeamMembers(team.teamMembers);
         }
-    });
 
-    console.log(teamName);
+    });
 
     const isLoadingUsers = useSubscribe('all_users');
     const usersData = useTracker(() => {
         return UserCollection.find().fetch();
     });
     const teamMembersData = usersData.filter(user => teamMembers.includes(user.emails[0].address));
+
+    const userInfo = getUserInfo();
+    const [open, setOpen] = useState(false);
+    const isUserTheLeader = userInfo.email === teamLeader;
+    const leaderOptions = teamMembersData.filter(user => user.emails[0].address !== userInfo.email);
+    const [newLeader, setNewLeader] = useState('');
+    const onOpenModal = () => {
+        setOpen(true);
+        // const leaderOptions = teamMembersData.filter(user => user.emails[0].address !== userInfo.email);
+        setNewLeader(leaderOptions[0].emails[0].address);
+    };
+    const onCloseModal = () => setOpen(false);
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     const saveChanges = () => {
         if(teamName && teamMembers.length > 0){
@@ -71,16 +86,13 @@ export const TeamSettingsPage = () => {
                 setTeamMembers([]);
                 setNewMember('');
                 setError('');
+                setNewLeader('');
             }
         }
     );
     } else {
         setError('Team name and members are required');
     }
-    };
-
-    const leaveTeam = () => {
-        console.log('Leave team...');
     };
 
     const handleAddMember = () => {
@@ -97,6 +109,29 @@ export const TeamSettingsPage = () => {
         setTeamMembers(teamMembers.filter(m => m !== member));
     };
 
+    const leaveTeam = (boolean) => {
+        const newTeamMembers = teamMembers.filter(m => m !== userInfo.email);
+        Meteor.call('update_team', teamId, 
+        {
+            teamName: teamName,
+            teamLeader: boolean ? newLeader : teamLeader,
+            teamMembers: newTeamMembers
+        }, (error) => {
+            if (error) {
+                setError(error.reason);
+            } else {
+                setTeamName('');
+                setTeamLeader('');
+                setTeamMembers([]);
+                setNewMember('');
+                setNewLeader('');
+                setError('');
+                navigate('/teams');
+            }
+        });
+        onCloseModal();
+    };
+
     if (isLoadingTeams() || isLoadingUsers()) {
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
@@ -105,8 +140,9 @@ export const TeamSettingsPage = () => {
         )
     } else {
         return (
+            <>
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
-                <div className="modal-base">
+                <div className="settings-base">
                 <div className='back-button'>
                 <Button onClick={() => navigate(`/teams/${teamId}`)} className={"flex flex-row gap-2 btn-back"}>
                 <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
@@ -116,26 +152,26 @@ export const TeamSettingsPage = () => {
                     <h1>Team Settings</h1>
                     <form onSubmit={saveChanges}>
 
-                    <div className="inputGroup">
-                    <label className="main-text">{"Team Name:"}</label>
+                    <div className="input-group">
+                    <label>{"Team Name:"}</label>
                     <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
 
-                    <div className="inputGroup" >
-                    <label className="main-text">{"Team Leader:"}</label>
-                        <select>
-                        <Input value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}/>
+                    <div className="input-group" >
+                    <label>{"Team Leader:"}</label>
+                        <select value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
                         {teamMembersData.map(user => (
                         <option key={user._id} value={user.emails[0].address}>
                         {user.profile.name} (@{user.username})</option>))}
                         </select>
                     </div>
 
-                    <div className="inputGroup">
-                    <label className="main-text">{"Team Members:"}</label>
-                    <ul>{teamMembers.map(member => (
-                        <Fragment key={member}><div className='memberItem'> 
+                    <div className="input-group">
+                    <label>{"Team Members:"}</label>
+                    <ul><div className='member-item'>{teamLeader} </div>
+                    {teamMembers.filter(member => member!==teamLeader).map(member => (
+                        <Fragment key={member}><div className='member-item'> 
                             {member}
-                            <button className="insertedButton" onClick={() => handleRemoveMember(member)}>
+                            <button className="inserted-button" onClick={() => handleRemoveMember(member)}>
                                 <MinusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={25} height={25} />
                             </button>
                             </div>
@@ -145,10 +181,10 @@ export const TeamSettingsPage = () => {
                     </ul>
                     </div> 
                                
-                    <div className='inputGroup'>
+                    <div className='input-group'>
                         <label></label>
-                    <Input type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
-                    <button onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={20} height={20} /></button>
+                    <Input style={{marginLeft: '140px', marginRight:"10px", marginBottom:"10px"}} type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
+                    <button className="add-member-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={25} height={25} /></button>
                     </div>                    
 
                     {error &&
@@ -157,12 +193,59 @@ export const TeamSettingsPage = () => {
                     </div>
                     }
 
-                    <div className='buttonGroup'>
+                    <div style={{marginTop:"50px"}} className='button-group'>
                     <Button type="submit" className="btn-brown">Save Changes</Button>
                     </div>
                     </form>
                 </div>
+
+                <Button className={"btn-brown"} onClick={onOpenModal}>Leave Team</Button>
             </WhiteBackground>
+            
+
+
+
+
+            <Modal
+                closeIcon={closeIcon}
+                classNames={{
+                    modal: classNames('modal-base', ''),
+                }}
+                open={open}
+                onClose={onCloseModal}
+                center
+                >
+                    {isUserTheLeader ? (
+                    <div className='modal-format'>
+                        <h1> Reassign Team Leader </h1>
+                            <p>You are currently the leader of the team.</p>
+                            <p>You must assign someone else to be the new leader before you can leave the team.</p>
+                            <label></label>
+                            <div className="input-group">
+                                <label>New Team Lead:</label>
+                                <select value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
+                                    {teamMembersData.filter(user => user.emails[0].address !== userInfo.email).map(user => (
+                                        <option key={user._id} value={user.emails[0].address}>
+                                        {user.profile.name} (@{user.username})
+                                    </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div style={{marginTop:"50px", marginBottom: "20px"}} className='button-group'>
+                            <Button className={"btn-brown"} onClick={() => leaveTeam(true)}>Save & Leave Team</Button>
+                            </div>
+                    </div>) : 
+                    <div className='modal-format'>
+                        <div><h1> Leave Team </h1>
+                        <p className={"large-text"}>You are leaving the team.</p><p className={"large-text"}> Are you sure?</p></div>
+                        <label></label>
+                        <div className='button-group'>
+                        <Button className={"btn-brown"} onClick={() => leaveTeam(false)}>Leave Team</Button>
+                        </div>
+                    </div>
+                    }
+            </Modal>
+            </>
         );
     }
 };
