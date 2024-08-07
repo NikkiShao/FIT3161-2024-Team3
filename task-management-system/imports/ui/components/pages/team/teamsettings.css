@@ -1,12 +1,20 @@
-.modal-base {
+.settings-base {
     background: var(--white);
     min-width: 500px;
     padding: 30px;
     border-radius: 15px; 
 }
+.modal-base {
+    background: var(--white);
+    width: fit-content;
+    min-width: 500px;
+    min-height: 500px;
+    padding: 50px;
+    border-radius: 25px;
+}
 
 h1 {
-    text-align: middle; 
+    text-align: center; 
     margin-top:0%;
     top: 30px;
     padding-bottom: 30px;
@@ -19,7 +27,7 @@ h1 {
     left: 30px;
 }
 
-.inputGroup {
+.input-group {
     display: flex;
     justify-content: left;
     align-items: left;
@@ -27,7 +35,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-.inputGroup>label {
+.input-group>label {
     color: dimgray;
     margin-right: 20px;
     margin-bottom: 10px;
@@ -35,14 +43,15 @@ h1 {
     flex: 0 0 120px;
 }
 
-.inputGroup>input{
+.input-group>input {
     padding: 10px;
     border: 2px solid lightgray;
     border-radius: 5px;
     flex-grow: 1;
+    align-items: center;
 }
 
-.inputGroup>select {
+.input-group>select {
     padding: 10px;
     margin-left: 5px;
     border: 2px solid lightgray;
@@ -50,33 +59,35 @@ h1 {
     flex-grow: 1;
 }
 
-.inputGroup ul {
+.input-group ul {
     list-style-type: none;
     padding-left: 0;
 }
 
-.memberItem {
+.member-item {
     display: flex;
     justify-content: space-between;
-    padding: 5x 10px; 
+    padding: 5px 10px; 
     border-radius: 5px;
-    margin-bottom: 5px;
     align-items: center;
 }
 
-
-.insertedButton {
-    margin-left: 10px;
-    border: none;
-  }
-  
-
-.addMemberButton {
+.add-member-button{
     margin-left: 20px;
     border: none;
-  }
+    margin-bottom: 10px;
+    background-color: white;
+    align-items: center;
+    padding: 0;
+}
 
-  .buttonGroup {
+.inserted-button {
+    margin-left: 10px;
+    border: none;
+    background-color: white;
+  }
+  
+.button-group {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -86,4 +97,9 @@ h1 {
 
 .error-display {
     text-align: center;
+}
+
+.modal-format{
+    margin-left: 10%;
+    margin-right: 10%;
 }
