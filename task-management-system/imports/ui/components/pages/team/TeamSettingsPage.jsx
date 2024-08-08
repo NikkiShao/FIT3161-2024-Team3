@@ -154,11 +154,11 @@ export const TeamSettingsPage = () => {
 
                     <div className="ts-input-group">
                     <label>{"Team Name:"}</label>
-                    <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
+                    <Input style={{marginBottom:"10px"}} value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
 
                     <div className="ts-input-group" >
                     <label>{"Team Leader:"}</label>
-                        <select value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
+                        <select style={{marginBottom:"8px"}} value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
                         {teamMembersData.map(user => (
                         <option key={user._id} value={user.emails[0].address}>
                         {user.profile.name} (@{user.username})</option>))}
@@ -168,24 +168,21 @@ export const TeamSettingsPage = () => {
                     <div className="ts-input-group">
                     <label>{"Team Members:"}</label>
                     <ul><div className='member-item'>{teamsData.teamLeader} </div>
-                    {teamMembers.filter(member => member!==teamLeader).map(member => (
+                    {teamMembers.filter(member => member!==teamsData.teamLeader).map(member => (
                         <Fragment key={member}><div className='member-item'> 
                             {member}
                             <button className="inserted-button" onClick={() => handleRemoveMember(member)}>
-                                <MinusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={25} height={25} />
+                                <MinusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30} />
                             </button>
                             </div>
                         </Fragment>
-                    ))}      
-
+                    ))}   
+                    <div className='add-member-input'>
+                        <Input type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
+                        <button className="inserted-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30} /></button>
+                   </div>   
                     </ul>
                     </div> 
-                               
-                    <div className='ts-input-group'>
-                        {/* <label></label> */}
-                    <Input style={{marginLeft: '150px', marginRight:"10px", marginBottom:"10px"}} type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
-                    <button className="add-member-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={25} height={25} /></button>
-                    </div>                    
 
                     {error &&
                     <div className='error-display'>
@@ -200,7 +197,7 @@ export const TeamSettingsPage = () => {
                     </form>
                 </div>
 
-                <Button className={"btn-brown"} onClick={onOpenModal}>Leave Team</Button>
+                <a href='#' className="leave-link" onClick={onOpenModal}>Leave Team</a>
             </WhiteBackground>
             
 
@@ -216,7 +213,7 @@ export const TeamSettingsPage = () => {
                 onClose={onCloseModal}
                 center
                 >
-                    {isUserTheLeader ? (
+                    {userInfo.email === teamsData.teamLeader ? (
                     <div className='modal-div-center'>
                         <h1> Reassign Team Leader </h1>
                         <div style={{marginLeft:"10%", marginRight:"10%"}}>
@@ -224,7 +221,7 @@ export const TeamSettingsPage = () => {
                             <p>You must assign someone else to be the new leader before you can leave the team.</p></div>
                             <label></label>
                             <div className="input-group">
-                                <label style={{marginBottom:"20px"}} className={"main-text text-grey"}>New Team Lead:</label>
+                                <label style={{marginBottom:"10px"}} className={"main-text text-grey"}>New Team Lead:</label>
                                 <div className='ts-input-group'>
                                 <select value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
                                     {teamMembersData.filter(user => user.emails[0].address !== userInfo.email).map(user => (
