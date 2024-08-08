@@ -25,18 +25,28 @@ Meteor.methods({
      * @param {boolean} notification - Update email notifications state.
         */
 
-    "update_user_info": function (userId, username, email, notification) {
+    "update_user_info": function (userId, name, email, notification) {
         check(userId, String);
-        check(username, String);
+        check(name, String);
         check(email, String);
         check(notification, Boolean);
         Meteor.users.update(userId, {
             $set: {
-                username: username,
-                email: email,
-                notificationOn: notification
+                "profile.name": name,
+                "emails.0.address": email,
+                "profile.notificationOn": notification
             }
         })
+    },
+
+    /**
+     * Deletes a user by id
+     * @param {string} userId - id of the user
+     */
+
+    "delete_user": function (userId) {
+        check(userId, String);
+        Meteor.users.remove(userId);
     }
 
     })

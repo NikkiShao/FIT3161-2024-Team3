@@ -28,16 +28,15 @@
 
 .input-container {
     display: grid;
-    grid-template-columns: 1fr 4fr;
-    column-gap: 15px;
+    grid-template-columns: 1fr 5fr;
     row-gap: 15px;
     justify-items: center;
     align-items: center;
-    width: 80%;
+    width: 60%;
     margin: 0 auto;
 }
 
-.input-container > label {
+.input-container>label {
     margin-bottom: 5px;
     padding-right: 10px;
 }
@@ -73,7 +72,7 @@
 
 
 .delete-button {
-    
+
     background-color: transparent;
     color: #c00;
     position: absolute;
@@ -81,8 +80,20 @@
     bottom: 20px;
     text-decoration: underline;
     border: 0px;
-  }
-  
-  .delete-button:hover {
+}
+
+.delete-button:hover {
     background-color: rgb(227, 159, 159);
-  }
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 10px;
+    font-weight: bold;
+}

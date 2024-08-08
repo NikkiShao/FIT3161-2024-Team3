@@ -1,51 +1,75 @@
-/**
- * File Description: Account Setting page
- * Updated Date: 08/08/2024
- * Contributors: Mark
- * Version: 1.0
- */
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import WhiteBackground from "../general/whiteBackground/WhiteBackground";
 import Button from "../general/buttons/Button";
 import PageLayout from "../../enums/PageLayout";
 import { Meteor } from 'meteor/meteor';
-
 import { getUserInfo } from '../util';
-
 import "../pages/registration/registration.css"
 
 function AccountSettings() {
-
     const userData = getUserInfo();
     const userID = userData.id;
     let notificationState = userData.notificationOn;
 
+    const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [emailNotifications, setEmailNotifications] = useState(notificationState === true? "On" : "Off");
+    const [emailNotifications, setEmailNotifications] = useState(notificationState === true ? "On" : "Off");
+    const [errorMessage, setErrorMessage] = useState(''); // State to store error message
+    const [successMessage, setSuccessMessage] = useState(''); // State to store success message
 
     const handleSubmit = (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
+        setErrorMessage('');
+        setSuccessMessage('');
 
-        if(emailNotifications === "On") {
+        // Clear previous error message
+        setErrorMessage('');
+
+        if (emailNotifications === "On") {
             notificationState = true;
         } else {
             notificationState = false;
         }
-        
+
         if (!name || !email) {
-            alert("Name and Email are required.");
+            setErrorMessage("Name and Email are required.");
             return;
         }
 
+        // Validate name format using regex
+        if (!alphanumericSpaceRegex.test(name)) {
+            setErrorMessage("Name can only contain alphanumeric characters and spaces.");
+            return;
+        }
+
+        // Validate email format using regex
+        if (!emailRegex.test(email)) {
+            setErrorMessage("Please enter a valid email address.");
+            return;
+        }
+
+        // Call method to update user info
         Meteor.call('update_user_info', userID, name, email, notificationState, (error) => {
             if (error) {
-                alert(`Failed to update user info: ${error.reason}`);
+                setErrorMessage(`Failed to update user info: ${error.reason}`);
             } else {
-                alert("User info updated successfully.");
+                setSuccessMessage("User info updated successfully.");
+            }
+        });
+    };
+
+    const handleDelete = (event) => {
+        event.preventDefault();
+
+        // Call method to delete user
+        Meteor.call('delete_user', userID, (error) => {
+            if (error) {
+                setErrorMessage(`Failed to delete user: ${error.reason}`);
+            } else {
+                setSuccessMessage("User deleted successfully.");
             }
         });
     };
@@ -68,7 +92,6 @@ function AccountSettings() {
                     onChange={e => setEmail(e.target.value)} />
             </div>
 
-
             <div className="select-container">
                 <label>Email Notifications:</label>
                 <select value={emailNotifications} onChange={e => setEmailNotifications(e.target.value)}>
@@ -77,10 +100,19 @@ function AccountSettings() {
                 </select>
             </div>
 
-            <Button 
+            {/* Display error message */}
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {/* Display success message */}
+            {successMessage && <div className="success-message">{successMessage}</div>}
+
+            <Button
                 className={"btn-brown"}
                 onClick={handleSubmit}> Save Changes </Button>
-            <button type="button" className="delete-button">Delete account and all data</button>
+            <button
+                type="button"
+                className="delete-button"
+                onClick={handleDelete}>
+                Delete account and all data</button>
         </WhiteBackground>
     );
 }

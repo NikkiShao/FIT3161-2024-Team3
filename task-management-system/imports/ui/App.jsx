@@ -26,6 +26,7 @@ import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 import TeamSettingsPage from './components/pages/team/TeamSettingsPage';import BoardSettings from "./components/pages/board/BoardSettings";
 import DraftPage from './components/pages/draft';
+import DeleteAccountModal from './components/general/modal/DeleteAccountModal';
 
 
 /**
@@ -78,11 +79,6 @@ export const App = () => (
                         </ProtectedRoute>
                     }/>
 
-                    <Route path={'/' + BaseUrlPath.SETTINGS} element={
-                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
-                            <AccountSettingPage/>
-                        </ProtectedRoute>
-                    }/>
 
                     {/* Teams related routes */}
                     <Route path={'/' + BaseUrlPath.TEAMS} element={
@@ -118,6 +114,15 @@ export const App = () => (
                                 <ViewBoardPage/>
                             </ProtectedRoute>
                      }/>
+
+                    {/* Account setting related routes */}
+                    <Route path={'/' + BaseUrlPath.SETTINGS} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <AccountSettingPage/>
+                        </ProtectedRoute>
+                    }/>
+
+
 
                     {/* {Testing routers} */}
                     <Route path='/draft' element={<DraftPage/>}/>
