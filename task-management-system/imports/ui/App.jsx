@@ -24,6 +24,7 @@ import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 
+
 /**
  * Main application component
  */
@@ -76,7 +77,6 @@ export const App = () => (
                             <TeamsListPage/>
                         </ProtectedRoute>
                     }/>
-
 
                     {/* Boards related routes */}
 
