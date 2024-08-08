@@ -87,14 +87,14 @@ export const SignInPage = () => {
                            label={<label className={"main-text"}>Username</label>}
                            onChange={(e) => setUsername(e.target.value.trim())}
                     />
-                    {errors.username && <span className="error-text small-text">{errors.username}</span>}
+                    {errors.username && <span className="text-red small-text">{errors.username}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"password"}
                            label={<label className={"main-text"}>Password</label>}
                            onChange={(e) => setPassword(e.target.value)}/>
-                    {errors.password && <span className="small-text error-text">{errors.password}</span>}
+                    {errors.password && <span className="text-red small-text">{errors.password}</span>}
                 </div>
 
                 <div className={"default__button-group"}>
@@ -103,8 +103,7 @@ export const SignInPage = () => {
                             onClick={handleSignIn}>
                         Login
                     </Button>
-                    <Button type={"submit"}
-                            className={"btn-grey"}
+                    <Button className={"btn-grey"}
                             onClick={() => {
                                 navigate('/' + BaseUrlPath.REGISTER)
                             }}>

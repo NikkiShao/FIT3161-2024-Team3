@@ -16,7 +16,7 @@ import AccountCreatedPage from "./components/pages/registration/AccountCreatedPa
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 
 import DashboardPage from "./components/pages/DashboardPage";
-import TeamCreation from './components/general/modal/TeamCreation';
+import TeamCreationModal from './components/general/modal/TeamCreationModal';
 import TeamsListPage from './components/pages/team/TeamsListPage';
 
 import NavigationBar from "./components/general/navigation/NavigationBar";
@@ -71,12 +71,6 @@ export const App = () => (
                     }/>
 
                     {/* Teams related routes */}
-                    <Route path="/team-creation" element={
-                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
-                            <TeamCreation/>
-                        </ProtectedRoute>
-                    }/>
-
                     <Route path={'/' + BaseUrlPath.TEAMS} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
                             <TeamsListPage/>
