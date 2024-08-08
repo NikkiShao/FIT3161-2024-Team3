@@ -22,6 +22,7 @@ import Card from "../../general/cards/Card";
 import {getUserInfo} from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
+import BoardCard from "../../general/cards/BoardCard";
 
 /**
  * Non-existent page component
@@ -37,164 +38,155 @@ export const TeamLobbyPage = () => {
     // grab the team ID from the URL
     const {teamId} = useParams();
 
-    // convert to a Mongo DB ID type, check if team ID is valid
-    let validTeamId = true;
-    let mongoIdFormat;
-    try {
-        mongoIdFormat = new Mongo.ObjectID(teamId);
-    } catch {
-        // this ID is not valid format
-        validTeamId = false;
-    }
+    const isLoadingTeam = useSubscribe('specific_team', teamId);
+    const isLoadingBoards = useSubscribe('all_team_boards', teamId);
+    const isLoadingPolls = useSubscribe('all_team_polls', teamId);
 
-    if (validTeamId) {
-        // if team id is valid
+    const isLoading = isLoadingTeam() || isLoadingBoards() || isLoadingPolls();
 
-        const isLoadingTeam = useSubscribe('specific_team', teamId);
-        const isLoadingBoards = useSubscribe('all_team_boards', teamId);
-        const isLoadingPolls = useSubscribe('all_team_polls', teamId);
+    // get data from db
+    let teamData = useTracker(() => {
+        return TeamCollection.find({_id: teamId}).fetch()[0];
+    });
 
-        const isLoading = isLoadingTeam() || isLoadingBoards() || isLoadingPolls();
+    let boardsData = useTracker(() => {
+        return BoardCollection.find({teamId: teamId}).fetch();
+    });
 
-        // get data from db
-        let teamData = useTracker(() => {
-            return TeamCollection.find({_id: mongoIdFormat}).fetch()[0];
-        });
+    let pollsData = useTracker(() => {
+        return PollCollection.find({teamId: teamId}).fetch();
+    });
 
-        let boardsData = useTracker(() => {
-            return BoardCollection.find({teamId: teamId}).fetch();
-        });
+    console.log(teamData)
 
-        let pollsData = useTracker(() => {
-            return PollCollection.find({teamId: teamId}).fetch();
-        });
+    // check if data has loaded
+    if (!isLoading) {
 
-        // check if data has loaded
-        if (!isLoading) {
+        // check user is in the team
+        if (teamData && teamData.teamMembers.includes(userInfo.email)) {
 
-            // check user is in the team
-            if (teamData && teamData.teamMembers.includes(userInfo.email)) {
+            // variables for icons
+            const CogIcon = <Cog8ToothIcon strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}
+                                           style={{paddingRight: "5px"}}/>
+            const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
+                                       style={{paddingRight: "5px"}}/>;
 
-                // variables for icons
-                const CogIcon = <Cog8ToothIcon strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}
-                                               style={{paddingRight: "5px"}}/>
-                const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
-                                           style={{paddingRight: "5px"}}/>;
-
-                const displayedBoardCards = boardsData.map((board) => (
-                        // todo: replace with BoardCards after
-                        <Card key={board._id}>
-                            <span>{board.boardName}</span>
-                            <span>Nickname: {board.boardCode}</span>
-                            <span>{new Date(board.boardDeadline).toLocaleString()}</span>
-                            <span>{board.boardDesc}</span>
-                        </Card>
-                    )
+            const displayedBoardCards = boardsData.map((board) => (
+                    // todo: replace with BoardCards after
+                    <BoardCard
+                        key={board._id}>
+                        boardId={board._id}
+                        boardName={board.name}
+                        boardNickname={board.boardCode}
+                        boardDesc={board.boardDesc}
+                        boardDeadline={new Date(board.boardDeadline).toLocaleString()}
+                        teamId={teamId}
+                    </BoardCard>
                 )
-
-                const filterButtons = (
-                    availableFilters.map((filter, index) => {
-                        const nonactiveClass = "btn-light-grey btn-square teams__filter-button"
-                        const activeClass = "btn-light-grey btn-square teams__filter-button-active"
-                        const className = selectedPollFilter === filter ? activeClass : nonactiveClass;
-
-                        return (
-                            <Button
-                                key={filter}
-                                className={className}
-                                onClick={() => setSelectedPollFilter(filter)}>
-
-                                {filter}
-                            </Button>
-                        );
-                    })
-                )
-
-                // filter polls based on if it is opened
-                const filteredPolls = pollsData.filter((poll) => {
-                    const now = new Date();
-                    const pollCloseDate = new Date(poll.pollDeadlineDate)
-
-                    // if poll matches any of the condition
-                    let allFilterCondition = selectedPollFilter === 'all';
-                    let openFilterCondition = selectedPollFilter === 'open' && pollCloseDate > now;
-                    let closedFilterCondition = selectedPollFilter === 'closed' && pollCloseDate <= now;
-
-                    return allFilterCondition || openFilterCondition || closedFilterCondition;
-                });
-
-                const displayedPollCards = filteredPolls.map((poll) => (
-                        // todo: replace with PollCards after
-                        <Card key={poll._id}>
-                            <span>{poll.pollTitle}</span>
-                            <span>{new Date(poll.pollCreationDate).toLocaleString()}</span>
-                            <span>{new Date(poll.pollDeadlineDate).toLocaleString()}</span>
-                        </Card>
-                    )
-                )
-
-                return (
-                    <div>
-                        <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
-
-                            <div className="teams__header-div">
-                                <div style={{width: "200px", visibility: "hidden"}}></div>
-                                <h1>{teamData.teamName}</h1>
-                                <Button className={"btn-light-grey"}>{CogIcon} Team Settings</Button>
-                            </div>
-
-                            <hr className={"teams__hr"}/>
-
-                            <div className="teams__top-div">
-                                <div style={{width: "120px", visibility: "hidden"}}></div>
-                                <h2 className={"text-center default__heading2"}>Teams</h2>
-                                <Button className={"btn-grey"}
-                                        style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
-                            </div>
-
-
-                            <div className={"teams__cards-div"}>
-                                {displayedBoardCards.length ? displayedBoardCards :
-                                    <span className={"main-text"}>There are no boards yet!</span>}
-                            </div>
-
-                            <hr className={"teams__hr"}/>
-
-                            <div className="teams__top-div">
-                                <div style={{width: "120px", visibility: "hidden"}}></div>
-                                <h2 className={"text-center default__heading2"}>Polls</h2>
-                                <Button className={"btn-grey"}
-                                        style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
-                            </div>
-
-                            <div className="teams__filter-button-div">
-                                <span className={"main-text"}>Filters: </span>
-                                {filterButtons}
-                            </div>
-
-                            <div className={"teams__cards-div"}>
-                                {displayedPollCards.length ? displayedPollCards :
-                                    <span className={"main-text"}>There are no polls yet!</span>}
-                            </div>
-
-                            <div className={"teams__leave-div"}>
-                                <span className={"text-grey underline clickable"}>Leave Team</span>
-                            </div>
-                        </WhiteBackground>
-                    </div>
-                )
-            } else {
-                //     user is not in team, or team does not exist, move them back to their teams list
-                navigate('/' + BaseUrlPath.TEAMS)
-            }
-        } else {
-            // is still loading
-            return (
-                <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
-                    <Spinner animation="border" variant="secondary" role="status"/>
-                </WhiteBackground>
             )
+
+            const filterButtons = (
+                availableFilters.map((filter, index) => {
+                    const nonactiveClass = "btn-light-grey btn-square teams__filter-button"
+                    const activeClass = "btn-light-grey btn-square teams__filter-button-active"
+                    const className = selectedPollFilter === filter ? activeClass : nonactiveClass;
+
+                    return (
+                        <Button
+                            key={filter}
+                            className={className}
+                            onClick={() => setSelectedPollFilter(filter)}>
+
+                            {filter}
+                        </Button>
+                    );
+                })
+            )
+
+            // filter polls based on if it is opened
+            const filteredPolls = pollsData.filter((poll) => {
+                const now = new Date();
+                const pollCloseDate = new Date(poll.pollDeadlineDate)
+
+                // if poll matches any of the condition
+                let allFilterCondition = selectedPollFilter === 'all';
+                let openFilterCondition = selectedPollFilter === 'open' && pollCloseDate > now;
+                let closedFilterCondition = selectedPollFilter === 'closed' && pollCloseDate <= now;
+
+                return allFilterCondition || openFilterCondition || closedFilterCondition;
+            });
+
+            const displayedPollCards = filteredPolls.map((poll) => (
+                    // todo: replace with PollCards after
+                    <Card key={poll._id}>
+                        <span>{poll.pollTitle}</span>
+                        <span>{new Date(poll.pollCreationDate).toLocaleString()}</span>
+                        <span>{new Date(poll.pollDeadlineDate).toLocaleString()}</span>
+                    </Card>
+                )
+            )
+
+            return (
+                <div>
+                    <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+
+                        <div className="teams__header-div">
+                            <div style={{width: "200px", visibility: "hidden"}}></div>
+                            <h1 className={"text-center"}>{teamData.teamName}</h1>
+                            <Button className={"btn-light-grey"}>{CogIcon}Team Settings</Button>
+                        </div>
+
+                        <hr className={"teams__hr"}/>
+
+                        <div className="teams__top-div">
+                            <div style={{width: "120px", visibility: "hidden"}}></div>
+                            <h2 className={"text-center default__heading2"}>Boards</h2>
+                            <Button className={"btn-grey"}
+                                    style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                        </div>
+
+                        <div className={"teams__cards-div"}>
+                            {displayedBoardCards.length ? displayedBoardCards :
+                                <span className={"main-text"} style={{marginTop: "20px", marginBottom: "20px"}}>
+                                    There are no boards yet!</span>}
+                        </div>
+
+                        <hr className={"teams__hr"}/>
+
+                        <div className="teams__top-div">
+                            <div style={{width: "120px", visibility: "hidden"}}></div>
+                            <h2 className={"text-center default__heading2"}>Polls</h2>
+                            <Button className={"btn-grey"}
+                                    style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                        </div>
+
+                        {
+                            displayedPollCards.length ?
+                                <div className="teams__filter-button-div">
+                                    <span className={"main-text"}>Filters: </span>
+                                    {filterButtons}
+                                </div> : null
+                        }
+
+                        <div className={"teams__cards-div"}>
+                            {displayedPollCards.length ? displayedPollCards :
+                                <span className={"main-text"}
+                                      style={{marginTop: "20px"}}>There are no polls yet!</span>}
+                        </div>
+                    </WhiteBackground>
+                </div>
+            )
+        } else {
+            //     user is not in team, or team does not exist, move them back to their teams list
+            navigate('/' + BaseUrlPath.TEAMS)
         }
+    } else {
+        // is still loading
+        return (
+            <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+                <Spinner animation="border" variant="secondary" role="status"/>
+            </WhiteBackground>
+        )
     }
 }
 

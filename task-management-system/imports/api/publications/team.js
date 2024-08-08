@@ -13,10 +13,8 @@ import {TeamCollection} from "../collections/team";
  * @returns {Mongo.Cursor} - A cursor representing the result the team to be published.
  */
 Meteor.publish('specific_team', function (teamId) {
-    // create a mongo ID object to query for ID
-    const idObject = new Mongo.ObjectID(teamId);
     return TeamCollection.find({
-        _id: idObject
+        _id: teamId
     });
 });
 
