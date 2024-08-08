@@ -142,7 +142,7 @@ export const TeamSettingsPage = () => {
         return (
             <>
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
-                <div className="settings-base">
+                <div className="team-settings-base">
                 <div className='back-button'>
                 <Button onClick={() => navigate(`/teams/${teamId}`)} className={"flex flex-row gap-2 btn-back"}>
                 <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
@@ -152,11 +152,11 @@ export const TeamSettingsPage = () => {
                     <h1>Team Settings</h1>
                     <form onSubmit={saveChanges}>
 
-                    <div className="input-group">
+                    <div className="ts-input-group">
                     <label>{"Team Name:"}</label>
                     <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
 
-                    <div className="input-group" >
+                    <div className="ts-input-group" >
                     <label>{"Team Leader:"}</label>
                         <select value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
                         {teamMembersData.map(user => (
@@ -165,7 +165,7 @@ export const TeamSettingsPage = () => {
                         </select>
                     </div>
 
-                    <div className="input-group">
+                    <div className="ts-input-group">
                     <label>{"Team Members:"}</label>
                     <ul><div className='member-item'>{teamLeader} </div>
                     {teamMembers.filter(member => member!==teamLeader).map(member => (
@@ -181,8 +181,8 @@ export const TeamSettingsPage = () => {
                     </ul>
                     </div> 
                                
-                    <div className='input-group'>
-                        <label></label>
+                    <div className='ts-input-group'>
+                        {/* <label></label> */}
                     <Input style={{marginLeft: '140px', marginRight:"10px", marginBottom:"10px"}} type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
                     <button className="add-member-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={25} height={25} /></button>
                     </div>                    
@@ -209,35 +209,38 @@ export const TeamSettingsPage = () => {
             <Modal
                 closeIcon={closeIcon}
                 classNames={{
-                    modal: classNames('modal-base', ''),
+                    modal: classNames('ts-modal-base', ''),
                 }}
                 open={open}
                 onClose={onCloseModal}
                 center
                 >
                     {isUserTheLeader ? (
-                    <div className='modal-format'>
+                    <div className='modal-div-center'>
                         <h1> Reassign Team Leader </h1>
                             <p>You are currently the leader of the team.</p>
                             <p>You must assign someone else to be the new leader before you can leave the team.</p>
                             <label></label>
                             <div className="input-group">
-                                <label>New Team Lead:</label>
+                                {/* <label>New Team Lead:</label> */}
+                                <label className={"main-text text-grey"}>New Team Lead:</label>
+                                <div className='ts-input-group'>
                                 <select value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
                                     {teamMembersData.filter(user => user.emails[0].address !== userInfo.email).map(user => (
                                         <option key={user._id} value={user.emails[0].address}>
                                         {user.profile.name} (@{user.username})
                                     </option>
                                     ))}
-                                </select>
+                                </select></div>
                             </div>
                             <div style={{marginTop:"50px", marginBottom: "20px"}} className='button-group'>
                             <Button className={"btn-brown"} onClick={() => leaveTeam(true)}>Save & Leave Team</Button>
                             </div>
                     </div>) : 
-                    <div className='modal-format'>
+                    <div className='modal-div-center'>
                         <div><h1> Leave Team </h1>
-                        <p className={"large-text"}>You are leaving the team.</p><p className={"large-text"}> Are you sure?</p></div>
+                        <div className='ts-content'>
+                        <p className={"menu-text"}>You are leaving the team.</p><p className={"menu-text"}> Are you sure?</p></div></div>
                         <label></label>
                         <div className='button-group'>
                         <Button className={"btn-brown"} onClick={() => leaveTeam(false)}>Leave Team</Button>

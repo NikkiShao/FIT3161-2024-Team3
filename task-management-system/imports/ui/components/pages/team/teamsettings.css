@@ -1,16 +1,25 @@
-.settings-base {
+.team-settings-base {
     background: var(--white);
     min-width: 500px;
     padding: 30px;
     border-radius: 15px; 
 }
-.modal-base {
+.ts-modal-base {
     background: var(--white);
     width: fit-content;
     min-width: 500px;
-    min-height: 500px;
+    min-height: 300px;
     padding: 50px;
     border-radius: 25px;
+    /* margin-left: 10%;
+    margin-right: 10%; */
+}
+
+.ts-content{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -27,7 +36,7 @@ h1 {
     left: 30px;
 }
 
-.input-group {
+.ts-input-group {
     display: flex;
     justify-content: left;
     align-items: left;
@@ -35,7 +44,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-.input-group>label {
+.ts-input-group>label {
     color: dimgray;
     margin-right: 20px;
     margin-bottom: 10px;
@@ -43,7 +52,7 @@ h1 {
     flex: 0 0 120px;
 }
 
-.input-group>input {
+.ts-input-group>input {
     padding: 10px;
     border: 2px solid lightgray;
     border-radius: 5px;
@@ -51,7 +60,7 @@ h1 {
     align-items: center;
 }
 
-.input-group>select {
+.ts-input-group>select {
     padding: 10px;
     margin-left: 5px;
     border: 2px solid lightgray;
@@ -59,9 +68,18 @@ h1 {
     flex-grow: 1;
 }
 
-.input-group ul {
+.ts-input-group ul {
     list-style-type: none;
     padding-left: 0;
+}
+
+.ts-modal-select{
+    margin-top: 15px;
+    padding: 10px;
+    margin-left: 5px;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+    flex-grow: 1;
 }
 
 .member-item {
