@@ -27,14 +27,14 @@
     align-items: center;
 }
 
-.main-text {
+.board-main-text {
     font-size: 1em;
     font-weight: bold;
     text-align: center;
     flex: 1;
 }
 
-.small-text {
+.board-small-text {
     font-size: 0.8em;
     color: #666;
     flex: 1;

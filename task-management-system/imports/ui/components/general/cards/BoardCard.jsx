@@ -58,12 +58,12 @@ const BoardCard = ({
             {/* card top div */}
             <div id="card__header">
                 {displayText}
-                <div className="main-text three-line">{boardName}</div>
+                <div className="board-main-text three-line">{boardName}</div>
             </div>
             {/* card middle div */}
-            <div className="small-text">{`Nickname: ${boardNickname}`}</div>
-            <div className="small-text board-description">{boardDesc}</div>
-            <div className="small-text" id="board__deadline">{`Deadline: ${boardDeadlineDate.toLocaleString()}`}</div>
+            <div className="board-small-text">{`Nickname: ${boardNickname}`}</div>
+            <div className="board-small-text board-description">{boardDesc}</div>
+            <div className="board-small-text" id="board__deadline">{`Deadline: ${boardDeadlineDate.toLocaleString()}`}</div>
             {/* card bottom div */}
             <button className="view-button btn-brown" onClick={handleViewClick}>View</button>
         </Card>
