@@ -24,7 +24,6 @@ import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 
-import BoardListPage from './components/general/cards/BoardListPage'; //testing for boardcard
 
 /**
  * Main application component
@@ -78,8 +77,6 @@ export const App = () => (
                             <TeamsListPage/>
                         </ProtectedRoute>
                     }/>
-
-                    <Route path="/test" element={<BoardListPage />} /> {/*testing purposes*/}
 
                     {/* Boards related routes */}
 
