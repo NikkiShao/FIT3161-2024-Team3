@@ -101,6 +101,10 @@ body .center-spaced {
     row-gap: 30px;
 }
 
+body .text-left-aligned {
+    text-align: left;
+}
+
 
 body .text-grey{
     color: var(--dark-grey);
@@ -140,6 +144,22 @@ body .table {
     flex-direction: column;
     row-gap: 25px;
     align-items: center;
+}
+
+.one-line {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.two-line {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
 }
 
 .three-line {
