@@ -20,23 +20,24 @@ import '../../general/modal/modal.css';
 export const TeamCreationModal = ({open, closeHandler}) => {
     // get user data here
     const userData = getUserInfo();
+    const teamLead = userData.email;
 
     // State variables for team creation form
     const [teamNameInput, setTeamNameInput] = useState('');
     const [emailInput, setEmailInput] = useState('');
-
-    const teamLead = userData.email;
     const [members, setMembers] = useState([]);
 
+    // Add team lead to members list
     if (teamLead && !members.includes(teamLead)) {
-        // if team lead's info loaded
         setMembers([...members, teamLead]);
     }
 
+    // State variable for error messages
     const [errors, setErrors] = useState({
         teamName: "",
         email: ""
     });
+
 
     // Regex for validating email addresses
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;

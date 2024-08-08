@@ -25,6 +25,7 @@ import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 import TeamSettingsPage from './components/pages/team/TeamSettingsPage';import BoardSettings from "./components/pages/board/BoardSettings";
+import DraftPage from './components/pages/draft';
 
 
 /**
@@ -32,7 +33,7 @@ import TeamSettingsPage from './components/pages/team/TeamSettingsPage';import B
  */
 export const App = () => (
     <div className={""}>
-
+        
         <Router>
             <NavigationBar/>
             <main>
@@ -77,6 +78,12 @@ export const App = () => (
                         </ProtectedRoute>
                     }/>
 
+                    <Route path={'/' + BaseUrlPath.SETTINGS} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <AccountSettingPage/>
+                        </ProtectedRoute>
+                    }/>
+
                     {/* Teams related routes */}
                     <Route path={'/' + BaseUrlPath.TEAMS} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
@@ -112,10 +119,12 @@ export const App = () => (
                             </ProtectedRoute>
                      }/>
 
+                    {/* {Testing routers} */}
+                    <Route path='/draft' element={<DraftPage/>}/>
+
                 </Routes>
                 </main>
         </Router>
-        
-
     </div>
 );
+
