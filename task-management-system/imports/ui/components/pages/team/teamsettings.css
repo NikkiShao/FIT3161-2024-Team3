@@ -7,19 +7,10 @@
 .ts-modal-base {
     background: var(--white);
     width: fit-content;
-    min-width: 500px;
+    min-width: 450px;
     min-height: 300px;
     padding: 50px;
     border-radius: 25px;
-    /* margin-left: 10%;
-    margin-right: 10%; */
-}
-
-.ts-content{
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
 }
 
 h1 {

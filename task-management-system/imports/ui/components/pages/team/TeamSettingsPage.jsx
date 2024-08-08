@@ -218,11 +218,11 @@ export const TeamSettingsPage = () => {
                     {isUserTheLeader ? (
                     <div className='modal-div-center'>
                         <h1> Reassign Team Leader </h1>
+                        <div style={{marginLeft:"10%", marginRight:"10%"}}>
                             <p>You are currently the leader of the team.</p>
-                            <p>You must assign someone else to be the new leader before you can leave the team.</p>
+                            <p>You must assign someone else to be the new leader before you can leave the team.</p></div>
                             <label></label>
                             <div className="input-group">
-                                {/* <label>New Team Lead:</label> */}
                                 <label className={"main-text text-grey"}>New Team Lead:</label>
                                 <div className='ts-input-group'>
                                 <select value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
@@ -233,14 +233,13 @@ export const TeamSettingsPage = () => {
                                     ))}
                                 </select></div>
                             </div>
-                            <div style={{marginTop:"50px", marginBottom: "20px"}} className='button-group'>
+                            <div style={{marginTop:"15px", marginBottom: "15px"}} className='button-group'>
                             <Button className={"btn-brown"} onClick={() => leaveTeam(true)}>Save & Leave Team</Button>
                             </div>
                     </div>) : 
                     <div className='modal-div-center'>
                         <div><h1> Leave Team </h1>
-                        <div className='ts-content'>
-                        <p className={"menu-text"}>You are leaving the team.</p><p className={"menu-text"}> Are you sure?</p></div></div>
+                        <p>You are leaving the team.</p><p> Are you sure?</p></div>
                         <label></label>
                         <div className='button-group'>
                         <Button className={"btn-brown"} onClick={() => leaveTeam(false)}>Leave Team</Button>
