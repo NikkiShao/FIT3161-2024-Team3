@@ -72,16 +72,14 @@ export const TeamLobbyPage = () => {
                                        style={{paddingRight: "5px"}}/>;
 
             const displayedBoardCards = boardsData.map((board) => (
-                    // todo: replace with BoardCards after
                     <BoardCard
-                        key={board._id}>
+                        key={board._id}
                         boardId={board._id}
-                        boardName={board.name}
+                        boardName={board.boardName}
                         boardNickname={board.boardCode}
-                        boardDesc={board.boardDesc}
-                        boardDeadline={new Date(board.boardDeadline).toLocaleString()}
-                        teamId={teamId}
-                    </BoardCard>
+                        boardDesc={board.boardDescription}
+                        boardDeadline={board.boardDeadline}
+                        teamId={teamId}/>
                 )
             )
 
