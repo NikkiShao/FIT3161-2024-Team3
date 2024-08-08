@@ -8,7 +8,7 @@
 import React, {Fragment, useState} from 'react';
 import classNames from "classnames";
 import {Modal} from 'react-responsive-modal';
-import {PlusCircleIcon, TrashIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import {PlusCircleIcon, MinusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
 import {getUserInfo} from "../../util";
@@ -43,7 +43,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
     // Icons for UI elements
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
-    const trashIcon = <TrashIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
+    const trashIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
                                  height={30}/>;
     const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
                                      height={30}/>;
@@ -79,14 +79,16 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         event.preventDefault();
 
         const newErrors = {}
-        const isError = false;
+        let isError = false;
 
         // do some error stuff here
         if (!teamNameInput) {
             newErrors.teamName = "Please fill in your team name";
+            isError = true;
         }
 
         setErrors(newErrors)
+
         if (!isError) {
             // Call the Meteor method to add a new team
             Meteor.call('add_team', teamNameInput, members, teamLead, (error) => {
