@@ -48,7 +48,7 @@ export const TeamSettingsPage = () => {
             setTeamLeader(team.teamLeader);
             setTeamMembers(team.teamMembers);
         }
-
+        return team;
     });
 
     const isLoadingUsers = useSubscribe('all_users');
@@ -167,7 +167,7 @@ export const TeamSettingsPage = () => {
 
                     <div className="ts-input-group">
                     <label>{"Team Members:"}</label>
-                    <ul><div className='member-item'>{teamLeader} </div>
+                    <ul><div className='member-item'>{teamsData.teamLeader} </div>
                     {teamMembers.filter(member => member!==teamLeader).map(member => (
                         <Fragment key={member}><div className='member-item'> 
                             {member}
@@ -183,7 +183,7 @@ export const TeamSettingsPage = () => {
                                
                     <div className='ts-input-group'>
                         {/* <label></label> */}
-                    <Input style={{marginLeft: '140px', marginRight:"10px", marginBottom:"10px"}} type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
+                    <Input style={{marginLeft: '150px', marginRight:"10px", marginBottom:"10px"}} type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
                     <button className="add-member-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={25} height={25} /></button>
                     </div>                    
 
@@ -192,10 +192,11 @@ export const TeamSettingsPage = () => {
                         <p style={{ color: 'red' }}>{error}</p>
                     </div>
                     }
-
+                    {userInfo.email === teamsData.teamLeader ?
                     <div style={{marginTop:"50px"}} className='button-group'>
                     <Button type="submit" className="btn-brown">Save Changes</Button>
-                    </div>
+                    </div> : <></>}
+
                     </form>
                 </div>
 
@@ -223,7 +224,7 @@ export const TeamSettingsPage = () => {
                             <p>You must assign someone else to be the new leader before you can leave the team.</p></div>
                             <label></label>
                             <div className="input-group">
-                                <label className={"main-text text-grey"}>New Team Lead:</label>
+                                <label style={{marginBottom:"20px"}} className={"main-text text-grey"}>New Team Lead:</label>
                                 <div className='ts-input-group'>
                                 <select value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
                                     {teamMembersData.filter(user => user.emails[0].address !== userInfo.email).map(user => (
@@ -234,15 +235,15 @@ export const TeamSettingsPage = () => {
                                 </select></div>
                             </div>
                             <div style={{marginTop:"15px", marginBottom: "15px"}} className='button-group'>
-                            <Button className={"btn-brown"} onClick={() => leaveTeam(true)}>Save & Leave Team</Button>
+                            <Button className={"btn-red"} onClick={() => leaveTeam(true)}>Save & Leave Team</Button>
                             </div>
                     </div>) : 
                     <div className='modal-div-center'>
                         <div><h1> Leave Team </h1>
-                        <p>You are leaving the team.</p><p> Are you sure?</p></div>
+                        <p>You are leaving the team.</p><p>Are you sure?</p></div>
                         <label></label>
                         <div className='button-group'>
-                        <Button className={"btn-brown"} onClick={() => leaveTeam(false)}>Leave Team</Button>
+                        <Button className={"btn-red"} onClick={() => leaveTeam(false)}>Leave Team</Button>
                         </div>
                     </div>
                     }
