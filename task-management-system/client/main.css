@@ -63,6 +63,14 @@ body h2 {
     cursor: default;
 }
 
+.default__heading1 {
+    margin-top: 20px;
+}
+
+.default__heading2 {
+    margin-bottom: 0;
+}
+
 /* here are text classes */
 body .main-text {
     font-size: 18px;
@@ -105,7 +113,6 @@ body .text-left-aligned {
     text-align: left;
 }
 
-
 body .text-grey{
     color: var(--dark-grey);
 }
@@ -114,12 +121,12 @@ body .text-red {
     color: var(--red);
 }
 
-.default__heading1 {
-    margin-top: 20px;
-}
-
-.default__heading2 {
-    margin-bottom: 0;
+::placeholder {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 480;
+    line-height: normal;
+    color: var(--light-grey-hover) !important;
 }
 
 .underline {

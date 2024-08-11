@@ -6,7 +6,7 @@
  */
 
 import React, {useState} from 'react';
-import {Cog8ToothIcon, PlusIcon} from "@heroicons/react/24/outline"
+import {ChevronLeftIcon, Cog8ToothIcon, PlusIcon} from "@heroicons/react/24/outline"
 import {useNavigate, useParams} from "react-router-dom";
 import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import Spinner from "react-bootstrap/Spinner";
@@ -22,6 +22,7 @@ import Card from "../../general/cards/Card";
 import {getUserInfo} from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
+import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
 
 /**
@@ -30,6 +31,15 @@ import BoardCard from "../../general/cards/BoardCard";
 export const TeamLobbyPage = () => {
     const navigate = useNavigate()
     const userInfo = getUserInfo();
+
+    // Handlers for opening and closing creation modals
+    const [boardModalOpen, setBoardModalOpen] = useState(false);
+    const onOpenBoardModal = () => setBoardModalOpen(true);
+    const onCloseBoardModal = () => setBoardModalOpen(false);
+
+    const [pollModalOpen, setPollModalOpen] = useState(false);
+    const onOpenPollModal = () => setPollModalOpen(true);
+    const onClosePollModal = () => setPollModalOpen(false);
 
     // variables for poll filters
     const availableFilters = ['all', 'open', 'closed']
@@ -56,8 +66,6 @@ export const TeamLobbyPage = () => {
     let pollsData = useTracker(() => {
         return PollCollection.find({teamId: teamId}).fetch();
     });
-
-    console.log(teamData)
 
     // check if data has loaded
     if (!isLoading) {
@@ -125,54 +133,63 @@ export const TeamLobbyPage = () => {
             )
 
             return (
-                <div>
-                    <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+                <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
 
-                        <div className="teams__header-div">
-                            <div style={{width: "200px", visibility: "hidden"}}></div>
-                            <h1 className={"text-center"}>{teamData.teamName}</h1>
-                            <Button className={"btn-light-grey"}>{CogIcon}Team Settings</Button>
+                    {/*modals (can go anywhere) */}
+                    <BoardCreationModal teamId={teamId} open={boardModalOpen} closeHandler={onCloseBoardModal}/>
+
+                    <div className="teams__header-div">
+                        <div style={{width: "200px"}}>
+                            <Button className={"flex flex-row gap-2 btn-back"}
+                                    onClick={() => {navigate('/' + BaseUrlPath.TEAMS)}}>
+                                <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                                Back
+                            </Button>
                         </div>
+                        <h1 className={"text-center"}>{teamData.teamName}</h1>
+                        <Button className={"btn-light-grey"} onClick={() => navigate("settings")}>{CogIcon}Team Settings</Button>
+                    </div>
 
-                        <hr className={"teams__hr"}/>
+                    <hr className={"teams__hr"}/>
 
-                        <div className="teams__top-div">
-                            <div style={{width: "120px", visibility: "hidden"}}></div>
-                            <h2 className={"text-center default__heading2"}>Boards</h2>
-                            <Button className={"btn-grey"}
-                                    style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
-                        </div>
+                    <div className="teams__top-div">
+                        <div style={{width: "120px", visibility: "hidden"}}></div>
+                        <h2 className={"text-center default__heading2"}>Boards</h2>
+                        <Button className={"btn-grey"}
+                                onClick={onOpenBoardModal}
+                                style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                    </div>
 
-                        <div className={"teams__cards-div"}>
-                            {displayedBoardCards.length ? displayedBoardCards :
-                                <span className={"main-text"} style={{marginTop: "20px", marginBottom: "20px"}}>
+                    <div className={"teams__cards-div"}>
+                        {displayedBoardCards.length ? displayedBoardCards :
+                            <span className={"main-text non-clickable"} style={{marginTop: "20px", marginBottom: "20px"}}>
                                     There are no boards yet!</span>}
-                        </div>
+                    </div>
 
-                        <hr className={"teams__hr"}/>
+                    <hr className={"teams__hr"}/>
 
-                        <div className="teams__top-div">
-                            <div style={{width: "120px", visibility: "hidden"}}></div>
-                            <h2 className={"text-center default__heading2"}>Polls</h2>
-                            <Button className={"btn-grey"}
-                                    style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
-                        </div>
+                    <div className="teams__top-div">
+                        <div style={{width: "120px", visibility: "hidden"}}></div>
+                        <h2 className={"text-center default__heading2"}>Polls</h2>
+                        <Button className={"btn-grey"}
+                                onClick={onOpenPollModal}
+                                style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                    </div>
 
-                        {
-                            displayedPollCards.length ?
-                                <div className="teams__filter-button-div">
-                                    <span className={"main-text"}>Filters: </span>
-                                    {filterButtons}
-                                </div> : null
-                        }
+                    {
+                        displayedPollCards.length ?
+                            <div className="teams__filter-button-div">
+                                <span className={"main-text non-clickable"}>Filters: </span>
+                                {filterButtons}
+                            </div> : null
+                    }
 
-                        <div className={"teams__cards-div"}>
-                            {displayedPollCards.length ? displayedPollCards :
-                                <span className={"main-text"}
-                                      style={{marginTop: "20px"}}>There are no polls yet!</span>}
-                        </div>
-                    </WhiteBackground>
-                </div>
+                    <div className={"teams__cards-div"}>
+                        {displayedPollCards.length ? displayedPollCards :
+                            <span className={"main-text non-clickable"}
+                                  style={{marginTop: "20px"}}>There are no polls yet!</span>}
+                    </div>
+                </WhiteBackground>
             )
         } else {
             //     user is not in team, or team does not exist, move them back to their teams list

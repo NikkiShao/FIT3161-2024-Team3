@@ -85,6 +85,9 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         if (!teamNameInput) {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
+        } else if (teamNameInput.length > 20) {
+            newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
         }
 
         setErrors(newErrors)
@@ -124,6 +127,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                     <div className={"input-error-div"}>
                         <Input
                             type="text"
+                            placeholder={"Max 20 characters"}
                             id={"teamName"}
                             value={teamNameInput}
                             onChange={(e) => setTeamNameInput(e.target.value)}
@@ -190,8 +194,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
                 {/* Button to create the team */}
                 <Button type={"submit"} className="btn-brown"
-                        onClick={(event) => handleCreateTeam(event)}
-                >
+                        onClick={(event) => handleCreateTeam(event)}>
                     Create Team
                 </Button>
             </div>

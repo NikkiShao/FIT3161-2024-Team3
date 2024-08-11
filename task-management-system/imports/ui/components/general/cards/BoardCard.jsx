@@ -39,13 +39,13 @@ const BoardCard = ({
 
     // handler function of clicking view button
     const handleViewClick = () => {
-        navigate("teams/" + teamId + "/boards/" + boardId);
+        navigate("boards/" + boardId);
     };
 
     // checking deadline date to determine if overdue
     const boardDeadlineDate = new Date(boardDeadline);
     const isOverdue = boardDeadlineDate <= new Date();
-    let boardCardClasses = classNames("board-card",  isOverdue? "board-card-overdue" : "", className);
+    let boardCardClasses = classNames("board-card non-clickable",  isOverdue? "board-card-overdue" : "", className);
 
     let displayText = null;
     if (isOverdue) {

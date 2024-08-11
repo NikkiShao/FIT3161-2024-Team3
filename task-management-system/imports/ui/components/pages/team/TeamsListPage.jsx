@@ -17,11 +17,11 @@ import UserCollection from "../../../../api/collections/user";
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground.jsx";
 import PageLayout from "../../../enums/PageLayout";
-import baseUrlPath from "../../../enums/BaseUrlPath";
 import Button from "../../general/buttons/Button";
 import {getUserInfo} from "../../util";
 import TeamCreationModal from "../../general/modal/TeamCreationModal";
 import "./team.css"
+import board from "../../../../api/collections/board.js";
 
 export const TeamsListPage = () => {
 
@@ -40,22 +40,17 @@ export const TeamsListPage = () => {
     });
 
     // fetch board's data
-    let teamIds = teamsData.map((team) => {
-        return team._id._str
-    })
-    let teamLeadEmails = teamsData.map((team) => {
-        return team.teamLeader
-    })
-    const isLoadingBoards = useSubscribe('all_teams_boards', teamIds);
+    let teamIds = teamsData.map((team) => team._id)
+    let teamLeadEmails = teamsData.map((team) => team.teamLeader)
 
+    const isLoadingBoards = useSubscribe('all_teams_boards', teamIds);
     const boardData = useTracker(() => {
         return BoardCollection.find({teamId: {$in: teamIds}}).fetch();
     });
 
-    //get boards based on a team's id
-    const getBoard = (id) => {
-        const theId = id._str;
-        return boardData.filter(board => board.teamId === theId).length;
+    // get boards based on a team's id
+    const getBoard = (boardId) => {
+        return boardData.filter(board => board.teamId === boardId).length;
     }
 
     // get team lead name
@@ -91,6 +86,9 @@ export const TeamsListPage = () => {
         const plusIcon = <PlusIcon strokeWidth={3} viewBox="0 0 21 21" width={22} height={22}
                                    style={{paddingRight: "5px"}}/>;
 
+        // sort by team name (if you don't sort, it changes every time)
+        const sortedTeamsData = teamsData.sort((a, b) => a.teamName.localeCompare(b.teamName));
+
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
 
@@ -98,7 +96,6 @@ export const TeamsListPage = () => {
                     open={modalOpen}
                     closeHandler={onCloseModal}
                 />
-
 
                 <div className="teams__top-div">
                     <Button className={"btn-grey"}
@@ -109,8 +106,8 @@ export const TeamsListPage = () => {
                 </div>
 
                 {
-                    teamsData.length ?
-                        <table className={"table table-striped table-bordered table-hover"}>
+                    sortedTeamsData.length ?
+                        <table className={"table table-striped table-bordered table-hover non-clickable"}>
                             <thead>
                             <tr key={'header'} className="text-center">
                                 <th>Team Name</th>
@@ -121,7 +118,7 @@ export const TeamsListPage = () => {
                             </tr>
                             </thead>
                             <tbody className="text-center">
-                            {teamsData.map((team) => (
+                            {sortedTeamsData.map((team) => (
                                 <tr key={team._id}>
                                     <td>{team.teamName}</td>
                                     <td>
@@ -134,7 +131,7 @@ export const TeamsListPage = () => {
                                     <td>
                                         <Button className={"btn-brown"}
                                                 style={{minWidth: "117px", display: "inline-flex"}}
-                                                onClick={() => navigate('/' + baseUrlPath.TEAMS + '/' + team._id)}>
+                                                onClick={() => navigate(team._id)}>
                                             View Detail</Button>
                                     </td>
                                 </tr>
@@ -142,7 +139,7 @@ export const TeamsListPage = () => {
 
                             </tbody>
                         </table>
-                        : <span className={"main-text"}>
+                        : <span className={"main-text non-clickable"}>
                             You are not in any teams yet, create a team or get your team leader to invite you to their team!
                         </span>
                 }
