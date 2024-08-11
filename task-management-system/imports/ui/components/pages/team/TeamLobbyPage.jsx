@@ -79,7 +79,10 @@ export const TeamLobbyPage = () => {
             const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
                                        style={{paddingRight: "5px"}}/>;
 
-            const displayedBoardCards = boardsData.map((board) => (
+            // sort by board code, then map to JSX object
+            const displayedBoardCards = boardsData
+                .sort((a, b) => a.boardCode.localeCompare(b.boardCode))
+                .map((board) => (
                     <BoardCard
                         key={board._id}
                         boardId={board._id}
@@ -110,17 +113,18 @@ export const TeamLobbyPage = () => {
             )
 
             // filter polls based on if it is opened
-            const filteredPolls = pollsData.filter((poll) => {
-                const now = new Date();
-                const pollCloseDate = new Date(poll.pollDeadlineDate)
+            const filteredPolls = pollsData
+                .filter((poll) => {
+                    const now = new Date();
+                    const pollCloseDate = new Date(poll.pollDeadlineDate)
 
-                // if poll matches any of the condition
-                let allFilterCondition = selectedPollFilter === 'all';
-                let openFilterCondition = selectedPollFilter === 'open' && pollCloseDate > now;
-                let closedFilterCondition = selectedPollFilter === 'closed' && pollCloseDate <= now;
+                    // if poll matches any of the condition
+                    let allFilterCondition = selectedPollFilter === 'all';
+                    let openFilterCondition = selectedPollFilter === 'open' && pollCloseDate > now;
+                    let closedFilterCondition = selectedPollFilter === 'closed' && pollCloseDate <= now;
 
-                return allFilterCondition || openFilterCondition || closedFilterCondition;
-            });
+                    return allFilterCondition || openFilterCondition || closedFilterCondition;
+                })
 
             const displayedPollCards = filteredPolls.map((poll) => (
                     // todo: replace with PollCards after
@@ -141,13 +145,16 @@ export const TeamLobbyPage = () => {
                     <div className="teams__header-div">
                         <div style={{width: "200px"}}>
                             <Button className={"flex flex-row gap-2 btn-back"}
-                                    onClick={() => {navigate('/' + BaseUrlPath.TEAMS)}}>
+                                    onClick={() => {
+                                        navigate('/' + BaseUrlPath.TEAMS)
+                                    }}>
                                 <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
                                 Back
                             </Button>
                         </div>
                         <h1 className={"text-center"}>{teamData.teamName}</h1>
-                        <Button className={"btn-light-grey"} onClick={() => navigate("settings")}>{CogIcon}Team Settings</Button>
+                        <Button className={"btn-light-grey"} onClick={() => navigate("settings")}>{CogIcon}Team
+                            Settings</Button>
                     </div>
 
                     <hr className={"teams__hr"}/>
@@ -162,7 +169,8 @@ export const TeamLobbyPage = () => {
 
                     <div className={"teams__cards-div"}>
                         {displayedBoardCards.length ? displayedBoardCards :
-                            <span className={"main-text non-clickable"} style={{marginTop: "20px", marginBottom: "20px"}}>
+                            <span className={"main-text non-clickable"}
+                                  style={{marginTop: "20px", marginBottom: "20px"}}>
                                     There are no boards yet!</span>}
                     </div>
 

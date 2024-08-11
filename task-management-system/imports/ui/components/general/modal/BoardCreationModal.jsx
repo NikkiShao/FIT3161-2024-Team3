@@ -93,7 +93,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         setErrors(newErrors)
 
         if (!isError) {
-            // Call the Meteor method to add a new team
+            // Call the Meteor method to add a new board
             new Promise((resolve, reject) => {
                 Meteor.call('add_board', boardNameInput, boardCodeInput, deadlineDateObject.toISOString(), boardDescriptionInput, teamId,
                     (error, result) => {
