@@ -32,9 +32,9 @@ Meteor.publish("all_teams", function () {
     return TeamCollection.find();
 });
 
-// /**
-//  * publishes update team for a specific team
-//  */
-// Meteor.publish("update_team", function(teamId, teamsData){
-//     TeamCollection.update(teamId, {$set: teamsData});
-// });
+/**
+ * publishes update team for a specific team
+ */
+Meteor.publish("update_team", function(teamId, teamsData){
+    TeamCollection.update(teamId, {$set: teamsData});
+});

@@ -38,11 +38,12 @@ export const TeamSettingsPage = () => {
     const [error, setError] = useState('');
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-    const isLoadingTeams = useSubscribe('specific_team', teamId);
-    
+    // const isLoadingTeams = useSubscribe('specific_team', teamId);
+    const isLoadingTeams = useSubscribe('team_by_id', teamId);
+
     const teamsData = useTracker(() => {
-        const idObject = new Mongo.ObjectID(teamId);
-        const team =  TeamCollection.findOne({ _id: idObject});
+        // const idObject = new Mongo.ObjectID(teamId);
+        const team =  TeamCollection.findOne({ _id: teamId});
         if(team && teamName == ''){
             setTeamName(team.teamName);
             setTeamLeader(team.teamLeader);

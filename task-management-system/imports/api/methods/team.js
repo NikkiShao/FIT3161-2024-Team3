@@ -26,8 +26,8 @@ Meteor.methods({
         )
     },
     "update_team": function (teamId, teamsData){
-        const idObject = new Mongo.ObjectID(teamId);
-        TeamCollection.update(idObject, {$set: 
+        // const idObject = new Mongo.ObjectID(teamId);
+        TeamCollection.update(teamId, {$set: 
             {
                 "teamName": teamsData.teamName,
                 "teamMembers": teamsData.teamMembers,
