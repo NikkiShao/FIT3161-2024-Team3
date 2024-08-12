@@ -76,43 +76,48 @@ export const SignInPage = () => {
     };
 
     return (
-        <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
+        <div>
+            <h1 style={{position:"absolute", top:"80px", width:"100%"}}
+                className={"text-center"}> Welcome to Task Management System</h1>
+            <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
 
-            <h1 className={"default__heading1"}>Sign In</h1>
+                <h1 className={"default__heading1"}>Sign In</h1>
 
-            <form className={"default__form"}>
+                <form className={"default__form"}>
 
-                <div className={"input-error-div"}>
-                    <Input type={"text"}
-                           label={<label className={"main-text"}>Username</label>}
-                           onChange={(e) => setUsername(e.target.value.trim())}
-                    />
-                    {errors.username && <span className="text-red small-text">{errors.username}</span>}
-                </div>
+                    <div className={"input-error-div"}>
+                        <Input type={"text"}
+                               label={<label className={"main-text"}>Username</label>}
+                               onChange={(e) => setUsername(e.target.value.trim())}
+                        />
+                        {errors.username && <span className="text-red small-text">{errors.username}</span>}
+                    </div>
 
-                <div className={"input-error-div"}>
-                    <Input type={"password"}
-                           label={<label className={"main-text"}>Password</label>}
-                           onChange={(e) => setPassword(e.target.value)}/>
-                    {errors.password && <span className="text-red small-text">{errors.password}</span>}
-                </div>
+                    <div className={"input-error-div"}>
+                        <Input type={"password"}
+                               label={<label className={"main-text"}>Password</label>}
+                               onChange={(e) => setPassword(e.target.value)}/>
+                        {errors.password && <span className="text-red small-text">{errors.password}</span>}
+                    </div>
 
-                <div className={"default__button-group"}>
-                    <Button type={"submit"}
-                            className={"btn-brown"}
-                            onClick={handleSignIn}>
-                        Login
-                    </Button>
-                    <Button className={"btn-grey"}
-                            onClick={() => {
-                                navigate('/' + BaseUrlPath.REGISTER)
-                            }}>
-                        Register
-                    </Button>
+                    <div className={"default__button-group"}>
+                        <Button type={"submit"}
+                                className={"btn-brown"}
+                                onClick={handleSignIn}>
+                            Login
+                        </Button>
+                        <Button className={"btn-grey"}
+                                onClick={() => {
+                                    navigate('/' + BaseUrlPath.REGISTER)
+                                }}>
+                            Register
+                        </Button>
 
-                </div>
-            </form>
-        </WhiteBackground>
+                    </div>
+                </form>
+            </WhiteBackground>
+
+        </div>
     )
 }
 
