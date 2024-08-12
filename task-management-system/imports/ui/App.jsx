@@ -22,7 +22,8 @@ import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
-import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
+import TeamSettingsPage from './components/pages/team/TeamSettingsPage';import BoardSettings from "./components/pages/board/BoardSettings";
+
 
 /**
  * Main application component
@@ -97,6 +98,12 @@ export const App = () => (
                     }/>
 
                     {/* Boards related routes */}
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/boards/:boardId/settings'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <BoardSettings />
+                        </ProtectedRoute>
+                    }/>
+
 
 
 

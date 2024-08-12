@@ -99,7 +99,7 @@ export const TeamsListPage = () => {
                     closeHandler={onCloseModal}
                 />
 
-                <div className="teams__top-div">
+                <div className="header-space-centered">
                     <Button className={"btn-grey"}
                             style={{minWidth: "75px", width: "120px", visibility: "hidden"}}>{plusIcon} Add</Button>
                     <h1 className={"text-center default__heading1"}>Teams List</h1>

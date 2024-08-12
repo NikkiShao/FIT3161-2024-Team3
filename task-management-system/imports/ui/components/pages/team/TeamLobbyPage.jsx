@@ -143,7 +143,7 @@ export const TeamLobbyPage = () => {
                     {/*modals (can go anywhere) */}
                     <BoardCreationModal teamId={teamId} open={boardModalOpen} closeHandler={onCloseBoardModal}/>
 
-                    <div className="teams__header-div">
+                    <div className="header-space-between">
                         <div style={{width: "200px"}}>
                             <Button className={"flex flex-row gap-2 btn-back"}
                                     onClick={() => {
@@ -160,7 +160,7 @@ export const TeamLobbyPage = () => {
 
                     <hr className={"teams__hr"}/>
 
-                    <div className="teams__top-div">
+                    <div className="header-space-centered">
                         <div style={{width: "120px", visibility: "hidden"}}></div>
                         <h2 className={"text-center default__heading2"}>Boards</h2>
                         <Button className={"btn-grey"}
@@ -177,7 +177,7 @@ export const TeamLobbyPage = () => {
 
                     <hr className={"teams__hr"}/>
 
-                    <div className="teams__top-div">
+                    <div className="header-space-centered">
                         <div style={{width: "120px", visibility: "hidden"}}></div>
                         <h2 className={"text-center default__heading2"}>Polls</h2>
                         <Button className={"btn-grey"}

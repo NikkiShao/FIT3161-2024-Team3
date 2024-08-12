@@ -84,3 +84,7 @@ body .btn-back:hover:active {
     background-color: var(--navy-hover);
     color: var(--navy);
 }
+
+.btn-submit {
+    margin-top: 20px;
+}
