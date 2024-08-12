@@ -1,7 +1,7 @@
 // /**
 //  * File Description: Board database entity
 //  * File version: 1.1
-//  * Contributors: Audrey,Samuel
+//  * Contributors: Audrey, Nikki
 //  */
 import {Meteor} from 'meteor/meteor'
 import {BoardCollection} from '/imports/api/collections/board.js';
@@ -9,15 +9,14 @@ import {BoardCollection} from '/imports/api/collections/board.js';
 Meteor.methods({
 
     //not done, here for testing the team page
-    "add_board": function (name, id, nickname, desc, deadline) {
+    "add_board": function (name, code, deadline, desc, teamId) {
         BoardCollection.insert(
             {
-                "board": name,
-                "teamId": id,
-                "boardNickname": nickname,
-                "boardDesc": desc,
+                "boardName": name,
+                "boardCode": code,
                 "boardDeadline": deadline,
-
+                "boardDescription": desc,
+                "teamId": teamId
             }
         )
     }

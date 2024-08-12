@@ -8,7 +8,7 @@
 import React, {Fragment, useState} from 'react';
 import classNames from "classnames";
 import {Modal} from 'react-responsive-modal';
-import {PlusCircleIcon, TrashIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import {MinusCircleIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
 import {getUserInfo} from "../../util";
@@ -43,8 +43,8 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
     // Icons for UI elements
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
-    const trashIcon = <TrashIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
-                                 height={30}/>;
+    const trashIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
+                                       height={30}/>;
     const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
                                      height={30}/>;
 
@@ -79,26 +79,39 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         event.preventDefault();
 
         const newErrors = {}
-        const isError = false;
+        let isError = false;
 
         // do some error stuff here
         if (!teamNameInput) {
             newErrors.teamName = "Please fill in your team name";
+            isError = true;
+        } else if (teamNameInput.length > 20) {
+            newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
         }
 
         setErrors(newErrors)
+
         if (!isError) {
             // Call the Meteor method to add a new team
-            Meteor.call('add_team', teamNameInput, members, teamLead, (error) => {
-                if (error) {
-                    const newError = {}
-                    newError.email = "Creation failed: " + error.reason;
-                    setErrors(newError)
+            new Promise((resolve, reject) => {
 
-                } else {
-                    closeHandler();
-                }
-            });
+                Meteor.call('add_team', teamNameInput, members, teamLead,
+                    (error, result) => {
+                        if (error) {
+                            reject(`Error: ${error.message}`);
+
+                        } else {
+                            resolve(result);
+                            closeHandler();
+                        }
+                    });
+            }).catch(() => {
+                const newError = {}
+                newError.email = "Creation failed: please try again";
+                setErrors(newError)
+            })
+
         }
 
     }
@@ -122,6 +135,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                     <div className={"input-error-div"}>
                         <Input
                             type="text"
+                            placeholder={"Max 20 characters"}
                             id={"teamName"}
                             value={teamNameInput}
                             onChange={(e) => setTeamNameInput(e.target.value)}
@@ -188,8 +202,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
                 {/* Button to create the team */}
                 <Button type={"submit"} className="btn-brown"
-                        onClick={(event) => handleCreateTeam(event)}
-                >
+                        onClick={(event) => handleCreateTeam(event)}>
                     Create Team
                 </Button>
             </div>

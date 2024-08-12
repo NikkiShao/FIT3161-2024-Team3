@@ -6,10 +6,57 @@
  */
 
 
-#teams__top-div {
+.teams__header-div {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 100%;
+    width: 100%;
+}
+
+.teams__top-div {
     display: flex;
     flex-direction: row;
     column-gap: 20px;
     align-items: center;
     justify-content: center;
+    min-width: 100%;
+    width: 100%;
+}
+
+.teams__hr {
+    border-bottom: 3px solid var(--black);
+    border-color: var(--black);
+    width: 100%;
+}
+
+.teams__cards-div {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.teams__filter-button-div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 15px;
+}
+
+.teams__filter-button {
+    min-width: 50px  !important;
+}
+
+.teams__filter-button-active {
+    min-width: 50px  !important;
+    background-color: var(--light-grey-hover)  !important;
 }

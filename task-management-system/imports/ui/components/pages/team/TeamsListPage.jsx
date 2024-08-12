@@ -2,7 +2,7 @@
  * File Description: Teams list page
  * Updated Date: 24/7/2024
  * Contributors: Audrey, Nikki
- * Version: 1.3
+ * Version: 1.4
  */
 
 import React, {useState} from 'react';
@@ -17,11 +17,11 @@ import UserCollection from "../../../../api/collections/user";
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground.jsx";
 import PageLayout from "../../../enums/PageLayout";
-import baseUrlPath from "../../../enums/BaseUrlPath";
 import Button from "../../general/buttons/Button";
 import {getUserInfo} from "../../util";
-import "./team.css"
 import TeamCreationModal from "../../general/modal/TeamCreationModal";
+import "./team.css"
+import board from "../../../../api/collections/board.js";
 
 export const TeamsListPage = () => {
 
@@ -40,22 +40,17 @@ export const TeamsListPage = () => {
     });
 
     // fetch board's data
-    let teamIds = teamsData.map((team) => {
-        return team._id._str
-    })
-    let teamLeadEmails = teamsData.map((team) => {
-        return team.teamLeader
-    })
-    const isLoadingBoards = useSubscribe('all_teams_boards', teamIds);
+    let teamIds = teamsData.map((team) => team._id)
+    let teamLeadEmails = teamsData.map((team) => team.teamLeader)
 
+    const isLoadingBoards = useSubscribe('all_teams_boards', teamIds);
     const boardData = useTracker(() => {
         return BoardCollection.find({teamId: {$in: teamIds}}).fetch();
     });
 
-    //get boards based on a team's id
-    const getBoard = (id) => {
-        const theId = id._str;
-        return boardData.filter(board => board.teamId === theId).length;
+    // get boards based on a team's id
+    const getBoard = (boardId) => {
+        return boardData.filter(board => board.teamId === boardId).length;
     }
 
     // get team lead name
@@ -91,6 +86,9 @@ export const TeamsListPage = () => {
         const plusIcon = <PlusIcon strokeWidth={3} viewBox="0 0 21 21" width={22} height={22}
                                    style={{paddingRight: "5px"}}/>;
 
+        // sort by team name (if you don't sort, it changes every time)
+        const sortedTeamsData = teamsData.sort((a, b) => a.teamName.localeCompare(b.teamName));
+
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
 
@@ -99,46 +97,52 @@ export const TeamsListPage = () => {
                     closeHandler={onCloseModal}
                 />
 
-
-                <div id="teams__top-div">
+                <div className="teams__top-div">
                     <Button className={"btn-grey"}
                             style={{minWidth: "75px", width: "120px", visibility: "hidden"}}>{plusIcon} Add</Button>
-                    <h1 className={"text-center default__heading1"}>Teams</h1>
+                    <h1 className={"text-center default__heading1"}>Teams List</h1>
                     <Button className={"btn-grey"} style={{minWidth: "75px", width: "120px"}}
                             onClick={onOpenModal}>{plusIcon} Add</Button>
                 </div>
 
-                <table className={"table table-striped table-bordered table-hover"}>
-                    <thead>
-                    <tr key={'header'} className="text-center">
-                        <th>Team Name</th>
-                        <th>Team Lead</th>
-                        <th># Members</th>
-                        <th># Boards</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody className="text-center">
-                    {teamsData.map((team) => (
-                        <tr key={team._id}>
-                            <td>{team.teamName}</td>
-                            <td>
-                                <span className={"main-text"}>{team.leaderName}</span>
-                                <br />
-                                <span className={"small-text text-grey"}>(@{team.leaderUsername})</span>
-                            </td>
-                            <td><span className={"main-text"}>{team.teamMembers.length}</span></td>
-                            <td><span className={"main-text"}>{getBoard(team._id)}</span></td>
-                            <td>
-                            <Button className={"btn-brown"} style={{minWidth: "117px", display: "inline-flex"}}
-                                        onClick={() => navigate('/' + baseUrlPath.TEAMS + '/' + team._id)}>
-                                    View Detail</Button>
-                            </td>
-                        </tr>
-                    ))}
+                {
+                    sortedTeamsData.length ?
+                        <table className={"table table-striped table-bordered table-hover non-clickable"}>
+                            <thead>
+                            <tr key={'header'} className="text-center">
+                                <th>Team Name</th>
+                                <th>Team Lead</th>
+                                <th># Members</th>
+                                <th># Boards</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody className="text-center">
+                            {sortedTeamsData.map((team) => (
+                                <tr key={team._id}>
+                                    <td>{team.teamName}</td>
+                                    <td>
+                                        <span className={"main-text"}>{team.leaderName}</span>
+                                        <br/>
+                                        <span className={"small-text text-grey"}>(@{team.leaderUsername})</span>
+                                    </td>
+                                    <td><span className={"main-text"}>{team.teamMembers.length}</span></td>
+                                    <td><span className={"main-text"}>{getBoard(team._id)}</span></td>
+                                    <td>
+                                        <Button className={"btn-brown"}
+                                                style={{minWidth: "117px", display: "inline-flex"}}
+                                                onClick={() => navigate(team._id)}>
+                                            View Detail</Button>
+                                    </td>
+                                </tr>
+                            ))}
 
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                        : <span className={"main-text non-clickable"}>
+                            You are not in any teams yet, create a team or get your team leader to invite you to their team!
+                        </span>
+                }
             </WhiteBackground>
         );
     }

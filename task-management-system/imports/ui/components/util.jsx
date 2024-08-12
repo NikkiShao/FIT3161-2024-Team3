@@ -64,6 +64,6 @@ export function getUserInfo() {
         }
     })
 
-    console.log("Current logged in user:" + JSON.stringify(userInfo))
+    // console.log("Current logged in user:" + JSON.stringify(userInfo))
     return userInfo;
 }

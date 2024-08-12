@@ -10,6 +10,7 @@ import classNames from "classnames";
 import Card from "./Card";
 import './BoardCard.css';
 import { useNavigate } from "react-router-dom";
+import Button from "../buttons/Button";
 
 /**
  * Board card used to display brief details on any Board
@@ -36,36 +37,35 @@ const BoardCard = ({
 }) => {
     const navigate = useNavigate();
 
-    let boardCardClasses = classNames("board-card", className);
-
     // handler function of clicking view button
     const handleViewClick = () => {
-        navigate("/boards/" + boardId);
+        navigate("boards/" + boardId);
     };
 
     // checking deadline date to determine if overdue
     const boardDeadlineDate = new Date(boardDeadline);
-    const today = new Date();
+    const isOverdue = boardDeadlineDate <= new Date();
+    let boardCardClasses = classNames("board-card non-clickable",  isOverdue? "board-card-overdue" : "", className);
 
     let displayText = null;
-    if (boardDeadlineDate <= today) {
+    if (isOverdue) {
         // if the deadline date is before or equal to today, show OVERDUE
-        displayText = <div style={{ color: "var(--dark-red)" }} className={"text-center small-text overdue"}>OVERDUE</div>;
+        displayText = <div style={{ color: "var(--dark-red)", fontWeight: "bold" }} className={"text-center small-text overdue"}>OVERDUE</div>;
     }
 
     return (
         <Card className={boardCardClasses} {...cardProps}>
             {/* card top div */}
-            <div id="card__header">
+            <div id={"board-card__header"}>
                 {displayText}
-                <div className="board-main-text three-line">{boardName}</div>
+                <div className="main-text text-center one-line">{boardName}</div>
             </div>
             {/* card middle div */}
-            <div className="board-small-text">{`Nickname: ${boardNickname}`}</div>
-            <div className="board-small-text board-description">{boardDesc}</div>
-            <div className="board-small-text" id="board__deadline">{`Deadline: ${boardDeadlineDate.toLocaleString()}`}</div>
+            <div className="board-small-text text-grey">{`Code: ${boardNickname}`}</div>
+            <div className="board-small-text text-grey text-left-aligned two-line">{boardDesc}</div>
+            <div className="small-text" id={"board-card__deadline"}>{`Deadline: ${boardDeadlineDate.toLocaleString()}`}</div>
             {/* card bottom div */}
-            <button className="view-button btn-brown" onClick={handleViewClick}>View</button>
+            <Button className="view-button btn-brown" onClick={handleViewClick}>View</Button>
         </Card>
     );
 };

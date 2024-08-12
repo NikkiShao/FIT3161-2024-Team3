@@ -18,6 +18,7 @@ import EmailVerificationPage from "./components/pages/registration/EmailVerifica
 import DashboardPage from "./components/pages/DashboardPage";
 import TeamCreationModal from './components/general/modal/TeamCreationModal';
 import TeamsListPage from './components/pages/team/TeamsListPage';
+import TeamLobbyPage from "./components/pages/team/TeamLobbyPage";
 
 import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
@@ -78,7 +79,16 @@ export const App = () => (
                         </ProtectedRoute>
                     }/>
 
+
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <TeamLobbyPage/>
+                        </ProtectedRoute>
+                    }/>
+
                     {/* Boards related routes */}
+
+
 
 
                 </Routes>
