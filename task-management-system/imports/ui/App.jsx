@@ -8,7 +8,6 @@ import "../../client/main.css"
 import ExamplesPage from "./components/pages/examples/Examples";
 
 import EmptyPage from "./components/pages/EmptyPage";
-import LandingPage from "./components/pages/LandingPage";
 
 import SignInPage from "./components/pages/SignInPage";
 import RegistrationPage from "./components/pages/registration/RegistrationPage";
@@ -16,7 +15,6 @@ import AccountCreatedPage from "./components/pages/registration/AccountCreatedPa
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 
 import DashboardPage from "./components/pages/DashboardPage";
-import TeamCreationModal from './components/general/modal/TeamCreationModal';
 import TeamsListPage from './components/pages/team/TeamsListPage';
 import TeamLobbyPage from "./components/pages/team/TeamLobbyPage";
 
@@ -41,7 +39,11 @@ export const App = () => (
                     <Route path="/examples" element={<ExamplesPage/>}/>
 
                     {/* base & home routes */}
-                    <Route path="/" element={<LandingPage/>}/>
+                    <Route path={'/'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_OUT_ONLY}>
+                            <SignInPage/>
+                        </ProtectedRoute>
+                    }/>
                     <Route path="*" element={<EmptyPage/>}/>
 
                     {/* Register/Sign in related pages */}

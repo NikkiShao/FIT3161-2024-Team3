@@ -23,7 +23,9 @@ body .small-page {
     min-width: 600px;
 }
 
-
-
-
+.page-help-tip {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
 

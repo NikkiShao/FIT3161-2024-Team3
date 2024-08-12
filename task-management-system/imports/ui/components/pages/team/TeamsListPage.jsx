@@ -89,8 +89,10 @@ export const TeamsListPage = () => {
         // sort by team name (if you don't sort, it changes every time)
         const sortedTeamsData = teamsData.sort((a, b) => a.teamName.localeCompare(b.teamName));
 
+        const helpText = "This page displays a list of all of your teams that you belong to. You can press the " +
+            "+Add button to create a new team or wait for your team leader to invite you to one."
         return (
-            <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+            <WhiteBackground pageHelpText={helpText} pageLayout={PageLayout.LARGE_CENTER}>
 
                 <TeamCreationModal
                     open={modalOpen}
