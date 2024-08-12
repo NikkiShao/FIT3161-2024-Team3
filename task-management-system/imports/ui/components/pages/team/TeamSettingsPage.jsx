@@ -38,13 +38,10 @@ export const TeamSettingsPage = () => {
     const [error, setError] = useState('');
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-    // const isLoadingTeams = useSubscribe('specific_team', teamId);
     const isLoadingTeams = useSubscribe('team_by_id', teamId);
-
     const teamsData = useTracker(() => {
-        // const idObject = new Mongo.ObjectID(teamId);
         const team =  TeamCollection.findOne({ _id: teamId});
-        if(team && teamName == ''){
+        if(team && teamName == '' && teamLeader == '' && teamMembers == ''){
             setTeamName(team.teamName);
             setTeamLeader(team.teamLeader);
             setTeamMembers(team.teamMembers);
@@ -65,13 +62,13 @@ export const TeamSettingsPage = () => {
     const [newLeader, setNewLeader] = useState('');
     const onOpenModal = () => {
         setOpen(true);
-        // const leaderOptions = teamMembersData.filter(user => user.emails[0].address !== userInfo.email);
         setNewLeader(leaderOptions[0].emails[0].address);
     };
     const onCloseModal = () => setOpen(false);
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
-    const saveChanges = () => {
+    const saveChanges = (event) => {
+        // event ? event.preventDefault() : null;
         if(teamName && teamMembers.length > 0){
         Meteor.call('update_team', teamId, 
         {
@@ -96,7 +93,8 @@ export const TeamSettingsPage = () => {
     }
     };
 
-    const handleAddMember = () => {
+    const handleAddMember = (event) => {
+        event.preventDefault();
         if (emailRegex.test(newMember) && !teamMembers.includes(newMember)) {
             setTeamMembers([...teamMembers, newMember]);
             setNewMember('');
