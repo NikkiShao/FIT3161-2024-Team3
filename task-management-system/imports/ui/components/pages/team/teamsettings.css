@@ -68,7 +68,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-    width: 109%; 
+    width: 100%; 
     max-width: 400px;
 }
 

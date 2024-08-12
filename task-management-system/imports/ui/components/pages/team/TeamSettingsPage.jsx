@@ -67,41 +67,64 @@ export const TeamSettingsPage = () => {
     const onCloseModal = () => setOpen(false);
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
+    const [errors, setErrors] = useState({
+        teamName: "",
+        email: ""
+    });
+
     const saveChanges = (event) => {
-        // event ? event.preventDefault() : null;
-        if(teamName && teamMembers.length > 0){
-        Meteor.call('update_team', teamId, 
-        {
-            teamName: teamName,
-            teamLeader: teamLeader,
-            teamMembers: teamMembers
-        }, (error) => {
-            if (error) {
-                setError(error.reason);
-            } else {
-                setTeamName('');
-                setTeamLeader('');
-                setTeamMembers([]);
-                setNewMember('');
-                setError('');
-                setNewLeader('');
-            }
+        event ? event.preventDefault() : null;
+        const newErrors = {};
+        console.log(teamName);
+        let isError = false;
+        if(teamName ===''){
+            console.log("hereee");
+            newErrors.teamName = "Please fill in your team name";
+            isError = true;
         }
-    );
-    } else {
-        setError('Team name and members are required');
-    }
+        else if(teamMembers.length < 1){
+            newErrors.teamMembers = "Please fill in your team member";
+            isError = true;
+        }
+
+        setErrors(newErrors);
+
+        if(!isError){
+            console.log("here");
+            Meteor.call('update_team', teamId, 
+            {
+                teamName: teamName,
+                teamLeader: teamLeader,
+                teamMembers: teamMembers
+            }, (error) => {
+                if (error) {
+                    setError(error.reason);
+                } else {
+                    setTeamName('');
+                    setTeamLeader('');
+                    setTeamMembers([]);
+                    setNewMember('');
+                    setError('');
+                    setNewLeader('');
+                }
+            });
+        }
     };
 
     const handleAddMember = (event) => {
         event.preventDefault();
-        if (emailRegex.test(newMember) && !teamMembers.includes(newMember)) {
+        const newError = {};
+        if(teamMembers.includes(newMember)){
+            newError.email = "Email has already been added";
+        } else if (!emailRegex.test(newMember)) {
+            newError.email = "Please input a valid email address";
+        }
+        else {
             setTeamMembers([...teamMembers, newMember]);
             setNewMember('');
             setError('');
-        } else {
-            setError('Invalid or duplicate email address');
         }
+        setErrors(newError);
     };
 
     const handleRemoveMember = (member) => {
@@ -154,7 +177,11 @@ export const TeamSettingsPage = () => {
 
                     <div className="ts-input-group">
                     <label>{"Team Name:"}</label>
-                    <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
+                    <div className={"input-error-div"}>
+                    <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/>
+                    {errors.teamName && <span className="text-red small-text">{errors.teamName}</span>}
+                    </div>
+                    </div>
 
                     <div className="ts-input-group" >
                     <label>{"Team Leader:"}</label>
@@ -178,8 +205,11 @@ export const TeamSettingsPage = () => {
                         </Fragment>
                     ))}   
                     <div className='add-member-input'>
+                    <div className={"input-error-div"}>
                         <Input type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
-                        <button className="inserted-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30} /></button>
+                        {errors.email && <span className="text-red small-text">{errors.email}</span>}
+                    </div>
+                    <button className="inserted-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30} /></button>
                    </div>   
                     </ul>
                     </div> 
