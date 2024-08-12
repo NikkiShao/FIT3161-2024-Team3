@@ -2,7 +2,7 @@
     background: var(--white);
     min-width: 500px;
     padding-bottom: 0px;
-    border-radius: 15px; 
+    border-radius: 15px;
 }
 
 .ts-modal-base {
@@ -14,12 +14,10 @@
     border-radius: 25px;
 }
 
-h1 {
-    text-align: center; 
-    margin-top:0%;
-    top: 30px;
-    padding-bottom: 30px;
-    font-weight: normal; 
+.ts-form-class {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
 }
 
 .back-button{
@@ -31,8 +29,7 @@ h1 {
 .ts-input-group {
     display: flex;
     justify-content: left;
-    align-items: left;
-    margin-bottom: 5px;
+    align-items: start;
 }
 
 .ts-input-group>label {
@@ -44,19 +41,11 @@ h1 {
 }
 
 .ts-input-group>input {
-    padding: 10px;
-    border: 2px solid var(--light-grey);
-    border-radius: 5px;
     flex-grow: 1;
-    align-items: center;
 }
 
 .ts-input-group>select {
-    padding: 8px;
-    border: 2px solid var(--light-grey);
-    border-radius: 5px;
     flex-grow: 1;
-    align-items: center;
 }
 
 .ts-input-group ul {
@@ -96,6 +85,3 @@ h1 {
     text-align: center;
 }
 
-.leave-link{
-    color: var(--red);
-}

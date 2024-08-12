@@ -142,22 +142,23 @@ export const TeamSettingsPage = () => {
             <>
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
                 <div className="team-settings-base">
+
                 <div className='back-button'>
                 <Button onClick={() => navigate(`/teams/${teamId}`)} className={"flex flex-row gap-2 btn-back"}>
                 <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
                     Back
                 </Button></div>
 
-                    <h1>Team Settings</h1>
-                    <form onSubmit={saveChanges}>
+                    <h1 className={"text-center"}>Team Settings</h1>
+                    <form className={"ts-form-class"} onSubmit={saveChanges}>
 
                     <div className="ts-input-group">
                     <label>{"Team Name:"}</label>
-                    <Input style={{marginBottom:"10px"}} value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
+                    <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/></div>
 
                     <div className="ts-input-group" >
                     <label>{"Team Leader:"}</label>
-                        <select style={{marginBottom:"8px"}} value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
+                        <select className={"input-base"} value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
                         {teamMembersData.map(user => (
                         <option key={user._id} value={user.emails[0].address}>
                         {user.profile.name} (@{user.username})</option>))}
@@ -189,14 +190,14 @@ export const TeamSettingsPage = () => {
                     </div>
                     }
                     {userInfo.email === teamsData.teamLeader ?
-                    <div style={{marginTop:"50px"}} className='button-group'>
+                    <div className='button-group'>
                     <Button type="submit" className="btn-brown">Save Changes</Button>
                     </div> : <></>}
 
                     </form>
                 </div>
 
-                <a href='#' className="leave-link" onClick={onOpenModal}>Leave Team</a>
+                <a href='#' className="text-red" style={{width:"100%", textAlign: "end"}} onClick={onOpenModal}>Leave Team</a>
             </WhiteBackground>
             
 
@@ -222,7 +223,7 @@ export const TeamSettingsPage = () => {
                             <div className="input-group">
                                 <label style={{marginBottom:"10px"}} className={"main-text text-grey"}>New Team Lead:</label>
                                 <div className='ts-input-group'>
-                                <select value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
+                                <select className={"input-base"} value={newLeader} onChange={(e) => setNewLeader(e.target.value)}>
                                     {teamMembersData.filter(user => user.emails[0].address !== userInfo.email).map(user => (
                                         <option key={user._id} value={user.emails[0].address}>
                                         {user.profile.name} (@{user.username})
