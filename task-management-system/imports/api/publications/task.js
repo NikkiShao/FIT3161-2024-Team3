@@ -15,6 +15,14 @@ Meteor.publish("pinned_tasks", function () {
 });
 
 /**
+ * Publishes all tasks of a board.
+ */
+Meteor.publish("all_board_tasks", function (boardId) {
+    return TaskCollection.find({ boardId: boardId });
+});
+
+
+/**
  * todo: remove, this is for testing
  */
 Meteor.publish("all_tasks", function () {

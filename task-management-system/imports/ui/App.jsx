@@ -23,6 +23,7 @@ import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
+import TempBoard from "./components/pages/board/TempBoard";
 
 /**
  * Main application component
@@ -97,9 +98,11 @@ export const App = () => (
                     }/>
 
                     {/* Boards related routes */}
-
-
-
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/boards/:boardId'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <TempBoard/>
+                        </ProtectedRoute>
+                    }/>
 
                 </Routes>
             </main>

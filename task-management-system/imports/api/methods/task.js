@@ -12,25 +12,58 @@ Meteor.methods({
   /**
    * Adds a new task to the database. Keep in mind this is an async method.
    *
-   * @param {string} name - name of task
-   * @param {datetime} deadline - deadline datetime of task
-   * @param {boolean} isPinned - whether task is pinned or not
-   * @param {string} boardId - the ID of the board the task belongs to
-   * @param {string} status - status of the task
-   * @param {[string]} tagNames - array of tag names that the task has
-   * @param {string} desc - full description of the task
+   * @param {object} task - task object containing task details
+   * @param {string} task.taskName - title of task
+   * @param {string} task.taskDesc - full description of the task
+   * @param {string} task.taskDeadlineDate - deadline datetime of task
+   * @param {boolean} task.taskIsPinned - whether task is pinned or not
+   * @param {string} task.boardId - the ID of the board the task belongs to
+   * @param {string} task.statusName - status of the task
+   * @param {[string]} task.tagNames - array of tag names that the task has
+   * @param contribution - contribution details of the task
    */
-  "add_task": function (name, desc, deadline, isPinned, boardId, status, tagNames) {
-    TaskCollection.insert({
-      "taskName": name,
-      "taskDesc": desc,
-      "taskDeadlineDate": deadline,
-      "taskIsPinned": isPinned,
-      "boardId": boardId,
-      "status": status,
-      "tagNames": tagNames,
-    });
+  'insert_task'(task, contribution) {
+    try {
+      console.log("Inserting task:", task);
+
+      check(task, {
+        taskName: String,
+        taskDesc: String,
+        taskDeadlineDate: Date,
+        taskIsPinned: Boolean,
+        boardId: String,
+        statusName: String,
+        tagNames: [String],
+      });
+
+      // Convert deadline to Date object
+      if (isNaN(task.taskDeadlineDate.getTime())) {
+        throw new Meteor.Error('invalid-deadline', 'Deadline must be a valid date');
+      }
+
+      TaskCollection.insert({
+        taskName: task.taskName,
+        taskDesc: task.taskDesc,
+        taskDeadlineDate: task.taskDeadlineDate.toISOString(),
+        taskIsPinned: task.taskIsPinned,
+        boardId: task.boardId,
+        statusName: task.statusName,
+        tagNames: task.tagNames,
+      });
+
+      // todo insert contribution entities
+      for (let entry in contribution) {
+        // insert an entry of contribution into database
+
+      }
+
+      console.log("Task inserted successfully");
+    } catch (error) {
+      console.error("Task insertion error:", error);
+      throw new Meteor.Error('task-insertion-failed', 'Task insertion failed');
+    }
   },
+
   /**
    * Updates the pinned state of a task.
    *

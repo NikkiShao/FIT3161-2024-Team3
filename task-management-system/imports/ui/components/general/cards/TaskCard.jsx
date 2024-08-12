@@ -11,7 +11,7 @@ import Card from "./Card";
 import './card.css';
 import TaskTag from "./TaskTag";
 import { useNavigate } from "react-router-dom";
-import PinTask from './PinTask';
+import TaskPin from './TaskPin';
 
 /**
  * Task card used to display brief details on any Task
@@ -84,7 +84,7 @@ const TaskCard = ({
 
       {/* card top div */}
       <div id="card__header">
-        <PinTask isPinned={isPinned} onPinChange={setIsPinned} /> {/* Use PinTask component */}
+        <TaskPin isPinned={isPinned} onPinChange={setIsPinned} /> {/* Use PinTask component */}
         <div id={"card__header-inner"}>
           {displayText}
           <div className="main-text three-line">{taskName}</div>
