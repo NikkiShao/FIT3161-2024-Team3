@@ -135,9 +135,10 @@ export const TeamLobbyPage = () => {
                     </Card>
                 )
             )
-
+            const helpText = "This page displays a list of all the task boards and polls for this team. You can " +
+                "create a new board or a new poll by clicking the respective +Add buttons."
             return (
-                <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+                <WhiteBackground pageHelpText={helpText} pageLayout={PageLayout.LARGE_CENTER}>
 
                     {/*modals (can go anywhere) */}
                     <BoardCreationModal teamId={teamId} open={boardModalOpen} closeHandler={onCloseBoardModal}/>

@@ -11,6 +11,8 @@ import {Tracker} from 'meteor/tracker';
 import "./whiteBackground.css"
 
 import PageLayout from "../../../enums/PageLayout";
+import HoverTip from "../hoverTip/HoverTip";
+import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 
 
 /**
@@ -19,9 +21,10 @@ import PageLayout from "../../../enums/PageLayout";
  * @param {JSX.Element} children - anything that goes onto the background, e.g. text, icons, any other components
  * @param {string} className - custom classes, that can override the base style
  * @param {PageLayout} pageLayout the layout required of the page - a value of Enum PageLayout class
+ * @param {string} pageHelpText - text about what the page is, what you can do, i.e. the help text
  * @param divProps - includes all other properties such as styles, width, height, fill, etc.
  */
-export const WhiteBackground = ({children, className, pageLayout, ...divProps}) => {
+export const WhiteBackground = ({children, className, pageLayout, pageHelpText, ...divProps}) => {
 
     // the classes for the div outside the actual white page, determines its alignment (left/right/center)
     let outerDivStyle = {
@@ -65,10 +68,19 @@ export const WhiteBackground = ({children, className, pageLayout, ...divProps}) 
         // todo
 
     }
+    // for help hover
+    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
 
     return (
         <div style={outerDivStyle}>
             <div {...divProps} className={pageMainDivClasses}>
+                {/*todo: make only appear when there is text*/}
+                <HoverTip icon={questionIcon}
+                          outerText={"Help"}
+                          toolTipText={pageHelpText}
+                          divClassName={"page-help-tip"}
+                          textClassname
+                />
                 {children}
             </div>
         </div>

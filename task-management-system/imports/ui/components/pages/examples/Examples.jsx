@@ -21,11 +21,14 @@ import PollCollection from "../../../../api/collections/poll";
 import TaskCollection from "../../../../api/collections/task";
 import TeamCollection from "../../../../api/collections/team";
 import UserCollection from "../../../../api/collections/user";
+import HoverTip from "../../general/hoverTip/HoverTip";
+import HoverTipExamples from "./HoverTipExamples";
 
 /**
  * Examples page component
  */
 export const ExamplesPage = () => {
+
     //     loads all data here (for testing purposes)
     const isLoadingBoards = useSubscribe('all_boards')
     let boardsData = useTracker(() => {
@@ -65,6 +68,11 @@ export const ExamplesPage = () => {
         <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
 
             <h1>Examples Page</h1>
+
+            <h2> Hover Tip example </h2>
+            hover over me:
+            <HoverTipExamples />
+
 
             <h2>Text Examples</h2>
 

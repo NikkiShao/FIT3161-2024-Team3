@@ -41,7 +41,11 @@ export const App = () => (
                     <Route path="/examples" element={<ExamplesPage/>}/>
 
                     {/* base & home routes */}
-                    <Route path="/" element={<LandingPage/>}/>
+                    <Route path={'/'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_OUT_ONLY}>
+                            <SignInPage/>
+                        </ProtectedRoute>
+                    }/>
                     <Route path="*" element={<EmptyPage/>}/>
 
                     {/* Register/Sign in related pages */}
