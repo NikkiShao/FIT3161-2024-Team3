@@ -29,3 +29,8 @@ Meteor.publish('all_team_boards', function (teamId) {
 Meteor.publish('all_boards', function () {
     return BoardCollection.find();
 })
+
+Meteor.publish('board_by_id', function(boardId){
+    // const idObject = new Mongo.ObjectID(boardId);
+    return BoardCollection.find({_id: boardId});
+});

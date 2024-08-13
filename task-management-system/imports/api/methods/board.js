@@ -8,7 +8,6 @@ import {BoardCollection} from '/imports/api/collections/board.js';
 
 Meteor.methods({
 
-    //not done, here for testing the team page
     "add_board": function (name, code, deadline, desc, teamId) {
         BoardCollection.insert(
             {
@@ -19,5 +18,15 @@ Meteor.methods({
                 "teamId": teamId
             }
         )
+    },
+    "update_board": function(boardId, boardData){
+        BoardCollection.update(boardId, {$set:{
+            "boardName": boardData.boardName,
+            "boardCode": boardData.boardCode,
+            "boardDeadline": boardData.boardDeadline,
+            "boardDescription": boardData.boardDescription
+        }
+            
+        })
     }
 })
