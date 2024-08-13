@@ -1,6 +1,6 @@
 /**
  * File Description: Team database entity
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Audrey
  */
 
@@ -17,10 +17,22 @@ Meteor.methods({
      * @param leader - leader's email
      */
     "add_team": function (name, members, leader) {
-        TeamCollection.insert({
-            "teamName": name,
-            "teamMembers": members,
-            "teamLeader": leader
-        })
+        TeamCollection.insert(
+            {
+                "teamName": name,
+                "teamMembers": members,                
+                "teamLeader": leader
+            }
+        )
+    },
+    "update_team": function (teamId, teamsData){
+        // const idObject = new Mongo.ObjectID(teamId);
+        TeamCollection.update(teamId, {$set: 
+            {
+                "teamName": teamsData.teamName,
+                "teamMembers": teamsData.teamMembers,
+                "teamLeader": teamsData.teamLeader
+            }
+        });
     }
 })

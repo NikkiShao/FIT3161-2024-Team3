@@ -154,7 +154,7 @@ export const TeamLobbyPage = () => {
                             </Button>
                         </div>
                         <h1 className={"text-center"}>{teamData.teamName}</h1>
-                        <Button className={"btn-light-grey"} onClick={() => navigate("settings")}>{CogIcon}Team
+                        <Button className={"btn-light-grey"} onClick={() => navigate('/' + BaseUrlPath.TEAMS + '/' + teamId + '/settings')}>{CogIcon}Team
                             Settings</Button>
                     </div>
 
