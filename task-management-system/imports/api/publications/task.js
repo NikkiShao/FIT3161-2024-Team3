@@ -21,6 +21,12 @@ Meteor.publish("all_board_tasks", function (boardId) {
     return TaskCollection.find({ boardId: boardId });
 });
 
+/**
+ * Publishes a single task.
+ */
+Meteor.publish("specific_task", function (taskId) {
+    return TaskCollection.find({ _id: taskId });
+});
 
 /**
  * todo: remove, this is for testing

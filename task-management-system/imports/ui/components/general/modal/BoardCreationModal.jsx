@@ -45,7 +45,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         event.preventDefault();
 
         // error checks
-        const newErrors = {}
+        let newErrors = {}
         let isError = false;
 
         // board name

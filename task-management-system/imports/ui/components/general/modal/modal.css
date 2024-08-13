@@ -46,7 +46,7 @@
     width: 100%;
 }
 
-.inner-input-group-col {
+#task-modal__tags-group {
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -55,14 +55,14 @@
     box-sizing: border-box;
 }
 
-.task-modal-grid {
+#task-modal__grid {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
-.task-modal-top {
+#task-modal__top {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -70,7 +70,8 @@
     justify-content: center;
     gap: 5px;
 }
-.task-modal-right {
+
+#task-modal__right {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -80,11 +81,48 @@
     border-left: 2px solid var(--dark-grey);
 }
 
-.task-modal-tags-display {
+.task-modal__tags-display {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: start;
     align-items: center;
     gap: 10px;
+}
+
+#task-modal__hr {
+    margin: 0;
+    border-bottom: 1px solid var(--black);
+    border-color: var(--black);
+    width: 100%;
+}
+
+#task-modal__contribution {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.task-modal__contribution-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr 1fr;
+    align-items: center;
+    width: 80%;
+}
+#task-modal__percent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.input-tiny {
+    max-width: 80px !important;
+    min-width: 80px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }

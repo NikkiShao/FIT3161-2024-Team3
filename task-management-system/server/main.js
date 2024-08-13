@@ -5,9 +5,6 @@ import '/imports/api/collections/board.js';
 import '/imports/api/publications/board.js';
 import '/imports/api/methods/board.js';
 
-import '/imports/api/collections/contribution.js';
-import '/imports/api/publications/contribution.js';
-
 import '/imports/api/collections/poll.js';
 import '/imports/api/publications/poll.js';
 
