@@ -17,13 +17,13 @@ Meteor.methods({
         Accounts.sendVerificationEmail(userId);
     },
 
-     /**
-     * Finds a user by id and emails a verification email
-     * @param {string} userId - id of the user
-     * @param {string} username - Update username for the user.
-     * @param {string} email - Update email for the user.
-     * @param {boolean} notification - Update email notifications state.
-        */
+    /**
+    * Finds a user by id and emails a verification email
+    * @param {string} userId - id of the user
+    * @param {string} username - Update username for the user.
+    * @param {string} email - Update email for the user.
+    * @param {boolean} notification - Update email notifications state.
+       */
 
     "update_user_info": function (userId, name, email, notification) {
         check(userId, String);
@@ -47,6 +47,31 @@ Meteor.methods({
     "delete_user": function (userId) {
         check(userId, String);
         Meteor.users.remove(userId);
+    },
+
+
+
+
+    /**
+     * Checks if a user has joined any team by id
+     * @param {string} userId - id of the user
+     * @returns {boolean} - true if user has joined any team, false otherwise
+     */
+    "check_if_join_any_team": function (userId) {
+        check(userId, String);
+
+        // get infomation about if user has joined any team
+        const user = Meteor.users.findOne(
+            { _id: userId },
+            { fields: { "profile.teamIds": 1 } }
+        );
+
+        // return true if user has joined any team
+        if (user.profile && Array.isArray(user.profile.teamIds)) {
+            return user.profile.teamIds.length > 0;
+        }
+
+        return false;
     }
 
-    })
+})

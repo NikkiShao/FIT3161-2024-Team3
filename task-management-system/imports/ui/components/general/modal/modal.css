@@ -33,3 +33,17 @@
 }
 
 
+
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+.alert-text {
+    color: var(--red);
+    font-size: 18px;
+}

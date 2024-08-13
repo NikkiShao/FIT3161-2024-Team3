@@ -5,6 +5,8 @@ import PageLayout from "../../enums/PageLayout";
 import { Meteor } from 'meteor/meteor';
 import { getUserInfo } from '../util';
 import "../pages/registration/registration.css"
+import DeleteAccountModal from '../general/modal/DeleteAccountModal';
+
 
 function AccountSettings() {
     const userData = getUserInfo();
@@ -19,6 +21,10 @@ function AccountSettings() {
     const [emailNotifications, setEmailNotifications] = useState(notificationState === true ? "On" : "Off");
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
     const [successMessage, setSuccessMessage] = useState(''); // State to store success message
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const onOpenModal = () => setModalOpen(true);
+    const onCloseModal = () => setModalOpen(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -61,21 +67,10 @@ function AccountSettings() {
         });
     };
 
-    const handleDelete = (event) => {
-        event.preventDefault();
-
-        // Call method to delete user
-        Meteor.call('delete_user', userID, (error) => {
-            if (error) {
-                setErrorMessage(`Failed to delete user: ${error.reason}`);
-            } else {
-                setSuccessMessage("User deleted successfully.");
-            }
-        });
-    };
-
     return (
         <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+            <DeleteAccountModal open={modalOpen} closeHandler={onCloseModal} />
+
             <h1>Account Setting Page</h1>
             <div className="input-container">
                 <label> Name: </label>
@@ -111,7 +106,7 @@ function AccountSettings() {
             <button
                 type="button"
                 className="delete-button"
-                onClick={handleDelete}>
+                onClick={ onOpenModal }>
                 Delete account and all data</button>
         </WhiteBackground>
     );
