@@ -73,10 +73,7 @@ Meteor.methods({
                         contributions: taskData.contributions
                     }
                 })
-
-                // edit each contribution
             }
-
 
             console.log("Task inserted successfully");
         } catch (error) {

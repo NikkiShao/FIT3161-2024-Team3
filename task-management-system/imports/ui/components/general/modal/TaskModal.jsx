@@ -18,15 +18,15 @@ import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
 
 /**
+ * Task modal to view/edit or create tasks
  *
- * @param isOpen
- * @param onClose
- * @param boardId
- * @param taskData
- * @param tagsData
- * @param statusesData
- * @returns {Element}
- * @constructor
+ * @param isOpen - is modal is open
+ * @param onClose - handler for closing modal
+ * @param boardId - ID of the current board
+ * @param taskId - ID of the task to view, null if new task
+ * @param tagsData - list of tags
+ * @param statusesData - list of statuses
+ * @returns {Element} - task modal JSX element
  */
 const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, membersData}) => {
     // State variables to manage the form inputs
@@ -51,14 +51,13 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         title: '',
         description: '',
         deadline: '',
-        contributions: '',
         overall: ''
     })
 
     // for date checking
     const minDeadlineDate = new Date();
 
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
+    // handler for modal close
     const modalCloseClearInputs = () => {
         setModalTaskId(null)
         setTitle('')
@@ -73,11 +72,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         onClose()
     }
 
-    console.log("data", taskData)
-
     // Handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
         let newErrors = {}
         let isError = false;
@@ -102,14 +99,11 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         if (!deadlineDate || !deadlineTime) {
             newErrors.deadline = "Please fill in the task deadline";
             isError = true
-        } else if (deadlineDateObject < new Date()) {
-            // deadline is passed, invalid
+        } else if (!taskId && deadlineDateObject < new Date()) {
+            // NEW TASK and deadline is passed, invalid
             newErrors.deadline = "Deadline must be in the future";
             isError = true
         }
-
-        // contribution check
-
 
         setErrors(newErrors)
 
@@ -180,17 +174,24 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         }
     };
 
-    const addTag = (value) => {
+    // handler for adding a tag
+    const addTag = (event, value) => {
+        event.preventDefault();
+
         if (!tagNames.includes(value)) {
             setTagNames(tagNames.concat(value))
         }
     }
 
-    const removeTag = (value) => {
+    // handler for removing a tag
+    const removeTag = (event, value) => {
+        event.preventDefault();
         setTagNames(tagNames.filter(tagName => tagName !== value))
     }
 
-    const addContribution = (email, value) => {
+    // handler for adding contributions
+    const addContribution = (event, email, value) => {
+        event.preventDefault();
         if (!value) {
             value = 0
         }
@@ -205,7 +206,10 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         })
     }
 
-    const removeContribution = (email) => {
+    // handler for removing contributions
+    const removeContribution = (event, email) => {
+        event.preventDefault();
+
         const newContribution = Object.keys(contributions)
             .filter(objKey => objKey !== email)
             .reduce((newObj, key) => {
@@ -215,6 +219,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             );
         setContributions(newContribution)
     }
+
+    // icons
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
                                style={{paddingRight: "5px"}}/>;
@@ -226,6 +233,8 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
 
     const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
                                        height={30}/>;
+
+    // waiting for loading
     if (!isLoading) {
 
         if (taskId && taskId !== modalTaskId) {
@@ -241,7 +250,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
 
             // map out contributions
             const newContributions = {}
-            for (let i=0; i<taskData.contributions.length; i++) {
+            for (let i = 0; i < taskData.contributions.length; i++) {
                 newContributions[taskData.contributions[i]["email"]] = taskData.contributions[i]["percent"]
             }
             setContributions(newContributions)
@@ -250,7 +259,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
 
         let displayText = null;
         if (taskData) {
-            const taskDeadlineDate = new Date(taskData.taskDeadline);
+            const taskDeadlineDate = new Date(taskData.taskDeadlineDate);
             const today = new Date();
             let urgentStartDate = new Date();
             urgentStartDate.setTime(today.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
@@ -265,6 +274,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
 
         // check if there is any team member's contribution not added, display their options if so
         const allMembersAdded = membersData.filter((member) => contributions[member.emails[0].address] === undefined).length === 0;
+
+        console.log(tagsData)
+        console.log(statusesData)
 
         return (
             <Modal
@@ -370,7 +382,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                     className="input-base"
                                 >
                                     {/* populate status based on database entry */}
-                                    <option value="To Do">To Do</option>
                                     {statusesData ?
                                         statusesData
                                             .sort((a, b) => {
@@ -381,7 +392,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                         value={status.statusName}>{status.statusName}</option>
                                             )) : null
                                     }
-                                    <option value="Done">Done</option>
                                 </select>
                             </div>
 
@@ -390,46 +400,53 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                             <div className="input-group-2col-full" style={{alignItems: "start"}}>
                                 <label className="main-text text-grey" htmlFor="status">Tags:</label>
 
-                                <div id={"task-modal__tags-group"}>
-                                    <div className={"task-modal__tags-display"}>
-                                        {
-                                            tagNames.map((tagName) => {
-                                                // here find the tag colour that matches this name
-                                                const tagColour = tagsData.filter((tag) => {
-                                                    return tagName === tag.tagName
-                                                })[0].tagColour;
-                                                return (
-                                                    <TaskTag key={tagName} tagName={tagName} tagColour={tagColour}
-                                                             editMode={true} xButtonHandler={() => removeTag(tagName)}
-                                                    />
-                                                )
-                                            })
-                                        }
-                                    </div>
-
-                                    <hr id={"task-modal__hr"}/>
-
-                                    {/*div for displaying tag buttons to add*/}
-                                    <div className={"task-modal__tags-display"}>
-                                        {/* populate tags based on database entry */}
-                                        {
-                                            tagsData ? tagsData.map((tag, index) => {
-                                                if (!tagNames.includes(tag.tagName)) {
-                                                    return (
-                                                        <button key={index} style={{backgroundColor: tag.tagColour}}
-                                                                onClick={(e) => addTag(tag.tagName)}
-                                                                className={"task-tag icon-btn"}
-                                                        >
-                                                            {tag.tagName}{addTagIcon}
-                                                        </button>
-                                                    )
-                                                } else {
-                                                    return null;
+                                {
+                                    !tagsData || tagsData.length === 0 ? null :
+                                        <div id={"task-modal__tags-group"}>
+                                            <div className={"task-modal__tags-display"}>
+                                                {
+                                                    tagNames.map((tagName) => {
+                                                        // here find the tag colour that matches this name
+                                                        const tagColour = tagsData.filter((tag) => {
+                                                            return tagName === tag.tagName
+                                                        })[0].tagColour;
+                                                        return (
+                                                            <TaskTag key={tagName} tagName={tagName}
+                                                                     tagColour={tagColour}
+                                                                     editMode={true}
+                                                                     xButtonHandler={(e) => removeTag(e, tagName)}
+                                                            />
+                                                        )
+                                                    })
                                                 }
-                                            }) : null
-                                        }
-                                    </div>
-                                </div>
+                                            </div>
+
+                                            <hr id={"task-modal__hr"}/>
+
+                                            {/*div for displaying tag buttons to add*/}
+                                            <div className={"task-modal__tags-display"}>
+                                                {/* populate tags based on database entry */}
+                                                {
+                                                    tagsData ? tagsData.map((tag, index) => {
+                                                        if (!tagNames.includes(tag.tagName)) {
+                                                            return (
+                                                                <button key={index}
+                                                                        style={{backgroundColor: tag.tagColour}}
+                                                                        onClick={(e) => addTag(e, tag.tagName)}
+                                                                        className={"task-tag icon-btn"}
+                                                                >
+                                                                    {tag.tagName}{addTagIcon}
+                                                                </button>
+                                                            )
+                                                        } else {
+                                                            return null;
+                                                        }
+                                                    }) : null
+                                                }
+                                            </div>
+                                        </div>
+                                }
+
                             </div>
 
                             {/* contribution section */}
@@ -447,7 +464,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                             const existingPercentage = contributions[memberEmail];
 
                                             return (
-                                                <div className={"task-modal__contribution-grid"}>
+                                                <div key={member} className={"task-modal__contribution-grid"}>
                                                     {member.profile.name}
                                                     <div id={"task-modal__percent"}>
                                                         <Input
@@ -457,12 +474,12 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                             max={100}
                                                             id={"contributionPct"}
                                                             value={existingPercentage ? existingPercentage : ''}
-                                                            onChange={(e) => addContribution(memberEmail, e.target.value)}
+                                                            onChange={(e) => addContribution(e, memberEmail, e.target.value)}
                                                         />
                                                         <span className={"main-text text-grey"}>%</span>
                                                     </div>
-                                                    <button className={"icon-btn"} onClick={() => {
-                                                        removeContribution(memberEmail)
+                                                    <button className={"icon-btn"} onClick={(e) => {
+                                                        removeContribution(e, memberEmail)
                                                     }}>
                                                         {minusIcon}
                                                     </button>
@@ -478,10 +495,15 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                         <select
                                             id="newContribution"
                                             name="newContribution"
-                                            onChange={(e) => addContribution(e.target.value)}
+                                            value={""}
+                                            onChange={(e) => {
+                                                addContribution(e, e.target.value);
+                                                let self = document.getElementById("newContribution");
+                                                self.value = "default"
+                                            }}
                                             className="input-base"
                                         >
-                                            <option key={"none"} value={""}>Add contribution</option>
+                                            <option key={"none"} value={"default"}>Add contribution</option>
                                             {/* populate team members based on database entry */}
                                             {membersData ? membersData
                                                 .filter((member) => {
@@ -493,8 +515,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                 )) : null
                                             }
                                         </select>}
-
-
                             </div>
                         </div>
                     </div>

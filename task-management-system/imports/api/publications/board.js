@@ -25,6 +25,15 @@ Meteor.publish('all_team_boards', function (teamId) {
     return BoardCollection.find({teamId: teamId});
 });
 
+/**
+ * Publishes a specific boards.
+ * @param {string} boardId - The IDs of the board.
+ * @returns {Mongo.Cursor} - A cursor representing the result of the board to be published.
+ */
+Meteor.publish('specific_board', function (boardId) {
+    return BoardCollection.find({_id: boardId});
+});
+
 // todo: remove later, for testing
 Meteor.publish('all_boards', function () {
     return BoardCollection.find();
