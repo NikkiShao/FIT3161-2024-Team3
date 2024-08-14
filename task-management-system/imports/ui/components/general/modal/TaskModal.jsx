@@ -563,11 +563,14 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
 
                     </form>
 
-                    <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
-                         className={"text-red underline clickable"}
-                         onClick={onOpenDeleteModal}
-                    >Delete Task
-                    </div>
+                    { taskId ?
+                        <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
+                             className={"text-red underline clickable"}
+                             onClick={onOpenDeleteModal}
+                        >Delete Task
+                        </div> : null
+                    }
+
                 </Modal>
 
                 {/* delete modal */}
