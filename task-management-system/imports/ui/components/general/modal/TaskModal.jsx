@@ -234,6 +234,33 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
     const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
                                        height={30}/>;
 
+    // all delete task modal stuff
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const onOpenDeleteModal = () => setDeleteModalOpen(true);
+    const onCloseDeleteModal = () => setDeleteModalOpen(false);
+
+    // handler for deleting task
+    const handleDeleteTask = () => {
+        new Promise((resolve, reject) => {
+            Meteor.call('delete_task', taskId,
+                (error, result) => {
+                    if (error) {
+                        reject(`Error: ${error.message}`);
+
+                    } else {
+                        resolve(result);
+                        // Close the modals after deleting
+                        modalCloseClearInputs();
+                    }
+                });
+        }).catch(() => {
+            const newError = {}
+            newError.overall = "Deletion failed: please try again";
+            setErrors(newError)
+        })
+        onCloseDeleteModal();
+    }
+
     // waiting for loading
     if (!isLoading) {
 
@@ -275,65 +302,65 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         // check if there is any team member's contribution not added, display their options if so
         const allMembersAdded = membersData.filter((member) => contributions[member.emails[0].address] === undefined).length === 0;
 
-        console.log(tagsData)
-        console.log(statusesData)
-
         return (
-            <Modal
-                open={isOpen} // Control the visibility of the modal
-                onClose={modalCloseClearInputs} // Function to call when the modal should close
-                closeIcon={closeIcon}
-                center
-                classNames={{
-                    modal: classNames('modal-base modal-large'),
-                }}
-            >
+            <div>
 
-                <form className={"modal-div-center"} onSubmit={handleSubmit}>
+                <Modal
+                    open={isOpen} // Control the visibility of the modal
+                    onClose={modalCloseClearInputs} // Function to call when the modal should close
+                    closeIcon={closeIcon}
+                    center
+                    classNames={{
+                        modal: classNames('modal-base modal-large'),
+                    }}
+                >
 
-                    {/*top div*/}
-                    <div id={"task-modal__top"}>
+                    <form className={"modal-div-center"} onSubmit={handleSubmit}>
 
-                        {/* div with PIN and urgent/overdue text*/}
-                        <div className={"header-space-between"}>
+                        {/*top div*/}
+                        <div id={"task-modal__top"}>
 
-                            <div style={{width: "170px"}}>
-                                <TaskPin isPinned={isPinned} onPinChange={setIsPinned} size={"35"}/>
-                                <span className={"main-text text-grey non-clickable"}>Press to pin</span>
+                            {/* div with PIN and urgent/overdue text*/}
+                            <div className={"header-space-between"}>
+
+                                <div style={{width: "170px"}}>
+                                    <TaskPin isPinned={isPinned} onPinChange={setIsPinned} size={"35"}/>
+                                    <span className={"main-text text-grey non-clickable"}>Press to pin</span>
+                                </div>
+
+                                <h1 style={{color: "var(--dark-red)", marginRight: "25px"}}
+                                    className={"no-margin"}>{displayText}</h1>
+
+                                <div style={{width: "170px"}}/>
                             </div>
 
-                            <h1 style={{color: "var(--dark-red)", marginRight: "25px"}}
-                                className={"no-margin"}>{displayText}</h1>
-
-                            <div style={{width: "170px"}}/>
+                            {/* title of task */}
+                            <div className={"input-error-div"}>
+                                <Input
+                                    type="text"
+                                    style={{
+                                        width: '80%',
+                                        minWidth: "80%",
+                                        maxWidth: "80%",
+                                        marginLeft: "10%",
+                                        marginRight: "10%"
+                                    }}
+                                    id="title"
+                                    name="title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    placeholder="Title"
+                                />
+                                {errors.title &&
+                                    <span className="text-red small-text"
+                                          style={{marginLeft: "10%"}}>{errors.title}</span>}
+                            </div>
                         </div>
 
-                        {/* title of task */}
-                        <div className={"input-error-div"}>
-                            <Input
-                                type="text"
-                                style={{
-                                    width: '80%',
-                                    minWidth: "80%",
-                                    maxWidth: "80%",
-                                    marginLeft: "10%",
-                                    marginRight: "10%"
-                                }}
-                                id="title"
-                                name="title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Title"
-                            />
-                            {errors.title &&
-                                <span className="text-red small-text" style={{marginLeft: "10%"}}>{errors.title}</span>}
-                        </div>
-                    </div>
+                        <div id="task-modal__grid">
 
-                    <div id="task-modal__grid">
-
-                        {/* left side description area */}
-                        <div className={"input-error-div"}>
+                            {/* left side description area */}
+                            <div className={"input-error-div"}>
                         <textarea
                             id="description"
                             name="description"
@@ -343,196 +370,231 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                             style={{minHeight: "300px", maxHeight: "450px", marginTop: "10px"}}
                             className={"input-base main-text"}
                         />
-                            {errors.description && <span className="text-red small-text">{errors.description}</span>}
-                        </div>
-                        {/* right side */}
-                        <div id="task-modal__right">
+                                {errors.description &&
+                                    <span className="text-red small-text">{errors.description}</span>}
+                            </div>
+                            {/* right side */}
+                            <div id="task-modal__right">
 
-                            {/* Input field for deadline */}
-                            <div className='input-group-2col-full' style={{alignItems: "start"}}>
-                                <label className={"main-text text-grey"} style={{marginTop: "6px"}}>Deadline:</label>
+                                {/* Input field for deadline */}
+                                <div className='input-group-2col-full' style={{alignItems: "start"}}>
+                                    <label className={"main-text text-grey"}
+                                           style={{marginTop: "6px"}}>Deadline:</label>
 
-                                <div className={"input-error-div"}>
-                                    <Input
-                                        type="date"
-                                        style={{marginBottom: "6px"}}
-                                        min={minDeadlineDate.toISOString().split('T')[0]}
-                                        id={"deadlineDate"}
-                                        value={deadlineDate}
-                                        onChange={(e) => setDeadlineDate(e.target.value)}
-                                    />
-                                    <Input
-                                        type="time"
-                                        id={"deadlineTime"}
-                                        value={deadlineTime}
-                                        onChange={(e) => setDeadlineTime(e.target.value)}
-                                    />
-                                    {errors.deadline && <span className="text-red small-text">{errors.deadline}</span>}
+                                    <div className={"input-error-div"}>
+                                        <Input
+                                            type="date"
+                                            style={{marginBottom: "6px"}}
+                                            min={minDeadlineDate.toISOString().split('T')[0]}
+                                            id={"deadlineDate"}
+                                            value={deadlineDate}
+                                            onChange={(e) => setDeadlineDate(e.target.value)}
+                                        />
+                                        <Input
+                                            type="time"
+                                            id={"deadlineTime"}
+                                            value={deadlineTime}
+                                            onChange={(e) => setDeadlineTime(e.target.value)}
+                                        />
+                                        {errors.deadline &&
+                                            <span className="text-red small-text">{errors.deadline}</span>}
+                                    </div>
+                                </div>
+
+                                {/* status */}
+                                <div className="input-group-2col-full">
+                                    <label className="main-text text-grey" htmlFor="status">Status:</label>
+                                    <select
+                                        id="status"
+                                        name="status"
+                                        value={status}
+                                        onChange={(e) => setStatus(e.target.value)}
+                                        className="input-base"
+                                    >
+                                        {/* populate status based on database entry */}
+                                        {statusesData ?
+                                            statusesData
+                                                .sort((a, b) => {
+                                                    return a.statusOrder - b.statusOrder;
+                                                })
+                                                .map((status, index) => (
+                                                    <option key={index}
+                                                            value={status.statusName}>{status.statusName}</option>
+                                                )) : null
+                                        }
+                                    </select>
+                                </div>
+
+
+                                {/* tags */}
+                                <div className="input-group-2col-full" style={{alignItems: "start"}}>
+                                    <label className="main-text text-grey" htmlFor="status">Tags:</label>
+
+                                    {
+                                        !tagsData || tagsData.length === 0 ? null :
+                                            <div id={"task-modal__tags-group"}>
+                                                <div className={"task-modal__tags-display"}>
+                                                    {
+                                                        tagNames.map((tagName) => {
+                                                            // here find the tag colour that matches this name
+                                                            const tagColour = tagsData.filter((tag) => {
+                                                                return tagName === tag.tagName
+                                                            })[0].tagColour;
+                                                            return (
+                                                                <TaskTag key={tagName} tagName={tagName}
+                                                                         tagColour={tagColour}
+                                                                         editMode={true}
+                                                                         xButtonHandler={(e) => removeTag(e, tagName)}
+                                                                />
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+
+                                                <hr id={"task-modal__hr"}/>
+
+                                                {/*div for displaying tag buttons to add*/}
+                                                <div className={"task-modal__tags-display"}>
+                                                    {/* populate tags based on database entry */}
+                                                    {
+                                                        tagsData ? tagsData.map((tag, index) => {
+                                                            if (!tagNames.includes(tag.tagName)) {
+                                                                return (
+                                                                    <button key={index}
+                                                                            style={{backgroundColor: tag.tagColour}}
+                                                                            onClick={(e) => addTag(e, tag.tagName)}
+                                                                            className={"task-tag icon-btn"}
+                                                                    >
+                                                                        {tag.tagName}{addTagIcon}
+                                                                    </button>
+                                                                )
+                                                            } else {
+                                                                return null;
+                                                            }
+                                                        }) : null
+                                                    }
+                                                </div>
+                                            </div>
+                                    }
+
+                                </div>
+
+                                {/* contribution section */}
+                                <div id={"task-modal__contribution"}>
+                                    <label className="main-text text-grey" htmlFor="status">Contribution</label>
+
+                                    {/* here display all EXISTING member's contributions */}
+                                    {
+                                        membersData ? membersData
+                                            .filter((member) => {
+                                                return contributions[member.emails[0].address] !== undefined;
+                                            })
+                                            .map((member) => {
+                                                const memberEmail = member.emails[0].address;
+                                                const existingPercentage = contributions[memberEmail];
+
+                                                return (
+                                                    <div key={member} className={"task-modal__contribution-grid"}>
+                                                        {member.profile.name}
+                                                        <div id={"task-modal__percent"}>
+                                                            <Input
+                                                                className={"input-tiny"}
+                                                                type="number"
+                                                                min={0}
+                                                                max={100}
+                                                                id={"contributionPct"}
+                                                                value={existingPercentage ? existingPercentage : ''}
+                                                                onChange={(e) => addContribution(e, memberEmail, e.target.value)}
+                                                            />
+                                                            <span className={"main-text text-grey"}>%</span>
+                                                        </div>
+                                                        <button className={"icon-btn"} onClick={(e) => {
+                                                            removeContribution(e, memberEmail)
+                                                        }}>
+                                                            {minusIcon}
+                                                        </button>
+                                                    </div>
+                                                )
+
+                                            }) : null
+                                    }
+
+                                    {/* options to add contribution */}
+                                    {
+                                        allMembersAdded ? null :
+                                            <select
+                                                id="newContribution"
+                                                name="newContribution"
+                                                value={""}
+                                                onChange={(e) => {
+                                                    addContribution(e, e.target.value);
+                                                    let self = document.getElementById("newContribution");
+                                                    self.value = "default"
+                                                }}
+                                                className="input-base"
+                                            >
+                                                <option key={"none"} value={"default"}>Add contribution</option>
+                                                {/* populate team members based on database entry */}
+                                                {membersData ? membersData
+                                                    .filter((member) => {
+                                                        return contributions[member.emails[0].address] === undefined;
+                                                    })
+                                                    .map((member, index) => (
+                                                        <option key={index}
+                                                                value={member.emails[0].address}>{member.profile.name}</option>
+                                                    )) : null
+                                                }
+                                            </select>}
                                 </div>
                             </div>
+                        </div>
 
-                            {/* status */}
-                            <div className="input-group-2col-full">
-                                <label className="main-text text-grey" htmlFor="status">Status:</label>
-                                <select
-                                    id="status"
-                                    name="status"
-                                    value={status}
-                                    onChange={(e) => setStatus(e.target.value)}
-                                    className="input-base"
-                                >
-                                    {/* populate status based on database entry */}
-                                    {statusesData ?
-                                        statusesData
-                                            .sort((a, b) => {
-                                                return a.statusOrder - b.statusOrder;
-                                            })
-                                            .map((status, index) => (
-                                                <option key={index}
-                                                        value={status.statusName}>{status.statusName}</option>
-                                            )) : null
-                                    }
-                                </select>
-                            </div>
+                        {errors.overall && <span className="text-red small-text">{errors.overall}</span>}
 
+                        {
+                            taskId ?
+                                <Button type="submit" className="btn-brown">
+                                    {saveIcon} Save Changes
+                                </Button> :
+                                <Button type="submit" className="btn-brown">
+                                    {plusIcon} Add Task
+                                </Button>
+                        }
 
-                            {/* tags */}
-                            <div className="input-group-2col-full" style={{alignItems: "start"}}>
-                                <label className="main-text text-grey" htmlFor="status">Tags:</label>
+                    </form>
 
-                                {
-                                    !tagsData || tagsData.length === 0 ? null :
-                                        <div id={"task-modal__tags-group"}>
-                                            <div className={"task-modal__tags-display"}>
-                                                {
-                                                    tagNames.map((tagName) => {
-                                                        // here find the tag colour that matches this name
-                                                        const tagColour = tagsData.filter((tag) => {
-                                                            return tagName === tag.tagName
-                                                        })[0].tagColour;
-                                                        return (
-                                                            <TaskTag key={tagName} tagName={tagName}
-                                                                     tagColour={tagColour}
-                                                                     editMode={true}
-                                                                     xButtonHandler={(e) => removeTag(e, tagName)}
-                                                            />
-                                                        )
-                                                    })
-                                                }
-                                            </div>
+                    <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
+                         className={"text-red underline clickable"}
+                         onClick={onOpenDeleteModal}
+                    >Delete Task
+                    </div>
+                </Modal>
 
-                                            <hr id={"task-modal__hr"}/>
+                {/* delete modal */}
+                <Modal
+                    open={deleteModalOpen} // Control the visibility of the modal
+                    onClose={onCloseDeleteModal} // Function to call when the modal should close
+                    closeIcon={closeIcon}
+                    center
+                    classNames={{
+                        modal: classNames('modal-base'),
+                    }}
+                >
+                    <div className={"modal-div-center"}>
+                        <h1>Delete Task?</h1>
+                        <div className={"main-text"}>Are you sure you would like to delete the task?</div>
+                        <div className={"main-text"}>This action will be recorded in the Logs.</div>
+                        <div className={"main-text text-red"}>This action cannot be reverted.</div>
 
-                                            {/*div for displaying tag buttons to add*/}
-                                            <div className={"task-modal__tags-display"}>
-                                                {/* populate tags based on database entry */}
-                                                {
-                                                    tagsData ? tagsData.map((tag, index) => {
-                                                        if (!tagNames.includes(tag.tagName)) {
-                                                            return (
-                                                                <button key={index}
-                                                                        style={{backgroundColor: tag.tagColour}}
-                                                                        onClick={(e) => addTag(e, tag.tagName)}
-                                                                        className={"task-tag icon-btn"}
-                                                                >
-                                                                    {tag.tagName}{addTagIcon}
-                                                                </button>
-                                                            )
-                                                        } else {
-                                                            return null;
-                                                        }
-                                                    }) : null
-                                                }
-                                            </div>
-                                        </div>
-                                }
-
-                            </div>
-
-                            {/* contribution section */}
-                            <div id={"task-modal__contribution"}>
-                                <label className="main-text text-grey" htmlFor="status">Contribution</label>
-
-                                {/* here display all EXISTING member's contributions */}
-                                {
-                                    membersData ? membersData
-                                        .filter((member) => {
-                                            return contributions[member.emails[0].address] !== undefined;
-                                        })
-                                        .map((member) => {
-                                            const memberEmail = member.emails[0].address;
-                                            const existingPercentage = contributions[memberEmail];
-
-                                            return (
-                                                <div key={member} className={"task-modal__contribution-grid"}>
-                                                    {member.profile.name}
-                                                    <div id={"task-modal__percent"}>
-                                                        <Input
-                                                            className={"input-tiny"}
-                                                            type="number"
-                                                            min={0}
-                                                            max={100}
-                                                            id={"contributionPct"}
-                                                            value={existingPercentage ? existingPercentage : ''}
-                                                            onChange={(e) => addContribution(e, memberEmail, e.target.value)}
-                                                        />
-                                                        <span className={"main-text text-grey"}>%</span>
-                                                    </div>
-                                                    <button className={"icon-btn"} onClick={(e) => {
-                                                        removeContribution(e, memberEmail)
-                                                    }}>
-                                                        {minusIcon}
-                                                    </button>
-                                                </div>
-                                            )
-
-                                        }) : null
-                                }
-
-                                {/* options to add contribution */}
-                                {
-                                    allMembersAdded ? null :
-                                        <select
-                                            id="newContribution"
-                                            name="newContribution"
-                                            value={""}
-                                            onChange={(e) => {
-                                                addContribution(e, e.target.value);
-                                                let self = document.getElementById("newContribution");
-                                                self.value = "default"
-                                            }}
-                                            className="input-base"
-                                        >
-                                            <option key={"none"} value={"default"}>Add contribution</option>
-                                            {/* populate team members based on database entry */}
-                                            {membersData ? membersData
-                                                .filter((member) => {
-                                                    return contributions[member.emails[0].address] === undefined;
-                                                })
-                                                .map((member, index) => (
-                                                    <option key={index}
-                                                            value={member.emails[0].address}>{member.profile.name}</option>
-                                                )) : null
-                                            }
-                                        </select>}
-                            </div>
+                        <div className={"button-row"} style={{marginTop:"20px"}}>
+                            <Button className="btn-red" onClick={handleDeleteTask}>Delete</Button>
+                            <Button className="btn-grey" onClick={onCloseDeleteModal}>Cancel</Button>
                         </div>
                     </div>
+                </Modal>
+            </div>
 
-                    {errors.overall && <span className="text-red small-text">{errors.overall}</span>}
 
-                    {
-                        taskId ?
-                            <Button type="submit" className="btn-brown">
-                                {saveIcon} Save Changes
-                            </Button> :
-                            <Button type="submit" className="btn-brown">
-                                {plusIcon} Add Task
-                            </Button>
-                    }
-
-                </form>
-            </Modal>
         );
     }
 };

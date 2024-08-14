@@ -81,7 +81,14 @@ Meteor.methods({
             throw new Meteor.Error('task-insertion-failed', 'Task insertion failed');
         }
     },
-
+    /**
+     * Deletes the task.
+     *
+     * @param {string} taskId - ID of the task
+     */
+    "delete_task": function (taskId) {
+        TaskCollection.remove({_id: taskId});
+    },
     /**
      * Updates the pinned state of a task.
      *
