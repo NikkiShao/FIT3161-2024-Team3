@@ -125,8 +125,14 @@ export const App = () => (
 
 
                     {/* {Testing routers} */}
-                    <Route path='/draft' element={<DraftPage/>}/>
+                    <Route path={'/' + BaseUrlPath.PREVIEW} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <DraftPage/>
+                        </ProtectedRoute>
+                    }/>
 
+
+                    
                 </Routes>
                 </main>
         </Router>

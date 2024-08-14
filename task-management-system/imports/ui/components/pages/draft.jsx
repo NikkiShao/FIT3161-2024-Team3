@@ -1,5 +1,6 @@
 import React from 'react';
 import { getUserInfo } from '../util';
+import WhiteBackground from '../general/whiteBackground/WhiteBackground';
 
 const DraftPage = () => {
     const userData = getUserInfo();
@@ -11,10 +12,15 @@ const DraftPage = () => {
 
 
     return (
-        <div>
-            <h1>Draft Page</h1>
-            
-        </div>
+        <WhiteBackground>
+
+            <div>
+                <h1>Draft Page</h1>
+                
+            </div>
+
+        </WhiteBackground>
+
     );
 };
 
