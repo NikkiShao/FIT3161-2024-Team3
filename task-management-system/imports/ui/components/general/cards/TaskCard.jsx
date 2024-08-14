@@ -69,7 +69,7 @@ const TaskCard = ({
   const taskDeadlineDate = new Date(taskDeadline);
   const today = new Date();
   let urgentStartDate = new Date();
-  urgentStartDate.setTime(today.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
+  urgentStartDate.setTime(today.getTime() + 3 * 24 * 60 * 60 * 1000) // three before now after
 
   let displayText = null;
   if (taskDeadlineDate <= today && taskStatus !== "done") {

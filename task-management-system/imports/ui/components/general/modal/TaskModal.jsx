@@ -289,12 +289,12 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             const taskDeadlineDate = new Date(taskData.taskDeadlineDate);
             const today = new Date();
             let urgentStartDate = new Date();
-            urgentStartDate.setTime(today.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
-
+            urgentStartDate.setTime(today.getTime() + 3 * 24 * 60 * 60 * 1000) // three before now after
+            
             if (taskDeadlineDate <= today && taskData.statusName.toLowerCase() !== "done") {
                 // after current datetime and NOT done
                 displayText = "OVERDUE";
-            } else if (taskDeadlineDate >= urgentStartDate && taskData.statusName.toLowerCase() !== "done") {
+            } else if (taskDeadlineDate <= urgentStartDate && taskData.statusName.toLowerCase() !== "done") {
                 displayText = "URGENT";
             }
         }
@@ -431,7 +431,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                     <label className="main-text text-grey" htmlFor="status">Tags:</label>
 
                                     {
-                                        !tagsData || tagsData.length === 0 ? null :
+                                        !tagsData || tagsData.length === 0 ?
+                                            <span className={"small-text text-grey"}>There are no tags for this board.
+                                                You can add tags in the board settings</span> :
                                             <div id={"task-modal__tags-group"}>
                                                 <div className={"task-modal__tags-display"}>
                                                     {
