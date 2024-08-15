@@ -1,8 +1,8 @@
 /**
  * File Description: Board's settings page
- * Updated Date:
- * Contributors:
- * Version:
+ * Updated Date: 15/08/2024
+ * Contributors: Audrey, Nikki
+ * Version: 1.1
  */
 
 import React, {Fragment, useState} from 'react';
@@ -17,8 +17,9 @@ import {ChevronLeftIcon, XCircleIcon, PlusCircleIcon} from "@heroicons/react/24/
 import Input from "../../general/inputs/Input";
 import './board.css'
 import BoardCollection from '../../../../api/collections/board';
-import TagCollection from '../../../../api/collections/tag';
-import StatusCollection from '../../../../api/collections/status';
+import classNames from "classnames";
+import {Modal} from 'react-responsive-modal';
+import Spinner from "react-bootstrap/Spinner";
 
 /**
  * Landing page component
@@ -27,6 +28,7 @@ export const BoardSettings = () => {
 
     const navigate = useNavigate();
     const {boardId} = useParams();
+    const {teamId} = useParams();
 
     const [boardNameInput, setBoardNameInput] = useState('');
     const [boardCodeInput, setBoardCodeInput] = useState('');
@@ -34,15 +36,11 @@ export const BoardSettings = () => {
     const [boardDeadlineDateInput, setBoardDeadlineDateInput] = useState('');
     const [boardDescriptionInput, setBoardDescriptionInput] = useState('');
     const [boardStatuses, setBoardStatuses] = useState([]);
-    // ['To Do', 'testtest', 'Done', 'a very long status', 'example', 'anything']
 
     const [boardNewStatusInput, setBoardNewStatusInput] = useState('');
     const [boardExistingTags, setBoardExistingTags] = useState([]);
-        // {'tagColour': '#fcf6c3', tagName: 'test1'},
-        // {'tagColour': '#ffafaf', tagName: 'test2'},
-        // {'tagColour': '#aff0ff', tagName: 'test3'},
     const [boardNewTagName, setBoardNewTagName] = useState('')
-    const [boardNewTagHex, setBoardNewTagHex] = useState('')
+    const [boardNewTagHex, setBoardNewTagHex] = useState('#000000')
 
 
     const [errors, setErrors] = useState({
@@ -55,18 +53,15 @@ export const BoardSettings = () => {
     });
 
     const startCond = (boardNameInput === '' && boardCodeInput === '' && boardDeadlineTimeInput === '' && boardDeadlineDateInput === '' && boardDescriptionInput === '');
-    console.log(startCond);
     const minDeadlineDate = new Date();
     const userInfo = getUserInfo();
     const removeIcon = <XCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2}
                                     viewBox="0 0 24 24" width={22} height={22}/>
     const addIcon = <PlusCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2}
                                     viewBox="0 0 24 24" width={30} height={30}/>
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
 
-    //get board
     const isLoadingBoards = useSubscribe('board_by_id', boardId);
-    const isLoadingTags = useSubscribe('tag_by_board', boardId);
-    const isLoadingStatus = useSubscribe('status_by_board', boardId);
 
     const boardData = useTracker(()=>{
         const board = BoardCollection.findOne({_id : boardId});
@@ -78,23 +73,14 @@ export const BoardSettings = () => {
             setBoardDeadlineDateInput(deadline.toISOString().split('T')[0]);
             setBoardDeadlineTimeInput(deadline.toISOString().split('T')[1].substring(0, 5));
             setBoardDescriptionInput(board.boardDescription);
+            setBoardStatuses(board.boardStatuses);
+            setBoardExistingTags(board.boardTags);
         }
     });
 
-    const tagData = useTracker(()=>{
-        const tags = TagCollection.findOne({boardId : boardId});
-        if(tags && boardExistingTags.length === 0){
-            setBoardExistingTags(tags.tags); //get array of {name, colour}
-        }
-    });
-
-    const statusData = useTracker(()=>{
-        const status = StatusCollection.findOne({boardId : boardId});
-        if(status && boardStatuses.length === 2){
-            setBoardStatuses(status.names); //array of status
-        }
-    });
-
+    const [open, setOpen] = useState(false);
+    const onOpenModal = () => setOpen(true);
+    const onCloseModal = () => setOpen(false);
 
     const handleAddStatus = (event) => {
         event.preventDefault();
@@ -103,7 +89,6 @@ export const BoardSettings = () => {
         if (boardStatuses.includes(boardNewStatusInput)) {
             newError.boardNewStatus = "Status has already been added";
         } else if(!boardNewStatusInput){
-            console.log("!!!!!");
             newError.boardNewStatus = "Please input a valid status";
         }
         else {
@@ -122,7 +107,6 @@ export const BoardSettings = () => {
     const handleAddTag = (event) => {
         event.preventDefault();
         const isExist = boardExistingTags.some(tag => tag.tagName === boardNewTagName && tag.tagColour === boardNewTagHex);
-        console.log(isExist);
         const newError = {}
         if (isExist) {
             newError.boardNewTag = "Tag has already been added";
@@ -131,18 +115,15 @@ export const BoardSettings = () => {
         } else {
             setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName, tagColour: boardNewTagHex}]);
             setBoardNewTagName('');
-            setBoardNewTagHex('');
+            setBoardNewTagHex('#000000');
         }
         setErrors(newError)
     }
 
-    //set as tag object
-    const handleRemoveTag = (event, removedTag, tagName, tagColour) => {
+    const handleRemoveTag = (event, tagName, tagColour) => {
         event.preventDefault();
-        setBoardExistingTags(boardExistingTags.filter(tag => tag !== removedTag));
+        setBoardExistingTags(boardExistingTags.filter(tag => !(tag.tagName === tagName && tag.tagColour === tagColour)));
     }
-
-
 
     const saveChanges = (event) => {
         event.preventDefault();
@@ -160,7 +141,7 @@ export const BoardSettings = () => {
         if(!boardCodeInput){
             newErrors.boardCode = "Please fill in your board code";
             isError = true;
-        } else if (boardNameInput.length > 10) {
+        } else if (boardCodeInput.length > 10) {
             newErrors.boardCode = "Board code can not exceed 10 characters";
             isError = true
         }
@@ -186,14 +167,15 @@ export const BoardSettings = () => {
 
         setErrors(newErrors);
 
-        //save in board
         if(!isError){
             Meteor.call('update_board', boardId, 
                 {
                     boardName: boardNameInput,
                     boardCode: boardCodeInput,
                     boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
-                    boardDescription: boardDescriptionInput
+                    boardDescription: boardDescriptionInput,
+                    boardStatuses: boardStatuses,
+                    boardTags: boardExistingTags
                 }, (error) => {
                     if (error) {
                         setErrors(error.reason);
@@ -203,38 +185,43 @@ export const BoardSettings = () => {
                         setBoardDeadlineTimeInput('');
                         setBoardDeadlineDateInput('');
                         setBoardDescriptionInput('');
-                        setBoardStatuses(['To Do', 'Done']);
+                        setBoardStatuses([]);
                         setBoardExistingTags([]);
-                        setErrors('')
+                        setErrors('');
+                        setBoardNewTagName('');
+                        setBoardNewTagHex('#000000');
+                        setBoardNewStatusInput('');
                     }
                 });
-            // Meteor.call('update_status', statusId, {
-            //     statusName: boardStatuses,
-            //     // boardId: boardId
-            // });
-            // Meteor.call('update_tag', tagId, {
-            //     tagName: boardExistingTags
-            // })
         }
-        //save status
-        //save tag
     }
 
     const deleteBoard = () => {
-
+        Meteor.call('delete_board', boardId);
+        navigate('/'+ BaseUrlPath.TEAMS + "/" + teamId);
     }
-
+    const helpText = "This is the board settings page to modify board name, code/nickname, deadline, description, statuses, and tags. Press Save Changes to apply all changes to the board. Press Delete Board to permanently delete the board";
+    if (isLoadingBoards()) {
+        return (
+            <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+                <Spinner animation="border" variant="secondary" role="status"/>
+            </WhiteBackground>
+        )
+    } else {
     return (
-        <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+        <>
+        
+        <WhiteBackground pageHelpText={helpText} pageLayout={PageLayout.LARGE_CENTER}>
 
             <div className="header-space-between">
                 <Button className={"flex flex-row gap-2 btn-back"}
                         onClick={() => {
-                            navigate('/' + BaseUrlPath.TEAMS)
+                            navigate('/' + BaseUrlPath.TEAMS + "/" + teamId + "/boards" + boardId);
                         }}>
                     <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
                     Back
                 </Button>
+                
                 <h1 className={"text-center"}>Board Settings</h1>
                 <div style={{width: "120px"}}/>
             </div>
@@ -340,7 +327,7 @@ export const BoardSettings = () => {
                                 placeholder={"Add Custom Status"}
                                 id={"status"}
                                 value={boardNewStatusInput}
-                                onChange={(e) => setBoardStatuses(e.target.value)}
+                                onChange={(e) => setBoardNewStatusInput(e.target.value)}
                             />
                             <button className="icon-btn" onClick={(e) => handleAddStatus(e)}>
                                 {addIcon}
@@ -402,10 +389,23 @@ export const BoardSettings = () => {
                 </Button>
             </form>
 
-            <span className={"text-red underline clickable"} style={{width:"100%", textAlign: "end"}} >Delete Board</span>
+            <span href='#' className={"text-red underline clickable"} style={{width:"100%", textAlign: "end"}} onClick={onOpenModal}>Delete Board</span>
 
         </WhiteBackground>
-    );
+        <Modal
+                closeIcon={closeIcon}
+                classNames={{modal: classNames('modal-base', '')}}
+                open={open}
+                onClose={onCloseModal}
+                center>
+                    <div className={"modal-div-center"}>
+                    <h1 className={"text-center"}>Delete Board</h1>
+                    <p>You are about to delete "{boardNameInput}".</p><p>Are you sure?</p>
+                    <Button className={"btn-red"} onClick={deleteBoard}>Confirm</Button></div>
+                </Modal>
+        </>
+        
+    );}
 
 
 }
