@@ -9,9 +9,15 @@ import DeleteAccountModal from '../general/modal/DeleteAccountModal';
 
 
 function AccountSettings() {
+
     const userData = getUserInfo();
+    console.log(userData);
+
+
     const userID = userData.id;
     let notificationState = userData.notificationOn;
+    let userName = userData.name;
+    let userEmail = userData.email;
 
     const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
