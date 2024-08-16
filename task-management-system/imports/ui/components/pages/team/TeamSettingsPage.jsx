@@ -54,6 +54,7 @@ export const TeamSettingsPage = () => {
         return UserCollection.find().fetch();
     });
     const teamMembersData = usersData.filter(user => teamMembers.includes(user.emails[0].address));
+    const amountOfUsers = teamMembersData.filter(user => user.emails[0].address !== teamLeader.email);
 
     const userInfo = getUserInfo();
     const [open, setOpen] = useState(false);
@@ -62,7 +63,7 @@ export const TeamSettingsPage = () => {
     const [newLeader, setNewLeader] = useState('');
     const onOpenModal = () => {
         setOpen(true);
-        if(teamsData.teamMembers.length > 1){
+        if(amountOfUsers>1){
         setNewLeader(leaderOptions[0].emails[0].address);}
         else{
             setNewLeader(teamLeader);
@@ -249,7 +250,7 @@ export const TeamSettingsPage = () => {
                 <span href='#' className="text-red underline clickable" style={{width:"100%", textAlign: "end"}} onClick={onOpenModal}>Leave Team</span>
             </WhiteBackground>
             
-            {teamsData.teamMembers.length === 1? (        
+            {teamsData.teamMembers.length === 1 || amountOfUsers.length === 1 ? (        
                 <Modal
                 closeIcon={closeIcon}
                 classNames={{modal: classNames('modal-base', '')}}
