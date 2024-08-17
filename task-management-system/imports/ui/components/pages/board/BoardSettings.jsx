@@ -109,7 +109,7 @@ export const BoardSettings = () => {
         const newError = {}
         if (isExist) {
             newError.boardNewTag = "Tag has already been added";
-        } else if (!boardNewTagName) {
+        } else if (!boardNewTagName || boardNewTagName === "...") {
             newError.boardNewTag = "Please input valid tag name";
         } else {
             setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName, tagColour: boardNewTagHex}]);
@@ -241,7 +241,7 @@ export const BoardSettings = () => {
             setBoardNameInput(boardData.boardName);
             setBoardCodeInput(boardData.boardCode);
             setBoardDeadlineDateInput(boardData.boardDeadline.split('T')[0]);
-            setBoardDeadlineTimeInput(boardData.boardDeadline.split('T')[1]);
+            setBoardDeadlineTimeInput(boardData.boardDeadline.split('T')[1].substring(0, 12));
             setBoardDescriptionInput(boardData.boardDescription);
             setBoardStatuses(boardData.boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map(status => status.statusName));
             setBoardExistingTags(boardData.boardTags);
@@ -455,7 +455,7 @@ export const BoardSettings = () => {
                         <h1 className={"text-center"}>Delete Board</h1>
                         <span>You are about to delete "{boardNameInput}".</span>
                         <span>Are you sure?</span>
-                        <div className={"button-group btn-submit"}>
+                        <div className={"button-group-row btn-submit"}>
                             <Button className={"btn-red"} onClick={deleteBoard}>Confirm</Button>
                             <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>
                         </div>

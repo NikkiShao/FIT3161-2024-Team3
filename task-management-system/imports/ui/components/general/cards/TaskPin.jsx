@@ -5,23 +5,27 @@
  * Version: 1.0
  */
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 /**
  * PinTask component for toggling the pin state of a task.
  *
  * @param {boolean} isPinned - initial pin state of the task
  * @param {function} onPinChange - callback function to handle pin state change
+ * @param {string} size - size of the icon (px)
  * @returns {JSX.Element} - PinTask element JSX object
  */
-const PinTask = ({ isPinned, onPinChange }) => {
+const TaskPin = ({ isPinned, onPinChange, size='25' }) => {
   const [pinned, setPinned] = useState(isPinned);
+  // change pin when database changed
+  useEffect(() => {
+    setPinned(isPinned)
+  }, [isPinned]);
 
   const handlePinClick = (e) => {
     e.stopPropagation();
     const newPinState = !pinned;
     setPinned(newPinState);
-    console.log(`Pin state changed: ${newPinState}`);
     if (onPinChange) {
       onPinChange(newPinState);
     }
@@ -31,10 +35,10 @@ const PinTask = ({ isPinned, onPinChange }) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="clickable"
-      width="25"
-      height="25"
+      width={size}
+      height={size}
       fill="var(--navy)"
-      style={{ minWidth: '25px', minHeight: '25px' }}
+      style={{ minWidth: size+'px', minHeight: size+'px' }}
       viewBox="0 0 16 16"
       onClick={handlePinClick}
     >
@@ -46,10 +50,10 @@ const PinTask = ({ isPinned, onPinChange }) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="clickable"
-      width="25"
-      height="25"
+      width={size}
+      height={size}
       fill="var(--navy)"
-      style={{ minWidth: '25px', minHeight: '25px' }}
+      style={{ minWidth: size+'px', minHeight: size+'px' }}
       viewBox="0 0 16 16"
       onClick={handlePinClick}
     >
@@ -60,4 +64,4 @@ const PinTask = ({ isPinned, onPinChange }) => {
   return pinned ? pinFilledIcon : pinEmptyIcon;
 };
 
-export default PinTask;
+export default TaskPin;

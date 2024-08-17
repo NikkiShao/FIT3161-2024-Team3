@@ -15,17 +15,23 @@ Meteor.publish("pinned_tasks", function () {
 });
 
 /**
+ * Publishes all tasks of a board.
+ */
+Meteor.publish("all_board_tasks", function (boardId) {
+    return TaskCollection.find({ boardId: boardId });
+});
+
+/**
+ * Publishes a single task.
+ */
+Meteor.publish("specific_task", function (taskId) {
+    return TaskCollection.find({ _id: taskId });
+});
+
+/**
  * todo: remove, this is for testing
  */
 Meteor.publish("all_tasks", function () {
     return TaskCollection.find();
-});
-
-/**
- * find task based on boardId
- */
-Meteor.publish('tasks_for_board', function (boardId) {
-  console.log('Publishing tasks for boardId:', boardId);
-  return TaskCollection.find({ boardId });
 });
 

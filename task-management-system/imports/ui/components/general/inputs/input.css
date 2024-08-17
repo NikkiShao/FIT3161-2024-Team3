@@ -17,3 +17,12 @@ body .input::placeholder {
 body label {
     margin-bottom: 5px;
 }
+
+
+/* general input-related styles */
+.input-tiny {
+    max-width: 80px !important;
+    min-width: 80px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}

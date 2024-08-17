@@ -14,10 +14,12 @@ import './card.css';
 /**
  * A tag component for any task
  *
- * @param {string} tagName - name of tag, the text of the tag
+ * @param {Object} tagName - name of tag, the text of the tag
  * @param {string} tagColour - colour code of the tag, e.g. #FFFFFF
  * @param {boolean} editMode - true: shows x button to remove, false only shows the tagName
  * @param {string} taskId - ID of the task the tag belongs to
+ * @param xButtonHandler - function to call when X button is pressed, if not specified, defaults to removing tag
+ * from existing task
  * @param {string} className - other classnames to override styles with
  * @param tagProps - other props to include in the tag
  * @returns {JSX.Element} - Tag element JSX object
@@ -27,20 +29,20 @@ const TaskTag = ({
                      tagColour,
                      editMode,
                      taskId,
+                     xButtonHandler,
                      className,
                      ...tagProps
                  }) => {
 
     // handler for x button
     const removeTag = () => {
-        // todo backend + promise
-        console.log("remove tag" + tagName);
         Meteor.call("remove_tag ", taskId, tagName);
     }
 
-    const taskTagClasses = classNames("task-tag", className);
-    const removeTagIcon = <XCircleIcon color={"var(--navy)"} className={"clickable"} onClick={removeTag}
-                                       strokeWidth={1.5} viewBox="0 0 24 24" width={18} height={18} />
+    const taskTagClasses = classNames("task-tag non-clickable", className);
+    const removeTagIcon = <XCircleIcon color={"var(--navy)"} className={"clickable"}
+                                       onClick={xButtonHandler ? xButtonHandler : removeTag}
+                                       strokeWidth={2} viewBox="0 0 24 24" width={20} height={20} />
 
     return (
         <div style={{backgroundColor: tagColour}}

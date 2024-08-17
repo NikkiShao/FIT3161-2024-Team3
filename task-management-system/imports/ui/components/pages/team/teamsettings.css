@@ -72,16 +72,6 @@
     max-width: 400px;
 }
 
-.button-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    align-content: space-between;
-    margin-bottom: 10px;
-    gap: 20px;
-  }
-
 .error-display {
     text-align: center;
 }
