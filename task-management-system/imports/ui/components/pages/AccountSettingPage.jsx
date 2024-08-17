@@ -9,18 +9,16 @@ import DeleteAccountModal from '../general/modal/DeleteAccountModal';
 import PageLayout from "../../enums/PageLayout";
 
 import TeamCollection from '../../../api/collections/team.js'
+import UserCollection from '../../../api/collections/user.js';
 import "../pages/registration/registration.css"
 
 
 function AccountSettings() {
 
     const userData = getUserInfo();
-    console.log(userData);
-
     const userID = userData.id;
     const userEmail = userData.email;
     let notificationState = userData.notificationOn;
-
 
     const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -31,10 +29,17 @@ function AccountSettings() {
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
     const [successMessage, setSuccessMessage] = useState(''); // State to store success message
 
+    const isLoadingUsers = useSubscribe('all_users');
+
+    const result = useTracker(() => {
+        return UserCollection.find({"emails.address": email }).fetch();
+    });
+
     // state to determine if the delete modal is open or not
     const [modalOpen, setModalOpen] = useState(false);
     const onOpenModal = () => setModalOpen(true);
     const onCloseModal = () => setModalOpen(false);
+
 
     const isLoading = useSubscribe('all_user_teams', userEmail)();
 
@@ -78,6 +83,18 @@ function AccountSettings() {
             setErrorMessage("Please enter a valid email address.");
             return;
         }
+
+        // Check if email is already in use and if deplicated
+
+        if (email === userEmail) {
+            setErrorMessage("Email address is the same as the current email address.");
+            return;
+        } else if (isLoadingUsers && result.length > 0){
+            setErrorMessage("Email address already exists.");
+            return;
+        }
+
+
 
         // Update team data
         teamsData.forEach((team) => {
