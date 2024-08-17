@@ -70,54 +70,58 @@ const ViewBoardPage = () => {
     // Check if data has loaded
     if (!isLoading) {
 
-        // Check if the user is in the team
-        if (teamData && teamData.teamMembers.includes(userInfo?.emails?.[0]?.address)) {
+    // check user is in the team
+        if (!teamData || !teamData.teamMembers.includes(userInfo.email)) {
+            // user is not in team, or team does not exist, move them back to their teams list
+            navigate('/' + BaseUrlPath.TEAMS)
 
-            return (
-                <div className="viewboard-container">
-                    <Button className="btn-back flex flex-row gap-2 position-absolute" onClick={handleBackClick}>
-                        <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20} />
-                        Team
-                    </Button>
-                    <div className="viewboard-top-right-buttons">
-                        <Button className="btn-light-grey view-button" onClick={handleManageBoardClick}>Manage Board </Button>
-                        <Button className="btn-light-grey view-button">View Logs</Button>
-                    </div>
-                    <h1> Board: {boardName}</h1>
-                    <div className="viewboard-board" style={{ display: 'flex', overflowX: 'auto' }}>
-                        {boardStatuses && boardStatuses.length > 0 ? (
-                            boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map((status) => (
-                                <div className="viewboard-column" key={status.statusName}>
-                                    <div className="viewboard-column-title">{status.statusName}</div>
-                                    {filterTasksByStatus(status.statusName).map(task => (
-                                        <TaskCard
-                                            key={task._id}
-                                            taskId={task._id}
-                                            taskName={task.taskName}
-                                            taskDeadlineDate={task.taskDeadlineDate}
-                                            statusName={task.statusName}
-                                            taskIsPinned={task.taskIsPinned}
-                                            tagNames={task.tagNames}
-                                            boardId={boardId}
-                                        />
-                                    ))}
-                                </div>
-                            ))
-                        ) : (
-                            <div>No statuses available</div>  // Fallback if boardStatuses array is empty
-                        )}
-                    </div>
-                    <div className= "button-group btn-submit">
-                    <Button className="btn-grey">
-                        <PlusIcon color={"var(--white)"} strokeWidth={2} viewBox="0 0 24 24" width={22} height={22}/>
-                        Add Task
-                    </Button>
-                    </div>
-                </div>
-            );
-        } else {
-            return <div>You do not have access to this board.</div>;
+        } else if (!boardData || teamId !== boardData.teamId) {
+            // board does not exist OR not belong to that team, but team does
+            navigate('/' + BaseUrlPath.TEAMS + '/' + teamId)
         }
+
+        return (
+            <div className="viewboard-container">
+                <Button className="btn-back flex flex-row gap-2 position-absolute" onClick={handleBackClick}>
+                    <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20} />
+                    Team
+                </Button>
+                <div className="viewboard-top-right-buttons">
+                    <Button className="btn-light-grey view-button" onClick={handleManageBoardClick}>Manage Board </Button>
+                    <Button className="btn-light-grey view-button">View Logs</Button>
+                </div>
+                <h1> Board: {boardName}</h1>
+                <div className="viewboard-board" style={{ display: 'flex', overflowX: 'auto' }}>
+                    {boardStatuses && boardStatuses.length > 0 ? (
+                        boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map((status) => (
+                            <div className="viewboard-column" key={status.statusName}>
+                                <div className="viewboard-column-title">{status.statusName}</div>
+                                {filterTasksByStatus(status.statusName).map(task => (
+                                    <TaskCard
+                                        key={task._id}
+                                        taskId={task._id}
+                                        taskName={task.taskName}
+                                        taskDeadlineDate={task.taskDeadlineDate}
+                                        statusName={task.statusName}
+                                        taskIsPinned={task.taskIsPinned}
+                                        tagNames={task.tagNames}
+                                        boardId={boardId}
+                                    />
+                                ))}
+                            </div>
+                        ))
+                    ) : (
+                        <div>No statuses available</div>  // Fallback if boardStatuses array is empty
+                    )}
+                </div>
+                <div className= "button-group btn-submit">
+                <Button className="btn-grey">
+                    <PlusIcon color={"var(--white)"} strokeWidth={2} viewBox="0 0 24 24" width={22} height={22}/>
+                    Add Task
+                </Button>
+                </div>
+            </div>
+        );
     }
 
     return <div>Loading...</div>;
