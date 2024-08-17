@@ -33,9 +33,9 @@ const ViewBoardPage = () => {
     });
 
     // Fetching the board details, including boardStatuses
-    const isLoadingBoard = useSubscribe('all_team_boards',teamId)
+    const isLoadingBoard = useSubscribe('board_by_id',boardId)
     const boardData = useTracker(() => {
-        return BoardCollection.findOne({ teamId: teamId });
+        return BoardCollection.findOne({ _id: boardId });
     });
 
     // Fetching the tasks for the board
