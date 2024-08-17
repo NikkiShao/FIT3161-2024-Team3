@@ -54,6 +54,7 @@ export const TeamSettingsPage = () => {
         return UserCollection.find().fetch();
     });
     const teamMembersData = usersData.filter(user => teamMembers.includes(user.emails[0].address));
+    const amountOfUsers = teamMembersData.filter(user => user.emails[0].address !== teamLeader.email);
 
     const userInfo = getUserInfo();
     const [open, setOpen] = useState(false);
@@ -62,7 +63,11 @@ export const TeamSettingsPage = () => {
     const [newLeader, setNewLeader] = useState('');
     const onOpenModal = () => {
         setOpen(true);
-        setNewLeader(leaderOptions[0].emails[0].address);
+        if(amountOfUsers>1){
+        setNewLeader(leaderOptions[0].emails[0].address);}
+        else{
+            setNewLeader(teamLeader);
+        }
     };
     const onCloseModal = () => setOpen(false);
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
@@ -153,7 +158,17 @@ export const TeamSettingsPage = () => {
         });
         onCloseModal();
     };
+    const deleteTeam = () => {
+        Meteor.call('update_team', teamId, {
+            teamName: teamName,
+            teamLeader: teamLeader,
+            teamMembers: teamMembers
+        })
+        Meteor.call('delete_team', teamId);
+        navigate('/teams');
+    }
 
+    const helpText = "This is the team settings page to change team name, leader, and members. Only team leader is allowed to made changes. Press Save Changes to apply all changes to the team. Press Leave Team to permanently leave the team";
     if (isLoadingTeams() || isLoadingUsers()) {
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
@@ -163,7 +178,7 @@ export const TeamSettingsPage = () => {
     } else {
         return (
             <>
-            <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+            <WhiteBackground pageHelpText={helpText} pageLayout={PageLayout.LARGE_CENTER}>
                 <div className="team-settings-base">
 
                 <div className='back-button'>
@@ -177,19 +192,21 @@ export const TeamSettingsPage = () => {
 
                     <div className="ts-input-group">
                     <label>{"Team Name:"}</label>
-                    <div className={"input-error-div"}>
+                    {teamsData.teamLeader === userInfo.email?
+                        (<div className={"input-error-div"}>
                     <Input value={teamName} onChange={(e) => setTeamName(e.target.value)}/>
                     {errors.teamName && <span className="text-red small-text">{errors.teamName}</span>}
-                    </div>
+                    </div>):(<div className='member-item'>{teamsData.teamName}</div>)}
                     </div>
 
                     <div className="ts-input-group" >
                     <label>{"Team Leader:"}</label>
-                        <select className={"input-base"} value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
+                    {teamsData.teamLeader === userInfo.email?
+                        (<select className={"input-base"} value={teamLeader} onChange={(e) => setTeamLeader(e.target.value)}>
                         {teamMembersData.map(user => (
                         <option key={user._id} value={user.emails[0].address}>
                         {user.profile.name} (@{user.username})</option>))}
-                        </select>
+                        </select>):(<div className='member-item'>{teamsData.teamLeader}</div>)}
                     </div>
 
                     <div className="ts-input-group">
@@ -198,19 +215,22 @@ export const TeamSettingsPage = () => {
                     {teamMembers.filter(member => member!==teamsData.teamLeader).map(member => (
                         <Fragment key={member}><div className='member-item'> 
                             {member}
+                            {teamsData.teamLeader === userInfo.email? (
                             <button className="inserted-button" onClick={() => handleRemoveMember(member)}>
                                 <MinusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30} />
-                            </button>
+                            </button>): <></>}
                             </div>
                         </Fragment>
                     ))}   
-                    <div className='add-member-input'>
+                    {teamsData.teamLeader === userInfo.email?
+                        (<div className='add-member-input'>
                     <div className={"input-error-div"}>
                         <Input type="email" placeholder={"insert new member email"} value={newMember} onChange={(e) => setNewMember(e.target.value)}/>
                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                     </div>
                     <button className="inserted-button" onClick={handleAddMember}><PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30} /></button>
-                   </div>   
+                   </div>):(<></>)}
+
                     </ul>
                     </div> 
 
@@ -227,14 +247,23 @@ export const TeamSettingsPage = () => {
                     </form>
                 </div>
 
-                <a href='#' className="text-red" style={{width:"100%", textAlign: "end"}} onClick={onOpenModal}>Leave Team</a>
+                <span href='#' className="text-red underline clickable" style={{width:"100%", textAlign: "end"}} onClick={onOpenModal}>Leave Team</span>
             </WhiteBackground>
             
+            {teamsData.teamMembers.length === 1 || amountOfUsers.length === 1 ? (        
+                <Modal
+                closeIcon={closeIcon}
+                classNames={{modal: classNames('modal-base', '')}}
+                open={open}
+                onClose={onCloseModal}
+                center>
+                    <div className={"modal-div-center"}>
+                    <h1 className={"text-center"}>Delete Team</h1>
+                    <p>You are about to delete "{teamName}".</p><p>Are you sure?</p>
+                    <Button className={"btn-red"} onClick={deleteTeam}>Confirm</Button></div>
+                </Modal>): 
 
-
-
-
-            <Modal
+            (<Modal
                 closeIcon={closeIcon}
                 classNames={{
                     modal: classNames('ts-modal-base', ''),
@@ -274,7 +303,7 @@ export const TeamSettingsPage = () => {
                         </div>
                     </div>
                     }
-            </Modal>
+            </Modal>)}
             </>
         );
     }

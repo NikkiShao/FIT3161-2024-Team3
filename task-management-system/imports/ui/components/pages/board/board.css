@@ -1,0 +1,41 @@
+.status-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.status-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.tag-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tag-circle {
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+
+.tag-group {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

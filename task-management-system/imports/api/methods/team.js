@@ -34,5 +34,8 @@ Meteor.methods({
                 "teamLeader": teamsData.teamLeader
             }
         });
+    },
+    "delete_team": function(teamId){
+        TeamCollection.remove({_id: teamId});
     }
 })

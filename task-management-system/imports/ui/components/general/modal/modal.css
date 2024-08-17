@@ -3,7 +3,7 @@
     background: var(--white);
     width: fit-content;
     min-width: 800px;
-    min-height: 425px;
+    min-height: 350px;
     padding: 50px;
     border-radius: 25px;
 }
@@ -32,15 +32,4 @@
     width: 80%;
 }
 
-.short-input {
-    width: 200px !important;
-    min-width: 200px !important;
-}
 
-.inner-input-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
-    gap: 10px;
-}
