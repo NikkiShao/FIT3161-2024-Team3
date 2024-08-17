@@ -26,7 +26,7 @@ function AccountSettings() {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
     const [name, setName] = useState('');
-    const [email, setEmail] = useState(userEmail);
+    const [email, setEmail] = useState('');
     const [emailNotifications, setEmailNotifications] = useState(notificationState === true ? "On" : "Off");
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
     const [successMessage, setSuccessMessage] = useState(''); // State to store success message
@@ -36,7 +36,6 @@ function AccountSettings() {
     const onOpenModal = () => setModalOpen(true);
     const onCloseModal = () => setModalOpen(false);
 
-    
     const isLoading = useSubscribe('all_user_teams', userEmail)();
 
     const teamsData = useTracker(() => {
@@ -46,14 +45,16 @@ function AccountSettings() {
         return [];
     }, [userEmail, isLoading]);
 
+    if(userID !== null && name === '' && email === ''){
+        setName(userData.name);
+        setEmail(userData.email);
+        setEmailNotifications(userData.setEmailNotifications);}
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setErrorMessage('');
         setSuccessMessage('');
 
-        // Clear previous error message
-        setErrorMessage('');
 
         if (emailNotifications === "On") {
             notificationState = true;
