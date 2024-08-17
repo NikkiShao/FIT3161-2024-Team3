@@ -28,7 +28,12 @@ function AccountSettings() {
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
     const [successMessage, setSuccessMessage] = useState(''); // State to store success message
 
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({
+        name: "",
+        email: "",
+        emailNotification: "",
+        updatedFields: ""
+    });
 
     const isLoadingUsers = useSubscribe('all_users');
 
@@ -55,68 +60,89 @@ function AccountSettings() {
         setEmail(userData.email);
         setEmailNotifications(userData.notificationOn);
     }
-
     const handleSubmit = (event) => {
         event.preventDefault();
         setErrorMessage('');
         setSuccessMessage('');
-
-        if (!name || !email) {
-            setErrorMessage("Name and Email are required.");
-            return;
+    
+        const updatedFields = {};
+        const newError = {};
+        let isError = false;
+    
+        // Check if name has changed and validate
+        if (name !== userData.name) {
+            if (!name) {
+                newError.name = "Please fill in your name";
+                isError = true;
+            }
+            if (!alphanumericSpaceRegex.test(name)) {
+                newError.name = "Name can only contain alphanumeric characters and spaces";
+                isError = true;
+            }
+            updatedFields.name = name;
         }
-
-        // Validate name format using regex
-        if (!alphanumericSpaceRegex.test(name)) {
-            setErrorMessage("Name can only contain alphanumeric characters and spaces.");
-            return;
+    
+        // Check if email has changed and validate
+        if (email !== userData.email) {
+            if (!email) {
+                newError.email = "Please fill in your email";
+                isError = true;
+            }
+            if (!emailRegex.test(email)) {
+                newError.email = "Please enter a valid email address";
+                isError = true;
+            }
+    
+            if (isLoadingUsers && result.length > 0) {
+                newError.email = "Email address already exists";
+                isError = true;
+            }
+    
+            updatedFields.email = email;
         }
-
-        // Validate email format using regex
-        if (!emailRegex.test(email)) {
-            setErrorMessage("Please enter a valid email address.");
-            return;
+    
+        // Check if email notifications setting has changed
+        if (emailNotifications !== userData.notificationOn) {
+            updatedFields.notificationOn = emailNotifications === "On";
         }
-
-        // Check if email is already in use and if deplicated
-
-        if (email === userData.email) {
-            setErrorMessage("Email address is the same as the current email address.");
-            return;
-        } else if (isLoadingUsers && result.length > 0) {
-            setErrorMessage("Email address already exists.");
-            return;
+    
+        if (Object.keys(updatedFields).length === 0) {
+            newError.updatedFields = "No changes detected";
+            isError = true;
         }
+        setErrors(newError);
 
-
-        // Update team data
-        teamsData.forEach((team) => {
-            const isLeader = (team.teamLeader === userData.email)
-            const updatedTeamLeader = isLeader ? email : team.teamLeader
-            const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? email : member)
-
-            Meteor.call('update_team', team._id, {
-                    teamName: team.teamName,
-                    teamLeader: updatedTeamLeader,
-                    teamMembers: updatedTeamMembers
-                }, (error) => {
-                    if (error) {
-                        setErrorMessage(`Failed to update team info: ${error.reason}`);
+        if(!isError){
+        // Update team data if email changed
+        if (updatedFields.email) {
+            teamsData.forEach((team) => {
+                const isLeader = (team.teamLeader === userData.email)
+                const updatedTeamLeader = isLeader ? updatedFields.email : team.teamLeader
+                const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? updatedFields.email : member)
+    
+                Meteor.call('update_team', team._id, {
+                        teamName: team.teamName,
+                        teamLeader: updatedTeamLeader,
+                        teamMembers: updatedTeamMembers
+                    }, (error) => {
+                        if (error) {
+                            setErrorMessage(`Failed to update team info: ${error.reason}`);
+                        }
                     }
-                }
-            )
-        })
-
+                )
+            });
+        }
+    
         // Call method to update user info
-        Meteor.call('update_user_info', userData.id, name, email, emailNotifications === "On", (error) => {
+        Meteor.call('update_user_info', userData.id, updatedFields.name || userData.name, updatedFields.email || userData.email, updatedFields.notificationOn !== undefined ? updatedFields.notificationOn : userData.notificationOn, (error) => {
             if (error) {
                 setErrorMessage(`Failed to update user info: ${error.reason}`);
             } else {
                 setSuccessMessage("User info updated successfully.");
             }
-        });
+        });}
     };
-
+    
     const helpText = "This is the page where you can modify your account related details. " +
         "You can also delete your account and all associated data."
 
@@ -172,6 +198,8 @@ function AccountSettings() {
 
                 {/* Display success message */}
                 {successMessage && <div className="text-green">{successMessage}</div>}
+
+                {errors.updatedFields && <span className="text-red small-text">{errors.updatedFields}</span>}
 
                 <Button
                     className={"btn-brown btn-submit"}
