@@ -48,7 +48,7 @@ const ViewBoardPage = () => {
 
     // Function to filter tasks by status
     const filterTasksByStatus = (statusName) => {
-        return tasksData.filter(task => taskData.statusName === statusName);
+        return tasksData.filter(task => task.statusName === statusName);
     };
 
     const handleBackClick = () => {
