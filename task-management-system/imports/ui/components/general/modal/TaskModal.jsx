@@ -125,12 +125,13 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             let contributionArr = []
             for (let key in contributions) {
                 if (contributions.hasOwnProperty(key)) {
-                    const entry = {
-                        email: key,
-                        percent: contributions[key]
+                    let entry = { email: key }
+                    try {
+                        entry.percent = Number(contributions[key])
+                    } catch (e) {
+                        entry.percent = 0
                     }
                     contributionArr.push(entry);
-
                 }
             }
 
