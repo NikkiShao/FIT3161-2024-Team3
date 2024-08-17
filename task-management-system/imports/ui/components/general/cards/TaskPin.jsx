@@ -5,7 +5,7 @@
  * Version: 1.0
  */
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 /**
  * PinTask component for toggling the pin state of a task.
@@ -17,6 +17,10 @@ import React, { useState } from 'react';
  */
 const TaskPin = ({ isPinned, onPinChange, size='25' }) => {
   const [pinned, setPinned] = useState(isPinned);
+  // change pin when database changed
+  useEffect(() => {
+    setPinned(isPinned)
+  }, [isPinned]);
 
   const handlePinClick = (e) => {
     e.stopPropagation();
