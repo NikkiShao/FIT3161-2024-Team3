@@ -1,0 +1,150 @@
+/**
+
+CSS for the viewboard page*/
+
+.viewboard-body {
+    font-family: Arial, sans-serif;
+    background-color: #F4F1F0;
+    margin: 0;
+    padding: 0;
+}
+
+.viewboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    margin-left: 300px;
+}
+
+.viewboard-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #4A4A4A;
+    text-align: center;
+}
+
+.viewboard-board {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: auto;
+    height: calc(100vh - 160px);
+}
+
+.viewboard-column {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 293px;
+    margin: 30px 15px 0 15px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 2px solid #A38274;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.viewboard-column-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #4A4A4A;
+}
+
+.viewboard-add-task-button {
+    position: fixed;
+    bottom: 20px;
+    left: calc(50% + 150px);
+    transform: translateX(-50%);
+    width: 150px;
+    background-color: #757B81;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.viewboard-add-task-button {
+    background-color: var(--button-grey);
+    color: var(--white);
+    border: none;
+    transition: background-color 0.5s ease-in-out;
+}
+
+.viewboard-add-task-button:hover,
+.viewboard-add-task-button:focus-visible,
+.viewboard-add-task-button:hover:active {
+    background-color: var(--button-grey-hover);
+    color: var(--white);
+}
+
+.viewboard-add-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+}
+
+.viewboard-top-right-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-light-grey {
+    background-color: var(--light-grey);
+    color: var(--black);
+    border: none;
+    padding: 7.5px 15px;
+    font-size: 16px;
+    border-radius: 50px;
+    transition: background-color 0.5s ease-in-out;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-light-grey:hover,
+.btn-light-grey:focus-visible,
+.btn-light-grey:hover:active {
+    background-color: var(--light-grey-hover);
+    color: var(--black);
+}
+
+
+.team-back-button {
+    position: absolute;
+    top: 20px;
+    margin-left: -10px;
+    border: 2px solid var(--dark-grey);
+    color: var(--dark-grey);
+    background-color: var(--white);
+    width: fit-content !important;
+    height: 40px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 3px !important;
+}
+
+.team-back-button:hover,
+.team-back-button:focus-visible,
+.team-back-button:hover:active {
+    border: 2px solid var(--navy);
+    background-color: var(--navy-hover);
+    color: var(--navy);
+}
