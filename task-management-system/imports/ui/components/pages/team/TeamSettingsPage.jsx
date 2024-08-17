@@ -80,10 +80,8 @@ export const TeamSettingsPage = () => {
     const saveChanges = (event) => {
         event ? event.preventDefault() : null;
         const newErrors = {};
-        console.log(teamName);
         let isError = false;
         if(teamName ===''){
-            console.log("hereee");
             newErrors.teamName = "Please fill in your team name";
             isError = true;
         }
@@ -95,8 +93,7 @@ export const TeamSettingsPage = () => {
         setErrors(newErrors);
 
         if(!isError){
-            console.log("here");
-            Meteor.call('update_team', teamId, 
+            Meteor.call('update_team', teamId,
             {
                 teamName: teamName,
                 teamLeader: teamLeader,

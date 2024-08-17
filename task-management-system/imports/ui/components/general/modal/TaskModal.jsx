@@ -187,8 +187,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         }
     };
 
-    console.log(contributions)
-
     // handler for adding a tag
     const addTag = (event, value) => {
         event.preventDefault();
