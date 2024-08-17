@@ -51,6 +51,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         title: '',
         description: '',
         deadline: '',
+        contributions:'',
         overall: ''
     })
 
@@ -102,6 +103,18 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         } else if (!taskId && deadlineDateObject < new Date()) {
             // NEW TASK and deadline is passed, invalid
             newErrors.deadline = "Deadline must be in the future";
+            isError = true
+        }
+
+        // contribution > 100, error
+        let totalContribution = 0;
+        for (let key in contributions) {
+            if (contributions.hasOwnProperty(key)) {
+                totalContribution += Number(contributions[key])
+            }
+        }
+        if (totalContribution > 100) {
+            newErrors.contributions = "Total contribution must be no more than 100%";
             isError = true
         }
 
@@ -174,6 +187,8 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         }
     };
 
+    console.log(contributions)
+
     // handler for adding a tag
     const addTag = (event, value) => {
         event.preventDefault();
@@ -193,11 +208,11 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
     const addContribution = (event, email, value) => {
         event.preventDefault();
         if (!value) {
-            value = 0
+            value = '0'
         }
 
         if (value > 100) {
-            value = 100
+            value = '100'
         }
 
         setContributions({
@@ -282,7 +297,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             }
             setContributions(newContributions)
         }
-
 
         let displayText = null;
         if (taskData) {
@@ -496,7 +510,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                 const existingPercentage = contributions[memberEmail];
 
                                                 return (
-                                                    <div key={member} id={"task-modal__contribution-grid"}>
+                                                    <div key={member.username} id={"task-modal__contribution-grid"}>
                                                         {member.profile.name}
                                                         <div id={"task-modal__percent"}>
                                                             <Input
@@ -547,6 +561,8 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                     )) : null
                                                 }
                                             </select>}
+
+                                    {errors.contributions && <span className="text-red small-text">{errors.contributions}</span>}
                                 </div>
                             </div>
                         </div>
