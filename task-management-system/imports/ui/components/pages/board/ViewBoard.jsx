@@ -78,7 +78,7 @@ const ViewBoardPage = () => {
                         Team
                     </button>
                     <div className="viewboard-top-right-buttons">
-                        <button className="btn-light-grey">Manage Board onClick={handleManageBoardClick}</button>
+                        <button className="btn-light-grey" onClick={handleManageBoardClick}>Manage Board </button>
                         <button className="btn-light-grey">View Logs</button>
                     </div>
                     <div className="viewboard-title"> Board: {boardName}</div>
