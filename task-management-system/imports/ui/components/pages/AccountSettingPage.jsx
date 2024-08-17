@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import WhiteBackground from "../general/whiteBackground/WhiteBackground";
-import Button from "../general/buttons/Button";
-import PageLayout from "../../enums/PageLayout";
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
 import { Meteor } from 'meteor/meteor';
 import { getUserInfo } from '../util';
-import "../pages/registration/registration.css"
+
+import WhiteBackground from "../general/whiteBackground/WhiteBackground";
+import Button from "../general/buttons/Button";
 import DeleteAccountModal from '../general/modal/DeleteAccountModal';
+import PageLayout from "../../enums/PageLayout";
+
+import TeamCollection from '../../../api/collections/team.js'
+import "../pages/registration/registration.css"
 
 
 function AccountSettings() {
@@ -13,24 +17,35 @@ function AccountSettings() {
     const userData = getUserInfo();
     console.log(userData);
 
-
     const userID = userData.id;
+    const userEmail = userData.email;
     let notificationState = userData.notificationOn;
-    let userName = userData.name;
-    let userEmail = userData.email;
+
 
     const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(userEmail);
     const [emailNotifications, setEmailNotifications] = useState(notificationState === true ? "On" : "Off");
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
     const [successMessage, setSuccessMessage] = useState(''); // State to store success message
 
+    // state to determine if the delete modal is open or not
     const [modalOpen, setModalOpen] = useState(false);
     const onOpenModal = () => setModalOpen(true);
     const onCloseModal = () => setModalOpen(false);
+
+    
+    const isLoading = useSubscribe('all_user_teams', userEmail)();
+
+    const teamsData = useTracker(() => {
+        if (!isLoading) {
+            return TeamCollection.find({ teamMembers: userEmail }).fetch();
+        }
+        return [];
+    }, [userEmail, isLoading]);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -63,6 +78,21 @@ function AccountSettings() {
             return;
         }
 
+        // Update team data
+        teamsData.forEach((team) => {
+            const isLeader = (team.teamLeader === userEmail)
+            const updatedTeamLeader = isLeader ? email : team.teamLeader
+            const updatedTeamMembers = team.teamMembers.map(member => member === userEmail ? email : member)
+
+            Meteor.call('update_team', team._id, {teamName: team.teamName, teamLeader: updatedTeamLeader, teamMembers: updatedTeamMembers }, (error) => {
+                if (error) {
+                    setErrorMessage(`Failed to update team info: ${error.reason}`);
+                }
+            }
+            )
+        })
+
+
         // Call method to update user info
         Meteor.call('update_user_info', userID, name, email, notificationState, (error) => {
             if (error) {
@@ -71,6 +101,8 @@ function AccountSettings() {
                 setSuccessMessage("User info updated successfully.");
             }
         });
+
+
     };
 
     return (
@@ -112,7 +144,7 @@ function AccountSettings() {
             <button
                 type="button"
                 className="delete-button"
-                onClick={ onOpenModal }>
+                onClick={onOpenModal}>
                 Delete account and all data</button>
         </WhiteBackground>
     );

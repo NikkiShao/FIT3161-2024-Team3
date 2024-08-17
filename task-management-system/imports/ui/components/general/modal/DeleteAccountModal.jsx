@@ -1,33 +1,53 @@
 /**
  * File Description: Account Deletion modal component
- * Updated Date: 05/08/2024
+ * Updated Date: 16/08/2024
  * Contributors: Mark
- * Version: 1.0
+ * Version: 2.0
  */
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-responsive-modal';
 import classNames from "classnames";
+
+import { getUserInfo } from '../../util';
+import { Meteor } from 'meteor/meteor';
+import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
+import TeamCollection from '../../../../api/collections/team.js'      
+
+
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import '../../general/modal/modal.css';
-import { getUserInfo } from '../../util';
-import { Meteor } from 'meteor/meteor';
-
-
-
 
 
 const DeleteAccountModal = ({ open, closeHandler }) => {
     const userData = getUserInfo();
     const id = userData.id;
+    const userEmail = userData.email;
+    const [isJoined, setIsJoined] = useState(false);
 
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />
 
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
     const [successMessage, setSuccessMessage] = useState(''); // State to store success message
-    const [isJoined, setIsJoined] = useState(false);
+
+    const isLoading = useSubscribe('all_user_teams', userEmail)();
+
+    const teamsData = useTracker(() => {
+        if (!isLoading) {
+            return TeamCollection.find({ teamMembers: userEmail }).fetch();
+        }
+        return [];
+    }, [userEmail, isLoading]);
+
+    useEffect(() => {
+        if (teamsData.length > 0) {
+            setIsJoined(true);
+        } else {
+            setIsJoined(false);
+        }
+    }, [teamsData]);
 
     const handleClick = () => {
         Meteor.call(
