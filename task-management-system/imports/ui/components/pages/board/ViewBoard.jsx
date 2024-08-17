@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTracker } from 'meteor/react-meteor-data';
+import { useTracker,useSubscribe } from 'meteor/react-meteor-data';
 import { BoardCollection } from '/imports/api/collections/board';
 import { TaskCollection } from '/imports/api/collections/task';
 import { TeamCollection } from '/imports/api/collections/team';
@@ -15,48 +15,40 @@ import TaskCard from '/imports/ui/components/general/cards/TaskCard';
 import './ViewBoard.css';
 import { ChevronLeftIcon,PlusIcon} from "@heroicons/react/24/outline";
 import Button from "/imports/ui/components/general/buttons/Button";
+import BaseUrlPath from "/imports/ui/enums/BaseUrlPath";
+import {getUserInfo} from "/imports/ui/components/util";
+
 
 const ViewBoardPage = () => {
     const { teamId, boardId } = useParams();
     const navigate = useNavigate();
 
     // Fetching user information
-    const userInfo = useTracker(() => Meteor.user());
+    const userInfo = getUserInfo();
 
     // Fetching the team data
-    const { teamData, isLoading } = useTracker(() => {
-        const subscription = Meteor.subscribe('team_by_id', teamId);
-        return {
-            teamData: TeamCollection.findOne({ _id: teamId }),
-            isLoading: !subscription.ready(),
-        };
-    }, [teamId]);
+    const isLoadingTeam = useSubscribe('specific_team',teamId)
+    const teamData = useTracker(() => {
+        return TeamCollection.findOne({ _id: teamId })
+    });
 
     // Fetching the board details, including boardStatuses
-    const { boardName, boardStatuses } = useTracker(() => {
-        const subscription = Meteor.subscribe('all_boards');
-        if (!subscription.ready()) {
-            return { boardName: 'Loading...', boardStatuses: [] };
-        }
-        const board = BoardCollection.findOne({ _id: boardId });
-        return {
-            boardName: board ? board.boardName : 'Board not found',
-            boardStatuses: board ? board.boardStatuses : []
-        };
-    }, [boardId]);
+    const isLoadingBoard = useSubscribe('all_team_boards',teamId)
+    const boardData = useTracker(() => {
+        return BoardCollection.findOne({ teamId: teamId });
+    });
 
     // Fetching the tasks for the board
-    const tasks = useTracker(() => {
-        const subscription = Meteor.subscribe('tasks_for_board', boardId);
-        if (!subscription.ready()) {
-            return [];
-        }
-        return TaskCollection.find({ boardId }).fetch();
-    }, [boardId]);
+    const isLoadingTasks = useSubscribe('tasks_for_board',boardId)
+    const tasksData = useTracker(() => {
+        return TaskCollection.find({ boardId: boardId }).fetch();
+    });
+
+    const isLoading = isLoadingTeam() || isLoadingBoard() || isLoadingTasks();
 
     // Function to filter tasks by status
     const filterTasksByStatus = (statusName) => {
-        return tasks.filter(task => task.statusName === statusName);
+        return tasksData.filter(task => taskData.statusName === statusName);
     };
 
     const handleBackClick = () => {
@@ -90,10 +82,10 @@ const ViewBoardPage = () => {
                     <Button className="btn-light-grey view-button" onClick={handleManageBoardClick}>Manage Board </Button>
                     <Button className="btn-light-grey view-button">View Logs</Button>
                 </div>
-                <h1> Board: {boardName}</h1>
+                <h1> Board: {boardData.boardName}</h1>
                 <div className="viewboard-board" style={{ display: 'flex', overflowX: 'auto' }}>
-                    {boardStatuses && boardStatuses.length > 0 ? (
-                        boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map((status) => (
+                    {boardData.boardStatuses && boardData.boardStatuses.length > 0 ? (
+                        boardData.boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map((status) => (
                             <div className="viewboard-column" key={status.statusName}>
                                 <div className="viewboard-column-title">{status.statusName}</div>
                                 {filterTasksByStatus(status.statusName).map(task => (
