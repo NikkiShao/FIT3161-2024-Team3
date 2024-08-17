@@ -62,6 +62,10 @@ const ViewBoardPage = () => {
         navigate(`/teams/${teamId}`);
     };
 
+    const handleManageBoardClick = () => {
+        navigate('settings');
+    };
+
     // Check if data has loaded
     if (!isLoading) {
         // Check if the user is in the team
@@ -74,7 +78,7 @@ const ViewBoardPage = () => {
                         Team
                     </button>
                     <div className="viewboard-top-right-buttons">
-                        <button className="btn-light-grey">Manage Board</button>
+                        <button className="btn-light-grey">Manage Board onClick={handleManageBoardClick}</button>
                         <button className="btn-light-grey">View Logs</button>
                     </div>
                     <div className="viewboard-title"> Board: {boardName}</div>
