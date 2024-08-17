@@ -3,7 +3,7 @@
 CSS for the viewboard page*/
 
 .viewboard-container {
-    max-width: 1200px;
+    max-width: calc(100vw - 300px);
     margin: 0 auto;
     text-align: center;
     padding: 20px;
