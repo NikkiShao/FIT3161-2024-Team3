@@ -16,8 +16,11 @@ Meteor.methods({
                 "boardDeadline": deadline,
                 "boardDescription": desc,
                 "teamId": teamId,
-                "boardStatuses": ["To Do", "Done"],
-                "boardTags": []
+                "boardTags": [],
+                "boardStatuses": [
+                    {"statusName": "To Do", "statusOrder": 1},
+                    {"statusName": "Done", "statusOrder": 2}
+                ],
             }
         )
     },

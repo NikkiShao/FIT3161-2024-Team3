@@ -23,7 +23,8 @@ import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
-import TeamSettingsPage from './components/pages/team/TeamSettingsPage';import BoardSettings from "./components/pages/board/BoardSettings";
+import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
+import BoardSettings from "./components/pages/board/BoardSettings";
 
 
 /**
@@ -82,15 +83,13 @@ export const App = () => (
                             <TeamsListPage/>
                         </ProtectedRoute>
                     }/>
-                    
-                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId' +'/settings'} element={
+
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId' + '/settings'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
                             <TeamSettingsPage/>
                         </ProtectedRoute>
-                    
-                        // onClick={() => navigate('/' + baseUrlPath.TEAMS + '/' + team._id + '/settings')}
                     }/>
-                    
+
 
                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
@@ -101,15 +100,15 @@ export const App = () => (
                     {/* Boards related routes */}
                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/boards/:boardId/settings'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
-                            <BoardSettings />
+                            <BoardSettings/>
                         </ProtectedRoute>
                     }/>
 
-                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/boards/:boardId'} element={
-                            <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
-                                <ViewBoardPage/>
-                            </ProtectedRoute>
-                     }/>
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/boards/:boardId'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <ViewBoardPage/>
+                        </ProtectedRoute>
+                    }/>
 
                 </Routes>
             </main>

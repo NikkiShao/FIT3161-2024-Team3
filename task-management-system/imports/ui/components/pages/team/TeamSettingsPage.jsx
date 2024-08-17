@@ -80,10 +80,8 @@ export const TeamSettingsPage = () => {
     const saveChanges = (event) => {
         event ? event.preventDefault() : null;
         const newErrors = {};
-        console.log(teamName);
         let isError = false;
         if(teamName ===''){
-            console.log("hereee");
             newErrors.teamName = "Please fill in your team name";
             isError = true;
         }
@@ -95,8 +93,7 @@ export const TeamSettingsPage = () => {
         setErrors(newErrors);
 
         if(!isError){
-            console.log("here");
-            Meteor.call('update_team', teamId, 
+            Meteor.call('update_team', teamId,
             {
                 teamName: teamName,
                 teamLeader: teamLeader,
@@ -240,8 +237,8 @@ export const TeamSettingsPage = () => {
                     </div>
                     }
                     {userInfo.email === teamsData.teamLeader ?
-                    <div className='button-group'>
-                    <Button type="submit" className="btn-brown">Save Changes</Button>
+                    <div className='button-group-row'>
+                    <Button type="submit" className="btn-brown btn-submit">Save Changes</Button>
                     </div> : <></>}
 
                     </form>
@@ -290,7 +287,7 @@ export const TeamSettingsPage = () => {
                                     ))}
                                 </select></div>
                             </div>
-                            <div style={{marginTop:"15px", marginBottom: "15px"}} className='button-group'>
+                            <div style={{marginTop:"15px", marginBottom: "15px"}} className='button-group-row'>
                             <Button className={"btn-red"} onClick={() => leaveTeam(true)}>Save & Leave Team</Button>
                             </div>
                     </div>) : 
@@ -298,7 +295,7 @@ export const TeamSettingsPage = () => {
                         <div><h1> Leave Team </h1>
                         <p>You are leaving the team.</p><p>Are you sure?</p></div>
                         <label></label>
-                        <div className='button-group'>
+                        <div className='button-group-row'>
                         <Button className={"btn-red"} onClick={() => leaveTeam(false)}>Leave Team</Button>
                         </div>
                     </div>

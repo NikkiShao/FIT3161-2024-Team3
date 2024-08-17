@@ -35,7 +35,6 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
 
     // for date checking
     const minDeadlineDate = new Date();
-    console.log("minDeadlineDate", minDeadlineDate)
 
     // Icons for UI elements
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
@@ -45,7 +44,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         event.preventDefault();
 
         // error checks
-        const newErrors = {}
+        let newErrors = {}
         let isError = false;
 
         // board name
