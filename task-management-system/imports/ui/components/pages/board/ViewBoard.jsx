@@ -13,7 +13,8 @@ import { TaskCollection } from '/imports/api/collections/task';
 import { TeamCollection } from '/imports/api/collections/team';
 import TaskCard from '/imports/ui/components/general/cards/TaskCard';
 import './ViewBoard.css';
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon,PlusIcon} from "@heroicons/react/24/outline";
+import Button from "/imports/ui/components/general/buttons/Button";
 
 const ViewBoardPage = () => {
     const { teamId, boardId } = useParams();
@@ -68,20 +69,21 @@ const ViewBoardPage = () => {
 
     // Check if data has loaded
     if (!isLoading) {
+
         // Check if the user is in the team
         if (teamData && teamData.teamMembers.includes(userInfo?.emails?.[0]?.address)) {
 
             return (
                 <div className="viewboard-container">
-                    <button className="btn-back team-back-button" onClick={handleBackClick}>
+                    <Button className="btn-back flex flex-row gap-2 position-absolute" onClick={handleBackClick}>
                         <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20} />
                         Team
-                    </button>
+                    </Button>
                     <div className="viewboard-top-right-buttons">
-                        <button className="btn-light-grey" onClick={handleManageBoardClick}>Manage Board </button>
-                        <button className="btn-light-grey">View Logs</button>
+                        <Button className="btn-light-grey view-button" onClick={handleManageBoardClick}>Manage Board </Button>
+                        <Button className="btn-light-grey view-button">View Logs</Button>
                     </div>
-                    <div className="viewboard-title"> Board: {boardName}</div>
+                    <h1> Board: {boardName}</h1>
                     <div className="viewboard-board" style={{ display: 'flex', overflowX: 'auto' }}>
                         {boardStatuses && boardStatuses.length > 0 ? (
                             boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map((status) => (
@@ -105,12 +107,12 @@ const ViewBoardPage = () => {
                             <div>No statuses available</div>  // Fallback if boardStatuses array is empty
                         )}
                     </div>
-                    <button className="viewboard-add-task-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="viewboard-add-icon">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
+                    <div className= "button-group btn-submit">
+                    <Button className="btn-grey">
+                        <PlusIcon color={"var(--white)"} strokeWidth={2} viewBox="0 0 24 24" width={22} height={22}/>
                         Add Task
-                    </button>
+                    </Button>
+                    </div>
                 </div>
             );
         } else {
