@@ -109,7 +109,7 @@ export const BoardSettings = () => {
         const newError = {}
         if (isExist) {
             newError.boardNewTag = "Tag has already been added";
-        } else if (!boardNewTagName) {
+        } else if (!boardNewTagName || boardNewTagName === "...") {
             newError.boardNewTag = "Please input valid tag name";
         } else {
             setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName, tagColour: boardNewTagHex}]);

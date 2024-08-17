@@ -1,6 +1,6 @@
 /**
-
-CSS for the viewboard page*/
+CSS for the viewboard page
+*/
 
 .viewboard-container {
     max-width: calc(100vw - 300px);
@@ -48,6 +48,7 @@ CSS for the viewboard page*/
 }
 
 .viewboard-top-right-buttons {
+    z-index: 30;
     position: fixed;
     top: 20px;
     right: 20px;

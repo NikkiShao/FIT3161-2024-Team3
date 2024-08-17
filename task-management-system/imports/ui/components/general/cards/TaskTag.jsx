@@ -14,7 +14,7 @@ import './card.css';
 /**
  * A tag component for any task
  *
- * @param {string} tagName - name of tag, the text of the tag
+ * @param {Object} tagName - name of tag, the text of the tag
  * @param {string} tagColour - colour code of the tag, e.g. #FFFFFF
  * @param {boolean} editMode - true: shows x button to remove, false only shows the tagName
  * @param {string} taskId - ID of the task the tag belongs to
@@ -36,8 +36,6 @@ const TaskTag = ({
 
     // handler for x button
     const removeTag = () => {
-        // todo backend + promise
-        console.log("remove tag" + tagName);
         Meteor.call("remove_tag ", taskId, tagName);
     }
 

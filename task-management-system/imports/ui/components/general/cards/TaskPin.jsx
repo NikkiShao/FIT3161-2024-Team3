@@ -22,7 +22,6 @@ const TaskPin = ({ isPinned, onPinChange, size='25' }) => {
     e.stopPropagation();
     const newPinState = !pinned;
     setPinned(newPinState);
-    console.log(`Pin state changed: ${newPinState}`);
     if (onPinChange) {
       onPinChange(newPinState);
     }
