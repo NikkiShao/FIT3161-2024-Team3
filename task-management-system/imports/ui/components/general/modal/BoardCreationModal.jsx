@@ -207,7 +207,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
                 </div>
 
                 {/* Button to create the team */}
-                <Button type={"submit"} className="btn-brown"
+                <Button type={"submit"} className="btn-brown btn-submit"
                         onClick={(event) => handleCreateBoard(event)}>
                     Create Board
                 </Button>

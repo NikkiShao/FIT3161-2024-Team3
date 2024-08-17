@@ -201,7 +201,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                 </div>
 
                 {/* Button to create the team */}
-                <Button type={"submit"} className="btn-brown"
+                <Button type={"submit"} className="btn-brown btn-submit"
                         onClick={(event) => handleCreateTeam(event)}>
                     Create Team
                 </Button>
