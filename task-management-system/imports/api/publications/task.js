@@ -34,3 +34,12 @@ Meteor.publish("specific_task", function (taskId) {
 Meteor.publish("all_tasks", function () {
     return TaskCollection.find();
 });
+
+/**
+ * find task based on boardId
+ */
+Meteor.publish('tasks_for_board', function (boardId) {
+  console.log('Publishing tasks for boardId:', boardId);
+  return TaskCollection.find({ boardId });
+});
+
