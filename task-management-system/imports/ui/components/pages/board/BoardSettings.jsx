@@ -254,7 +254,7 @@ export const BoardSettings = () => {
                     <div className="header-space-between">
                         <Button className={"flex flex-row gap-2 btn-back"}
                                 onClick={() => {
-                                    navigate('/' + BaseUrlPath.TEAMS + "/" + teamId + "/boards" + boardId);
+                                    navigate('/' + BaseUrlPath.TEAMS + "/" + teamId + "/boards/" + boardId);
                                 }}>
                             <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
                             Back
