@@ -98,8 +98,6 @@ export const BoardSettings = () => {
         setErrors(newError);
     }
 
-    console.log(boardStatuses)
-
     const handleRemoveStatus = (event, removedStatus) => {
         event.preventDefault();
         setBoardStatuses(boardStatuses.filter(status => status !== removedStatus));
@@ -165,7 +163,6 @@ export const BoardSettings = () => {
         if(!isError){
             const boardStatusObject = boardStatuses.map((status, index) => {return {statusName: status, statusOrder: index}})
 
-            console.log(boardStatusObject);
             new Promise((resolve, reject) => {
                 Meteor.call('update_board', boardId,
                     {

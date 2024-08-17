@@ -22,7 +22,6 @@ Meteor.methods({
         )
     },
     "update_board": function(boardId, boardData){
-        console.log(boardData.boardStatuses)
         BoardCollection.update(boardId, {$set:{
             "boardName": boardData.boardName,
             "boardCode": boardData.boardCode,
