@@ -25,8 +25,8 @@ CSS for the viewboard page
 .viewboard-column {
     background-color: #fff;
     border-radius: 20px;
-    min-width: 293px;
-    max-width: 293px;
+    min-width: 310px;
+    max-width: 310px;
     margin: 30px 15px 0 15px;
     padding: 20px;
     box-sizing: border-box;
@@ -36,6 +36,10 @@ CSS for the viewboard page
     justify-content: flex-start;
     align-items: center;
     position: relative;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+    scrollbar-width: thin;
 }
 
 .viewboard-column-title {

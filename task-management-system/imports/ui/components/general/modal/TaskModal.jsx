@@ -291,10 +291,10 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             let urgentStartDate = new Date();
             urgentStartDate.setTime(taskDeadlineDate.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
 
-            if (taskDeadlineDate <= today && taskData.statusName.toLowerCase() !== "done") {
+            if (today >= taskDeadlineDate && taskData.statusName.toLowerCase() !== "done") {
                 // after current datetime and NOT done
                 displayText = "OVERDUE";
-            } else if (taskDeadlineDate >= urgentStartDate && taskData.statusName.toLowerCase() !== "done") {
+            } else if (today >= urgentStartDate && taskData.statusName.toLowerCase() !== "done") {
                 displayText = "URGENT";
             }
         }

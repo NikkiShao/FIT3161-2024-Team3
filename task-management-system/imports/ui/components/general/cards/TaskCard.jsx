@@ -72,11 +72,11 @@ const TaskCard = ({
     urgentStartDate.setTime(deadlineObject.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
 
     let displayText = null;
-    if (deadlineObject <= today && statusName !== "Done") {
+    if (today >= deadlineObject && statusName !== "Done") {
         // after current datetime and NOT done
         displayText = <div style={{color: "var(--dark-red)", marginRight: "25px"}}
                            className={"text-center small-text"}>OVERDUE</div>
-    } else if (deadlineObject >= urgentStartDate && statusName !== "Done") {
+    } else if (today >= urgentStartDate && statusName !== "Done") {
         displayText = <div style={{color: "var(--dark-red)", marginRight: "25px"}}
                            className={"text-center small-text"}>URGENT</div>
     }

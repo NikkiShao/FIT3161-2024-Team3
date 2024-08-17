@@ -29,7 +29,7 @@ body .task-card {
     background: var(--white);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.10);
     width: 275px;
-    min-height: 120px;
+    min-height: fit-content;
     height: fit-content;
     box-sizing: border-box;
     margin-bottom: 8px;
