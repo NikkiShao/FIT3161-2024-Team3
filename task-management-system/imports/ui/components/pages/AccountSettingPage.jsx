@@ -71,11 +71,11 @@ function AccountSettings() {
     
         // Check if name has changed and validate
         if (name !== userData.name) {
-            if (!name) {
+            if (name === '') {
                 newError.name = "Please fill in your name";
                 isError = true;
             }
-            if (!alphanumericSpaceRegex.test(name)) {
+            else if (!alphanumericSpaceRegex.test(name)) {
                 newError.name = "Name can only contain alphanumeric characters and spaces";
                 isError = true;
             }
@@ -84,11 +84,11 @@ function AccountSettings() {
     
         // Check if email has changed and validate
         if (email !== userData.email) {
-            if (!email) {
+            if (email === '') {
                 newError.email = "Please fill in your email";
                 isError = true;
             }
-            if (!emailRegex.test(email)) {
+            else if (!emailRegex.test(email)) {
                 newError.email = "Please enter a valid email address";
                 isError = true;
             }
