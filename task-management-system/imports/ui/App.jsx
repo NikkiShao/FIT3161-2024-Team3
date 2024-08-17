@@ -18,6 +18,7 @@ import DashboardPage from "./components/pages/DashboardPage";
 import TeamsListPage from './components/pages/team/TeamsListPage';
 import TeamLobbyPage from "./components/pages/team/TeamLobbyPage";
 import ViewBoardPage from "./components/pages/board/ViewBoard"
+import AccountSettingPage from '../ui/components/pages/AccountSettingPage';
 
 import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
@@ -77,6 +78,12 @@ export const App = () => (
                         </ProtectedRoute>
                     }/>
 
+                    <Route path={'/' + BaseUrlPath.SETTINGS} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <AccountSettingPage/>
+                        </ProtectedRoute>
+                    }/>
+
                     {/* Teams related routes */}
                     <Route path={'/' + BaseUrlPath.TEAMS} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
@@ -115,3 +122,4 @@ export const App = () => (
         </Router>
     </div>
 );
+

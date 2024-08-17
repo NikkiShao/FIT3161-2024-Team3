@@ -13,7 +13,8 @@ export enum BaseUrlPath {
     TEAMS = 'teams',
     SETTINGS = 'settings',
     LOGIN = 'login',
-    REGISTER = 'register'
+    REGISTER = 'register',
+    PREVIEW =  'preview'
 }
 
 export default BaseUrlPath;
