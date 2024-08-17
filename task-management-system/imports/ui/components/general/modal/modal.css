@@ -106,7 +106,7 @@
     gap: 10px;
 }
 
-.task-modal__contribution-grid {
+#task-modal__contribution-grid {
     display: grid;
     grid-template-columns: 3fr 2fr 1fr;
     align-items: center;
@@ -119,12 +119,4 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-}
-
-.button-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
 }

@@ -199,11 +199,21 @@ body .table {
     cursor: default;
 }
 
-.default__button-group {
+.button-group-col {
     display: flex;
     flex-direction: column;
     row-gap: 10px;
     align-items: center;
+}
+
+.button-group-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: space-between;
+    margin-bottom: 10px;
+    gap: 20px;
 }
 
 .icon-btn {

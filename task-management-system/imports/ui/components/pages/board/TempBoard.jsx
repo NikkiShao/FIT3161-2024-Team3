@@ -55,12 +55,14 @@ export const TempBoard = () => {
     const isLoadingUsers = useSubscribe('all_users');
     const isLoadingTeam = useSubscribe('specific_team', teamId);
 
+
     const isLoading = isLoadingBoard() || isLoadingTasks() || isLoadingUsers() || isLoadingTeam();
 
     // get data from db
     let boardData = useTracker(() => {
         return BoardCollection.find({_id: boardId}).fetch()[0];
     });
+    console.log(boardData)
 
     let tasksData = useTracker(() => {
         return TaskCollection.find({boardId: boardId}).fetch();
@@ -98,8 +100,8 @@ export const TempBoard = () => {
                            onClose={onCloseModal}
                            boardId={boardId}
                            taskId={selectedTaskId}
-                           tagsData={boardData.tags}
-                           statusesData={boardData.statuses}
+                           tagsData={boardData.boardTags}
+                           statusesData={boardData.boardStatuses}
                            membersData={teamMembersData}
                 />
             </WhiteBackground>

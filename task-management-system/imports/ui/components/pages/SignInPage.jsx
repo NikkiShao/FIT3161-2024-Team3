@@ -100,7 +100,7 @@ export const SignInPage = () => {
                         {errors.password && <span className="text-red small-text">{errors.password}</span>}
                     </div>
 
-                    <div className={"default__button-group"}>
+                    <div className={"button-group-col"}>
                         <Button type={"submit"}
                                 className={"btn-brown"}
                                 onClick={handleSignIn}>

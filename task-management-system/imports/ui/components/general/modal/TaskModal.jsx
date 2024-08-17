@@ -496,7 +496,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                 const existingPercentage = contributions[memberEmail];
 
                                                 return (
-                                                    <div key={member} className={"task-modal__contribution-grid"}>
+                                                    <div key={member} id={"task-modal__contribution-grid"}>
                                                         {member.profile.name}
                                                         <div id={"task-modal__percent"}>
                                                             <Input
@@ -555,10 +555,10 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
 
                         {
                             taskId ?
-                                <Button type="submit" className="btn-brown">
+                                <Button type="submit" className="btn-brown btn-submit">
                                     {saveIcon} Save Changes
                                 </Button> :
-                                <Button type="submit" className="btn-brown">
+                                <Button type="submit" className="btn-brown btn-submit">
                                     {plusIcon} Add Task
                                 </Button>
                         }
@@ -591,7 +591,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                         <div className={"main-text"}>This action will be recorded in the Logs.</div>
                         <div className={"main-text text-red"}>This action cannot be reverted.</div>
 
-                        <div className={"button-row"} style={{marginTop:"20px"}}>
+                        <div className={"button-group-row btn-submit"}>
                             <Button className="btn-red" onClick={handleDeleteTask}>Delete</Button>
                             <Button className="btn-grey" onClick={onCloseDeleteModal}>Cancel</Button>
                         </div>
