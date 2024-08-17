@@ -28,17 +28,21 @@ CSS for the viewboard page*/
 
 .viewboard-board {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
     width: auto;
     height: calc(100vh - 160px);
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom:10px;
 }
 
 .viewboard-column {
     background-color: #fff;
     border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 293px;
+    min-width: 293px;
+    max-width: 293px;
     margin: 30px 15px 0 15px;
     padding: 20px;
     box-sizing: border-box;
@@ -97,7 +101,7 @@ CSS for the viewboard page*/
 }
 
 .viewboard-top-right-buttons {
-    position: absolute;
+    position: fixed;
     top: 20px;
     right: 20px;
     display: flex;
