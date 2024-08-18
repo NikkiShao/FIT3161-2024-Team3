@@ -26,7 +26,9 @@ import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
 import BoardSettings from "./components/pages/board/BoardSettings";
+import Draft from "./components/pages/Draft";
 import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
+
 
 
 /**
@@ -124,6 +126,8 @@ export const App = () => (
                             <ViewBoardPage/>
                         </ProtectedRoute>
                     }/>
+
+                    <Route path={'/' + BaseUrlPath.DRAFT} element={<Draft/>}/>
 
                 </Routes>
             </main>

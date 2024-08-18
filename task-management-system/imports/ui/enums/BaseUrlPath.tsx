@@ -15,6 +15,7 @@ export enum BaseUrlPath {
     LOGIN = 'login',
     REGISTER = 'register',
     PREVIEW =  'preview'
+    DRAFT ='draft',
 }
 
 export default BaseUrlPath;
