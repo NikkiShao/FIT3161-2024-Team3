@@ -77,9 +77,13 @@ export const SignInPage = () => {
 
     return (
         <div>
-            <h1 style={{position:"absolute", top:"80px", width:"100%"}}
-                className={"text-center"}> Welcome to Task Management System</h1>
             <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
+                <div>
+                    <h2 className={"text-center text-grey"}>Welcome to</h2>
+                    <h1 className={"text-center"} style={{color: "var(--navy)"}}>Task Management System</h1>
+                </div>
+
+                <hr className={"teams__hr"} />
 
                 <h1 className={"default__heading1"}>Sign In</h1>
 
