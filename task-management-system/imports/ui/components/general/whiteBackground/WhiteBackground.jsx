@@ -75,12 +75,15 @@ export const WhiteBackground = ({children, className, pageLayout, pageHelpText, 
         <div style={outerDivStyle}>
             <div {...divProps} className={pageMainDivClasses}>
                 {/*todo: make only appear when there is text*/}
-                <HoverTip icon={questionIcon}
-                          outerText={"Help"}
-                          toolTipText={pageHelpText}
-                          divClassName={"page-help-tip"}
-                          textClassname
-                />
+                {
+                    pageHelpText ?
+                    <HoverTip icon={questionIcon}
+                              outerText={"Help"}
+                              toolTipText={pageHelpText}
+                              divClassName={"page-help-tip"}
+                              textClassname
+                    /> : null
+                }
                 {children}
             </div>
         </div>
