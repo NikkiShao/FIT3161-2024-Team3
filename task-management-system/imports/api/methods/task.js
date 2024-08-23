@@ -1,6 +1,6 @@
 /**
  * File Description: Task database entity
- * File version: 1.2
+ * File version: 1.3
  * Contributors: Nikki, Samuel
  */
 
@@ -53,10 +53,11 @@ Meteor.methods({
                     taskDesc: taskData.taskDesc,
                     taskDeadlineDate: taskData.taskDeadlineDate,
                     taskIsPinned: taskData.taskIsPinned,
+                    pinnedAt: taskData.taskIsPinned ? new Date() : null,
                     boardId: taskData.boardId,
                     statusName: taskData.statusName,
                     tagNames: taskData.tagNames,
-                    contributions: taskData.contributions
+                    contributions: taskData.contributions,
                 });
 
             } else {
@@ -67,10 +68,11 @@ Meteor.methods({
                         taskDesc: taskData.taskDesc,
                         taskDeadlineDate: taskData.taskDeadlineDate,
                         taskIsPinned: taskData.taskIsPinned,
+                        pinnedAt: taskData.taskIsPinned ? new Date() : null,
                         boardId: taskData.boardId,
                         statusName: taskData.statusName,
                         tagNames: taskData.tagNames,
-                        contributions: taskData.contributions
+                        contributions: taskData.contributions,
                     }
                 })
             }
@@ -102,6 +104,7 @@ Meteor.methods({
         TaskCollection.update({_id: taskId}, {
             $set: {
                 taskIsPinned: isPinned,
+                pinnedAt: isPinned ? new Date() : null,
             },
         });
     },
