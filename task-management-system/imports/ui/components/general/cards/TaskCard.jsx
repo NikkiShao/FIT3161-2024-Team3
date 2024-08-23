@@ -41,6 +41,7 @@ const TaskCard = ({
                       boardTags,
                       onDashboard,
                       className,
+                      onPinChange,
                       ...cardProps
                   }) => {
 
