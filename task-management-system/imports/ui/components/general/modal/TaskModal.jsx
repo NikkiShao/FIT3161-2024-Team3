@@ -26,6 +26,7 @@ import TaskCollection from "../../../../api/collections/task";
  * @param taskId - ID of the task to view, null if new task
  * @param tagsData - list of tags
  * @param statusesData - list of statuses
+ * @param membersData - list of user data of all team members
  * @returns {Element} - task modal JSX element
  */
 const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, membersData}) => {
@@ -34,7 +35,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [deadlineDate, setDeadlineDate] = useState("");
-    const [deadlineTime, setDeadlineTime] = useState("");
+    const [deadlineTime, setDeadlineTime] = useState("23:55");
     const [isPinned, setIsPinned] = useState(false);
     const [status, setStatus] = useState("To Do");
     const [tagNames, setTagNames] = useState([]);
@@ -63,7 +64,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         setModalTaskId(null)
         setTitle('')
         setDescription('')
-        setDeadlineTime('')
+        setDeadlineTime('23:55')
         setDeadlineDate('')
         setIsPinned(false)
         setStatus("To Do")

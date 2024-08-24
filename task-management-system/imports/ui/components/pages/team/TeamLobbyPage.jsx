@@ -24,6 +24,7 @@ import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
 import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
+import PollCreationModal from "../../general/modal/PollCreationModal";
 
 /**
  * Non-existent page component
@@ -142,6 +143,7 @@ export const TeamLobbyPage = () => {
 
                     {/*modals (can go anywhere) */}
                     <BoardCreationModal teamId={teamId} open={boardModalOpen} closeHandler={onCloseBoardModal}/>
+                    <PollCreationModal teamId={teamId} open={pollModalOpen} closeHandler={onClosePollModal} />
 
                     <div className="header-space-between">
                         <div style={{width: "200px"}}>

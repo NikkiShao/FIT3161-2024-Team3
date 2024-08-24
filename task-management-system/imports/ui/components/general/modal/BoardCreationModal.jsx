@@ -15,15 +15,15 @@ import Input from "../inputs/Input";
 import '../../general/modal/modal.css';
 
 /**
- * The popup for adding a new team on the teams list page
+ * The popup for adding a new board
  */
 export const BoardCreationModal = ({teamId, open, closeHandler}) => {
 
-    // State variables for team creation form
+    // State variables for board creation form
     const [boardNameInput, setBoardNameInput] = useState('');
     const [boardCodeInput, setBoardCodeInput] = useState('');
     const [boardDeadlineDateInput, setBoardDeadlineDateInput] = useState('');
-    const [boardDeadlineTimeInput, setBoardDeadlineTimeInput] = useState('');
+    const [boardDeadlineTimeInput, setBoardDeadlineTimeInput] = useState('23:55');
     const [boardDescriptionInput, setBoardDescriptionInput] = useState('');
 
     const [errors, setErrors] = useState({
@@ -39,7 +39,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
     // Icons for UI elements
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
 
-    // Handler for creating a new team
+    // Handler for creating a new board
     const handleCreateBoard = (event) => {
         event.preventDefault();
 
@@ -133,7 +133,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
 
                 <h1 className={"text-center"}>Create New Board</h1>
 
-                {/* Input field for team name */}
+                {/* Input field for board name */}
                 <div className='input-group-2col'>
                     <label className={"main-text text-grey"}>Board Name:</label>
                     <div className={"input-error-div"}>
@@ -206,7 +206,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
                     </div>
                 </div>
 
-                {/* Button to create the team */}
+                {/* Button to create the board */}
                 <Button type={"submit"} className="btn-brown btn-submit"
                         onClick={(event) => handleCreateBoard(event)}>
                     Create Board
