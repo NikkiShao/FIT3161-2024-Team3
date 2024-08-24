@@ -51,7 +51,7 @@ export const DashboardPage = () => {
     }, [boards]);
 
     // Fetch all pinned tasks from the boards the user is part of
-    const isLoadingTasks = useSubscribe('pinned_tasks', { boardIds });
+    const isLoadingTasks = useSubscribe('pinned_tasks');
     const pinnedTasks = useTracker(() => {
         return TaskCollection.find({
             boardId: { $in: boardIds },

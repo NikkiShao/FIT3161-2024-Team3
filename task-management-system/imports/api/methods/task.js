@@ -53,7 +53,7 @@ Meteor.methods({
                     taskDesc: taskData.taskDesc,
                     taskDeadlineDate: taskData.taskDeadlineDate,
                     taskIsPinned: taskData.taskIsPinned,
-                    pinnedAt: taskData.taskIsPinned ? new Date() : null,
+                    taskPinnedDate: taskData.taskIsPinned ? new Date() : null,
                     boardId: taskData.boardId,
                     statusName: taskData.statusName,
                     tagNames: taskData.tagNames,
@@ -68,7 +68,7 @@ Meteor.methods({
                         taskDesc: taskData.taskDesc,
                         taskDeadlineDate: taskData.taskDeadlineDate,
                         taskIsPinned: taskData.taskIsPinned,
-                        pinnedAt: taskData.taskIsPinned ? new Date() : null,
+                        taskPinnedDate: taskData.taskIsPinned ? new Date() : null,
                         boardId: taskData.boardId,
                         statusName: taskData.statusName,
                         tagNames: taskData.tagNames,
@@ -104,7 +104,7 @@ Meteor.methods({
         TaskCollection.update({_id: taskId}, {
             $set: {
                 taskIsPinned: isPinned,
-                pinnedAt: isPinned ? new Date() : null,
+                taskPinnedDate: isPinned ? new Date() : null,
             },
         });
     },
