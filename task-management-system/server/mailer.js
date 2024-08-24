@@ -54,7 +54,7 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
     // return;
     const info = await transporter.sendMail({
         from: '"Task Management System"<reminders@tms.com>', // sender address
-        to: "nsha0054@student.monash.edu", // list of receivers
+        to: email, // list of receivers
         subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
         // text: `You have been invited to the team: ${teamName}.`, // plain text body
         html: `

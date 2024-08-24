@@ -126,6 +126,10 @@ export const BoardSettings = () => {
 
     const saveChanges = (event) => {
         event.preventDefault();
+        // reset the messages
+        setUpdateSuccess(null)
+        setDeleteMessage('')
+
         const newErrors = {};
         let isError = false;
 

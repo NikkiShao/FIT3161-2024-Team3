@@ -28,7 +28,6 @@ const DeleteAccountModal = ({open, closeHandler}) => {
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
-    const [successMessage, setSuccessMessage] = useState(''); // State to store success message
 
     const isLoading = useSubscribe('all_user_teams', userData.email)();
 
@@ -56,22 +55,26 @@ const DeleteAccountModal = ({open, closeHandler}) => {
 
         // usr is allowed to delete account if they are not joined to any team
         if (isJoined) {
-            setErrorMessage("You must leave all the teams first.");
+            setErrorMessage("Failed to delete user: You must leave all of your teams first.");
         } else {
             handleDelete();
         }
-
     }
 
     const handleDelete = () => {
         // Call method to delete user
-        Meteor.call('delete_user', userData.id, (error) => {
-            if (error) {
-                setErrorMessage(`Failed to delete user: ${error.reason}`);
-            } else {
-                setSuccessMessage("User deleted successfully.");
-            }
-        });
+        new Promise((resolve, reject) => {
+            Meteor.call('delete_user', userData.id,
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results)
+                    }
+                })
+        }).catch(() => {
+            setErrorMessage("Failed to delete user: please try again");
+        })
     };
 
     return (
@@ -89,29 +92,23 @@ const DeleteAccountModal = ({open, closeHandler}) => {
         >
             <div className='modal-div-center'>
                 <h1>Delete Account?</h1>
-                <div style={{marginLeft:"10%", marginRight:"10%"}}>
-                    <p>Are you sure you would like to your account and all data associated with it?
-                        You must leave all the teams first.</p>
-                    <p className='text-red'>This action cannot be reverted.</p>
-
-                    {/* Display error message */}
-                    {errorMessage && <div className="text-red">{errorMessage}</div>}
-                    {/* Display success message */}
-                    {successMessage && <div className="text-green">{successMessage}</div>}
-
-                </div>
+                <div>Are you sure you would like to your account and all data associated with it?</div>
+                <div>You must leave all the teams first.</div>
+                <div className='text-red'>This action cannot be reverted.</div>
 
                 <div className="button-group-row btn-submit">
-                    <Button
-                        type={"submit"}
-                        className="btn-red"
-                        onClick={handleClick}>Delete</Button>
+                    <Button type={"submit"}
+                            className="btn-red"
+                            onClick={handleClick}>Delete
+                    </Button>
 
-                    <Button
-                        className="btn-grey"
-                        onClick={closeHandler}>Cancel</Button>
-
+                    <Button className="btn-grey"
+                            onClick={closeHandler}>Cancel
+                    </Button>
                 </div>
+
+                {/* Display error message */}
+                {errorMessage && <div className="text-red small-text non-clickable">{errorMessage}</div>}
             </div>
         </Modal>
     );

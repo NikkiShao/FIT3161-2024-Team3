@@ -8,6 +8,8 @@ import {Meteor} from 'meteor/meteor'
 import {TeamCollection} from '/imports/api/collections/team.js';
 import {sendTeamInvitation} from "../../../server/mailer";
 import {generateInvitationToken} from "../../ui/components/util";
+import BoardCollection from "../collections/board";
+import BaseUrlPath from "../../ui/enums/BaseUrlPath";
 
 Meteor.methods({
     /**
@@ -29,7 +31,7 @@ Meteor.methods({
 
         const id = TeamCollection.insert({
             "teamName": name,
-            "teamMembers": [leader, "alice@alice.com", "bob@bob.com"],
+            "teamMembers": [leader],
             "teamLeader": leader,
             "teamInvitations": invitedEmailWithTokens,
         })
@@ -52,7 +54,6 @@ Meteor.methods({
      * @param teamsData - the updated teams data
      */
     "update_team": function (teamId, existingInvites, teamsData) {
-
         TeamCollection.update(teamId, {
             $set:
                 {
@@ -85,8 +86,22 @@ Meteor.methods({
     "delete_team": function (teamId) {
 
         // remove all related boards and tasks first
+        const boards = BoardCollection.find({teamId: teamId}).fetch();
 
-
+        // delete each board (the board delete will delete its tasks)
+        for (let i = 0, len = boards.length; i < len; i++) {
+            new Promise((resolve, reject) => {
+                Meteor.call('delete_board', boards[i]._id, (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            }).catch((error) => {
+                throw new Error(error)
+            })
+        }
 
         TeamCollection.remove({_id: teamId});
     }

@@ -84,6 +84,9 @@ export const TeamSettingsPage = () => {
     const saveChanges = (event) => {
         event ? event.preventDefault() : null;
 
+        setUpdateSuccess(null)
+        setLeaveDeleteMessage('')
+
         if (!isLeader) {
             // if user is not leader, cannot update (extra check)
             setUpdateSuccess(false);
