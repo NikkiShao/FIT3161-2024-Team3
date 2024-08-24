@@ -188,7 +188,7 @@ export const TeamLobbyPage = () => {
                     </div>
 
                     {
-                        displayedPollCards.length ?
+                        pollsData.length ?
                             <div className="teams__filter-button-div">
                                 <span className={"main-text non-clickable"}>Filters: </span>
                                 {filterButtons}
@@ -198,7 +198,7 @@ export const TeamLobbyPage = () => {
                     <div className={"teams__cards-div"}>
                         {displayedPollCards.length ? displayedPollCards :
                             <span className={"main-text non-clickable"}
-                                  style={{marginTop: "20px"}}>There are no polls yet!</span>}
+                                  style={{marginTop: "20px"}}>There are no polls in here!</span>}
                     </div>
                 </WhiteBackground>
             )
