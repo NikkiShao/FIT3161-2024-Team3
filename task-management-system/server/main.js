@@ -20,9 +20,7 @@ import '/imports/api/collections/team.js';
 import '/imports/api/methods/team.js';
 import '/imports/api/publications/team.js';
 
-// file in the same folder containing creds for mail server
-import {emailPass, emailUser} from "./secrets.js"
-import nodemailer from "nodemailer";
+import {initialiseMailer} from "./mailer";
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {
@@ -42,35 +40,7 @@ Meteor.startup(async () => {
     console.log(process.env.MONGO_URL)
 
     if (Meteor.isServer) {
-
-        const smtpConfig = {
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // use SSL
-            auth: {
-                user: emailUser,
-                pass: emailPass
-            }
-        };
-
-        const transporter = nodemailer.createTransport(smtpConfig);
-
-        // verify connection configuration
-        transporter.verify(function (error, success) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Server is ready to take our messages');
-            }
-        });
-
-        // const info = await transporter.sendMail({
-        //     from: '"Task Management System"<reminders@tms.com>', // sender address
-        //     to: "nsha0054@student.monash.edu", // list of receivers
-        //     subject: "Hello", // Subject line
-        //     text: "Hello world", // plain text body
-        //     // html: "<b>Hello world?</b>", // html body
-        // });
-
+        // initialise the node mailer
+        initialiseMailer()
     }
 });

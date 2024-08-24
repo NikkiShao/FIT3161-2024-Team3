@@ -53,7 +53,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         if (members.includes(emailInput)) {
             newError.email = "Email has already been added";
 
-        } else if (emailInput.toLowerCase() === teamLead.toLowerCase() ) {
+        } else if (emailInput.toLowerCase() === teamLead.toLowerCase()) {
             newError.email = "You are already in the team";
 
         } else if (!emailRegex.test(emailInput)) {
@@ -152,27 +152,25 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
                 {/* Display team members email address if there are team members */}
                 {
-                    members && members.length > 1 ?
+                    members && members.length > 0 ?
                         <div className='input-group'>
                             {
-                                members
-                                    .filter((_, index) => index > 0)
-                                    .map((member, index) => (
-                                        <Fragment key={index}>
-                                            {index === 0 ?
-                                                <label className={"main-text text-grey"}>Team Members:</label> :
-                                                <div></div>}
-                                            <div className="main-text">
-                                                {member}
-                                                <button className="icon-btn"
-                                                        onClick={(event) =>
-                                                            handleRemoveMember(event, member)}>
-                                                    {trashIcon}
-                                                </button>
-                                            </div>
-                                            <div></div>
-                                        </Fragment>
-                                    ))
+                                members.map((member, index) => (
+                                    <Fragment key={index}>
+                                        {index === 0 ?
+                                            <label className={"main-text text-grey"}>Team Members:</label> :
+                                            <div></div>}
+                                        <div className="main-text">
+                                            {member}
+                                            <button className="icon-btn"
+                                                    onClick={(event) =>
+                                                        handleRemoveMember(event, member)}>
+                                                {trashIcon}
+                                            </button>
+                                        </div>
+                                        <div></div>
+                                    </Fragment>
+                                ))
                             }
                         </div> :
                         null
@@ -180,7 +178,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
                 {/* Input field to add new members */}
                 <div className='input-group'>
-                    {members && members.length <= 1 ?
+                    {members && members.length === 0 ?
                         <label className={"main-text text-grey"}>Team Members:</label> :
                         <div></div>
                     }

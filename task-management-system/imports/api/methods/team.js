@@ -6,6 +6,7 @@
 
 import {Meteor} from 'meteor/meteor'
 import {TeamCollection} from '/imports/api/collections/team.js';
+import {sendTeamInvitation} from "../../../server/mailer";
 
 const rand = function () {
     return Math.random().toString(36).substring(2); // remove `0.`
@@ -30,14 +31,21 @@ Meteor.methods({
                 })
             })
 
-        // send email here
-
-        TeamCollection.insert({
+        const id = TeamCollection.insert({
             "teamName": name,
             "teamMembers": [leader],
             "teamLeader": leader,
             "teamInvitedEmails": invitedEmailWithTokens,
         })
+
+        // send email here
+        for (let i = 0, len = invitedEmailWithTokens.length; i < len; i++) {
+            sendTeamInvitation(invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, id)
+                .catch((error) => {
+                    console.log("Email sent with error: " + email)
+                    console.log(error);
+                })
+        }
     },
 
     "update_team": function (teamId, teamsData) {
