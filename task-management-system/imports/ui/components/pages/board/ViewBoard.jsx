@@ -1,10 +1,9 @@
 /**
  * File Description: Board's details page
- * Updated Date: 24/08/2024
+ * Updated Date: 25/08/2024
  * Contributors: Samuel
  * Version: 1.4
  */
-
 
 import React, {useState, useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -86,6 +85,17 @@ const ViewBoardPage = () => {
         navigate('settings');
     };
 
+    // useEffect to handle hash in URL and open the modal
+    useEffect(() => {
+        if (!isLoading && window.location.hash) {
+            const taskIdFromHash = window.location.hash.substring(1);
+            if (taskIdFromHash && taskIdFromHash !== selectedTaskId) {
+                onOpenModal(null, taskIdFromHash);
+                window.location.hash = '#';
+            }
+        }
+    }, [isLoading, selectedTaskId]);
+
     // Check if data has loaded
     if (!isLoading) {
 
@@ -96,14 +106,6 @@ const ViewBoardPage = () => {
         } else if (!boardData || teamId !== boardData.teamId) {
             // board does not exist OR not belong to that team, but team does
             navigate('/' + BaseUrlPath.TEAMS + '/' + teamId);
-        }
-
-        if (window.location.hash) {
-            // there is a hash location, meaning default open task
-            if (window.location.hash.substring(1) !== selectedTaskId) {
-                onOpenModal(null, window.location.hash.substring(1))
-                window.location.hash = '#'
-            }
         }
 
         return (
