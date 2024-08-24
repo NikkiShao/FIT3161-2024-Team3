@@ -2,10 +2,11 @@
  * File Description: Board's details page
  * Updated Date: 24/08/2024
  * Contributors: Samuel
- * Version: 1.3
+ * Version: 1.4
  */
 
-import React, {useState} from 'react';
+
+import React, {useState, useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
 import {BoardCollection} from '/imports/api/collections/board';
@@ -32,7 +33,7 @@ const ViewBoardPage = () => {
     const [modalOpen, setModalOpen] = useState(false);
 
     const onOpenModal = (event, taskId) => {
-        event.preventDefault();
+        event ? event.preventDefault() : null;
         if (taskId) {
             setSelectedTaskId(taskId);
         } else {
@@ -96,6 +97,17 @@ const ViewBoardPage = () => {
             // board does not exist OR not belong to that team, but team does
             navigate('/' + BaseUrlPath.TEAMS + '/' + teamId);
         }
+
+        // Auto-open task modal if a hash is present in the URL
+        useEffect(() => {
+            if (window.location.hash) {
+                const taskIdFromHash = window.location.hash.substring(1);
+                if (taskIdFromHash !== selectedTaskId) {
+                    onOpenModal(null, taskIdFromHash);
+                    window.location.hash = '#';  // Reset the hash after opening the modal
+                }
+            }
+        }, [selectedTaskId]);
 
         return (
             <>
