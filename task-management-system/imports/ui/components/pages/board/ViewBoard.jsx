@@ -1,11 +1,11 @@
 /**
  * File Description: Board's details page
- * Updated Date: 17/08/2024
+ * Updated Date: 25/08/2024
  * Contributors: Samuel
- * Version: 1.2
+ * Version: 1.4
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
 import {BoardCollection} from '/imports/api/collections/board';
@@ -20,7 +20,6 @@ import {getUserInfo} from "/imports/ui/components/util";
 import TaskModal from "../../general/modal/TaskModal";
 import UserCollection from "../../../../api/collections/user";
 
-
 const ViewBoardPage = () => {
     const {teamId, boardId} = useParams();
     const navigate = useNavigate();
@@ -30,45 +29,45 @@ const ViewBoardPage = () => {
 
     // Handlers for opening and closing team creation modal
     const [selectedTaskId, setSelectedTaskId] = useState(null);
-
     const [modalOpen, setModalOpen] = useState(false);
-    const onOpenModal = (event, taskId) => {
-        event.preventDefault();
 
+    const onOpenModal = (event, taskId) => {
+        event ? event.preventDefault() : null;
         if (taskId) {
-            setSelectedTaskId(taskId)
+            setSelectedTaskId(taskId);
         } else {
-            setSelectedTaskId(null)
+            setSelectedTaskId(null);
         }
-        setModalOpen(true)
+        setModalOpen(true);
     };
 
     const onCloseModal = () => {
-        setSelectedTaskId(null)
-        setModalOpen(false)
+        setSelectedTaskId(null);
+        setModalOpen(false);
     };
 
     // Fetching the team data
-    const isLoadingTeam = useSubscribe('specific_team', teamId)
+    const isLoadingTeam = useSubscribe('specific_team', teamId);
     const teamData = useTracker(() => {
-        return TeamCollection.findOne({_id: teamId})
+        return TeamCollection.findOne({_id: teamId});
     });
 
     // Fetching the board details, including boardStatuses
-    const isLoadingBoard = useSubscribe('specific_board', boardId)
+    const isLoadingBoard = useSubscribe('specific_board', boardId);
     const boardData = useTracker(() => {
         return BoardCollection.findOne({_id: boardId});
     });
 
     // Fetching the tasks for the board
-    const isLoadingTasks = useSubscribe('all_board_tasks', boardId)
+    const isLoadingTasks = useSubscribe('all_board_tasks', boardId);
     const tasksData = useTracker(() => {
-        return TaskCollection.find({boardId: boardId}).fetch();
+        // Sort tasks by taskPinnedDate (pinned tasks first)
+        return TaskCollection.find({boardId: boardId}, {sort: {taskPinnedDate: -1}}).fetch();
     });
 
     const isLoadingUsers = useSubscribe('all_users');
     const teamMembersData = useTracker(() => {
-        return UserCollection.find({"emails.address": {$in: teamData? teamData.teamMembers : []}}).fetch();
+        return UserCollection.find({"emails.address": {$in: teamData ? teamData.teamMembers : []}}).fetch();
     });
 
     const isLoading = isLoadingTeam() || isLoadingBoard() || isLoadingTasks() || isLoadingUsers();
@@ -86,17 +85,27 @@ const ViewBoardPage = () => {
         navigate('settings');
     };
 
+    // useEffect to handle hash in URL and open the modal
+    useEffect(() => {
+        if (!isLoading && window.location.hash) {
+            const taskIdFromHash = window.location.hash.substring(1);
+            if (taskIdFromHash && taskIdFromHash !== selectedTaskId) {
+                onOpenModal(null, taskIdFromHash);
+                window.location.hash = '#';
+            }
+        }
+    }, [isLoading, selectedTaskId]);
+
     // Check if data has loaded
     if (!isLoading) {
 
         // check user is in the team
         if (!teamData || !teamData.teamMembers.includes(userInfo.email)) {
             // user is not in team, or team does not exist, move them back to their teams list
-            navigate('/' + BaseUrlPath.TEAMS)
-
+            navigate('/' + BaseUrlPath.TEAMS);
         } else if (!boardData || teamId !== boardData.teamId) {
             // board does not exist OR not belong to that team, but team does
-            navigate('/' + BaseUrlPath.TEAMS + '/' + teamId)
+            navigate('/' + BaseUrlPath.TEAMS + '/' + teamId);
         }
 
         return (
@@ -154,7 +163,6 @@ const ViewBoardPage = () => {
                     </div>
                 </div>
             </>
-
         );
     }
 

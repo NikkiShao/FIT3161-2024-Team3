@@ -1,21 +1,21 @@
 /**
  * File Description: Dashboard page
- * File version: 1.0
- * Contributors:
+ * File version: 1.1
+ * Contributors: Samuel
  */
 
 import React from 'react';
-import WhiteBackground from "../../components/general/whiteBackground/WhiteBackground.jsx";
-import PageLayout from "../../enums/PageLayout";
+import { getUserInfo } from "/imports/ui/components/util";
+import PinnedTasks from "/imports/ui/components/pages/dashboard/PinnedTasks";
 
-/**
- * Page for user dashbaord
- */
 export const DashboardPage = () => {
+    const userInfo = getUserInfo();
+
     return (
-        <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
-            <span>Dashboard Page to be done!!</span>
-        </WhiteBackground>
+        <div className="dashboard-pinned-container">
+            <PinnedTasks userInfo={userInfo} />
+            {/* You can add more components here if needed */}
+        </div>
     );
 };
 
