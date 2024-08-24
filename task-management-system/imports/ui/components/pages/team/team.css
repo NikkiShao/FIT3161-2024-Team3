@@ -39,3 +39,18 @@
     min-width: 50px  !important;
     background-color: var(--light-grey-hover)  !important;
 }
+
+.ts__member-item {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+}
+
+.ts__member-item-list {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 5px;
+    width: 100%;
+}

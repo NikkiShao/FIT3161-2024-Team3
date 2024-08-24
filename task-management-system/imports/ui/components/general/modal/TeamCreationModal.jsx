@@ -50,7 +50,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         const newError = {}
 
         // test email validity
-        if (members.includes(emailInput)) {
+        if (members.map((member) => member.toLowerCase()).includes(emailInput.toLowerCase())) {
             newError.email = "Email has already been added";
 
         } else if (emailInput.toLowerCase() === teamLead.toLowerCase()) {

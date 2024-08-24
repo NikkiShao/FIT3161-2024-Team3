@@ -7,13 +7,9 @@
 import {Meteor} from 'meteor/meteor'
 import {TeamCollection} from '/imports/api/collections/team.js';
 import {sendTeamInvitation} from "../../../server/mailer";
-
-const rand = function () {
-    return Math.random().toString(36).substring(2); // remove `0.`
-};
+import {generateInvitationToken} from "../../ui/components/util";
 
 Meteor.methods({
-
     /**
      * add team method to create a new team
      *
@@ -27,15 +23,15 @@ Meteor.methods({
             (member) => {
                 return ({
                     "email": member,
-                    "token": rand() + rand() + rand()
+                    "token": generateInvitationToken()
                 })
             })
 
         const id = TeamCollection.insert({
             "teamName": name,
-            "teamMembers": [leader],
+            "teamMembers": [leader, "alice@alice.com", "bob@bob.com"],
             "teamLeader": leader,
-            "teamInvitedEmails": invitedEmailWithTokens,
+            "teamInvitations": invitedEmailWithTokens,
         })
 
         // send email here
@@ -48,21 +44,50 @@ Meteor.methods({
         }
     },
 
-    "update_team": function (teamId, teamsData) {
-        // const idObject = new Mongo.ObjectID(teamId);
-
+    /**
+     * Updates a specific team
+     *
+     * @param teamId - ID of team to update
+     * @param existingInvites - the existing/previous list of invites
+     * @param teamsData - the updated teams data
+     */
+    "update_team": function (teamId, existingInvites, teamsData) {
 
         TeamCollection.update(teamId, {
             $set:
                 {
                     "teamName": teamsData.teamName,
                     "teamMembers": teamsData.teamMembers,
-                    "teamLeader": teamsData.teamLeader
+                    "teamLeader": teamsData.teamLeader,
+                    "teamInvitations": teamsData.teamInvitations,
                 }
         });
+
+        // send email here
+        const existingInviteEmails = existingInvites.map((invite) => invite.email.toLowerCase());
+        for (let i = 0, len = teamsData.teamInvitations.length; i < len; i++) {
+
+            if (!existingInviteEmails.includes(teamsData.teamInvitations[i].email.toLowerCase())) {
+                // existing emails DOES NOT include this email, send
+                sendTeamInvitation(teamsData.teamInvitations[i].email, teamsData.teamInvitations[i].token, teamsData.teamName, teamId)
+                    .catch((error) => {
+                        console.log("Email sent with error: " + email)
+                        console.log(error);
+                    })
+            }
+        }
     },
 
+    /**
+     * Delete a specific team by ID, and its related board and task data
+     * @param teamId - ID of team to delete
+     */
     "delete_team": function (teamId) {
+
+        // remove all related boards and tasks first
+
+
+
         TeamCollection.remove({_id: teamId});
     }
 })

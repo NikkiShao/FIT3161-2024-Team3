@@ -1,6 +1,11 @@
+/**
+ * File Description: Mailer for emailing
+ * File version: 1.0
+ * Contributors: Nikki
+ */
+
 import nodemailer from "nodemailer";
-// file in the same folder containing creds for mail server
-import {emailPass, emailUser} from "./secrets";
+import {emailPass, emailUser} from "./secrets"; // file in the same folder containing creds for mail server
 
 
 let transporter;
@@ -10,7 +15,7 @@ let transporter;
  */
 export function initialiseMailer() {
 
-    // SMTP configuration with google API
+    // SMTP configuration with Google API
     const smtpConfig = {
         host: 'smtp.gmail.com',
         port: 465,
@@ -43,7 +48,7 @@ export function initialiseMailer() {
  * @param teamId - ID of the team to be invited to
  */
 export async function sendTeamInvitation(email, token, teamName, teamId) {
-    console.log("i sending")
+    console.log("i sending to " + email)
 
     // todo: uncomment afterwards
     // return;
