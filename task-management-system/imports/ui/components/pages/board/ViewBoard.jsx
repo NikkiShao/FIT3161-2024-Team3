@@ -62,8 +62,8 @@ const ViewBoardPage = () => {
     // Fetching the tasks for the board
     const isLoadingTasks = useSubscribe('all_board_tasks', boardId);
     const tasksData = useTracker(() => {
-        // Sort tasks by pinnedAt (pinned tasks first)
-        return TaskCollection.find({boardId: boardId}, {sort: {pinnedAt: -1}}).fetch();
+        // Sort tasks by taskPinnedDate (pinned tasks first)
+        return TaskCollection.find({boardId: boardId}, {sort: {taskPinnedDate: -1}}).fetch();
     });
 
     const isLoadingUsers = useSubscribe('all_users');

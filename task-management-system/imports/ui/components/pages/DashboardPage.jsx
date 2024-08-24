@@ -57,7 +57,7 @@ export const DashboardPage = () => {
             boardId: { $in: boardIds },
             taskIsPinned: true
         }, {
-            sort: { pinnedAt: -1 }
+            sort: { taskPinnedDate: -1 }
         }).fetch();
     }, [boardIds, pinToggle]);
 
