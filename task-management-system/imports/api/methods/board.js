@@ -1,8 +1,8 @@
-// /**
-//  * File Description: Board database entity
-//  * File version: 1.2
-//  * Contributors: Audrey, Nikki
-//  */
+/**
+ * File Description: Board database entity
+ * File version: 1.3
+ * Contributors: Audrey, Nikki
+ */
 import {Meteor} from 'meteor/meteor'
 import {BoardCollection} from '/imports/api/collections/board.js';
 import TaskCollection from "../collections/task";

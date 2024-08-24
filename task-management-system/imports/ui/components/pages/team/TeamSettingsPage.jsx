@@ -1,8 +1,8 @@
 /**
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
- * Contributors: Audrey
- * Version: 1.1
+ * Contributors: Audrey, Nikki
+ * Version: 2.0
  */
 import React, {Fragment, useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'

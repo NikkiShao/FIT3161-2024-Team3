@@ -1,6 +1,6 @@
 /**
  * File Description: Team database entity
- * File version: 1.2
+ * File version: 1.3
  * Contributors: Audrey, Nikki
  */
 

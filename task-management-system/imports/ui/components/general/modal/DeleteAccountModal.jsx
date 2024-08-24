@@ -1,8 +1,8 @@
 /**
  * File Description: Account Deletion modal component
  * Updated Date: 16/08/2024
- * Contributors: Mark
- * Version: 2.0
+ * Contributors: Mark, Nikki
+ * Version: 2.1
  */
 
 

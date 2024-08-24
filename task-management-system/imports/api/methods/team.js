@@ -1,7 +1,7 @@
 /**
  * File Description: Team database entity
- * File version: 1.1
- * Contributors: Audrey
+ * File version: 1.2
+ * Contributors: Audrey, Nikki
  */
 
 import {Meteor} from 'meteor/meteor'

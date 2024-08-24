@@ -1,6 +1,6 @@
 /**
  * File Description: User database entity
- * File version: 2.0
+ * File version: 2.1
  * Contributors: Nikki, Mark
  */
 

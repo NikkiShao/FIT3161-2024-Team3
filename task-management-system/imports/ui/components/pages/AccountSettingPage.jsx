@@ -1,3 +1,9 @@
+/**
+ * File Description: Account Settings Page
+ * Contributors: Mark, Audrey, Nikki
+ * Version: 1.3
+ */
+
 import React, {useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
 import {Meteor} from 'meteor/meteor';
@@ -13,7 +19,9 @@ import UserCollection from '../../../api/collections/user.js';
 import "../pages/registration/registration.css"
 import Input from "../general/inputs/Input";
 
-
+/**
+ * Account settings page component
+ */
 function AccountSettings() {
 
     const userData = getUserInfo();

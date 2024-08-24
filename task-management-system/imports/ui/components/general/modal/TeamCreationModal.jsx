@@ -2,7 +2,7 @@
  * File Description: Team creation modal component
  * Updated Date: 05/08/2024
  * Contributors: Mark, Nikki
- * Version: 2.0
+ * Version: 2.1
  */
 
 import React, {Fragment, useState} from 'react';
