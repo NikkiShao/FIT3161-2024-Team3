@@ -156,11 +156,6 @@ export const TeamSettingsPage = () => {
         onCloseModal();
     };
     const deleteTeam = () => {
-        Meteor.call('update_team', teamId, {
-            teamName: teamName,
-            teamLeader: teamLeader,
-            teamMembers: teamMembers
-        })
         Meteor.call('delete_team', teamId);
         navigate('/teams');
     }

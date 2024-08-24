@@ -23,7 +23,8 @@
     "sass": "^1.77.8",
     "bootstrap-icons": "^1.11.3",
     "bcrypt": "^5.1.1",
-    "check-password-strength": "^2.0.10"
+    "check-password-strength": "^2.0.10",
+    "nodemailer": "^6.9.14"
   },
   "meteor": {
     "mainModule": {

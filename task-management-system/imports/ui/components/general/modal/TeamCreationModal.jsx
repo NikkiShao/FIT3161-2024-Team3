@@ -27,11 +27,6 @@ export const TeamCreationModal = ({open, closeHandler}) => {
     const [emailInput, setEmailInput] = useState('');
     const [members, setMembers] = useState([]);
 
-    // Add team lead to members list
-    if (teamLead && !members.includes(teamLead)) {
-        setMembers([...members, teamLead]);
-    }
-
     // State variable for error messages
     const [errors, setErrors] = useState({
         teamName: "",
@@ -58,6 +53,8 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         if (members.includes(emailInput)) {
             newError.email = "Email has already been added";
 
+        } else if (emailInput.toLowerCase() === teamLead.toLowerCase() ) {
+            newError.email = "You are already in the team";
 
         } else if (!emailRegex.test(emailInput)) {
             newError.email = "Please input a valid email address";
