@@ -84,7 +84,7 @@ export const DashboardPage = () => {
                                 onPinChange={handlePinChange}
                                 onClick={() => {
                                     const teamId = boardToTeamMap[task.boardId];
-                                    navigate(`/teams/${teamId}/boards/#${task.boardId}`);
+                                    navigate(`/teams/${teamId}/boards/${task.boardId}#${task._id}`);
                                 }}
                             />
                         ))

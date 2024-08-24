@@ -98,16 +98,13 @@ const ViewBoardPage = () => {
             navigate('/' + BaseUrlPath.TEAMS + '/' + teamId);
         }
 
-        // Auto-open task modal if a hash is present in the URL
-        useEffect(() => {
-            if (window.location.hash) {
-                const taskIdFromHash = window.location.hash.substring(1);
-                if (taskIdFromHash !== selectedTaskId) {
-                    onOpenModal(null, taskIdFromHash);
-                    window.location.hash = '#';  // Reset the hash after opening the modal
-                }
+        if (window.location.hash) {
+            // there is a hash location, meaning default open task
+            if (window.location.hash.substring(1) !== selectedTaskId) {
+                onOpenModal(null, window.location.hash.substring(1))
+                window.location.hash = '#'
             }
-        }, [selectedTaskId]);
+        }
 
         return (
             <>
