@@ -44,10 +44,8 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
     // Icons for UI elements
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
-    const trashIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
-                                       height={30}/>;
-    const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
-                                     height={30}/>;
+    const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}/>;
+    const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}/>;
 
     // Handler for adding a new team member
     const handleAddMember = (event) => {
@@ -170,7 +168,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                                                 <button className="icon-btn"
                                                         onClick={(event) =>
                                                             handleRemoveMember(event, member)}>
-                                                    {trashIcon}
+                                                    {minusIcon}
                                                 </button>
                                             </div>
                                             <div></div>
