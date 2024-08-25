@@ -31,9 +31,3 @@ Meteor.publish("all_user_teams", function (email) {
 Meteor.publish("all_teams", function () {
     return TeamCollection.find();
 });
-
-Meteor.publish('team_by_id', function (teamId) {
-    return TeamCollection.find({
-        _id: teamId
-    });
-});
