@@ -336,7 +336,7 @@ export const TeamSettingsPage = () => {
                             <label className={"main-text text-grey"}>Invitations:</label>
                             <div className="ts__member-item-list">
 
-                                {teamMembersData.length <= 1 ?
+                                {teamInvitations.length <= 0 ?
                                     <div className='ts__member-item text-grey'>No pending invitations</div> :
                                     teamInvitations
                                         .map((invitation, index) => (
