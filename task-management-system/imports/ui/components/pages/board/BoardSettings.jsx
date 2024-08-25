@@ -2,7 +2,7 @@
  * File Description: Board's settings page
  * Updated Date: 15/08/2024
  * Contributors: Audrey, Nikki
- * Version: 1.2
+ * Version: 1.3
  */
 
 import React, {Fragment, useState} from 'react';
@@ -126,6 +126,10 @@ export const BoardSettings = () => {
 
     const saveChanges = (event) => {
         event.preventDefault();
+        // reset the messages
+        setUpdateSuccess(null)
+        setDeleteMessage('')
+
         const newErrors = {};
         let isError = false;
 

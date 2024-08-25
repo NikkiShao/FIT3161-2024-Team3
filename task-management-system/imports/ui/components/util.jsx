@@ -1,12 +1,26 @@
 /**
  * File Description: General utility functions
- * File version: 1.0
+ * File version: 1.2
  * Contributors: Nikki
  */
 
 import {useState} from "react";
 import {Tracker} from "meteor/tracker";
 import {Meteor} from "meteor/meteor";
+
+/**
+ * random alphanumeric characters
+ */
+const rand = function () {
+    return Math.random().toString(36).substring(2); // remove `0.`
+};
+
+/**
+ * generates a random token for member invitation
+ */
+export const generateInvitationToken = () => {
+    return rand() + rand() + rand();
+}
 
 /**
  * Retrieves current logged-in user's information

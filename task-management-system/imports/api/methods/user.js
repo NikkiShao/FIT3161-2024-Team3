@@ -1,6 +1,6 @@
 /**
  * File Description: User database entity
- * File version: 2.0
+ * File version: 2.1
  * Contributors: Nikki, Mark
  */
 
@@ -20,7 +20,7 @@ Meteor.methods({
     /**
     * Finds a user by id and emails a verification email
     * @param {string} userId - id of the user
-    * @param {string} username - Update username for the user.
+    * @param {string} name - Update name for the user.
     * @param {string} email - Update email for the user.
     * @param {boolean} notification - Update email notifications state.
        */
@@ -30,6 +30,7 @@ Meteor.methods({
         check(name, String);
         check(email, String);
         check(notification, Boolean);
+
         Meteor.users.update(userId, {
             $set: {
                 "profile.name": name,
@@ -45,6 +46,7 @@ Meteor.methods({
      */
 
     "delete_user": function (userId) {
+        throw new Error()
         check(userId, String);
         Meteor.users.remove(userId);
     },

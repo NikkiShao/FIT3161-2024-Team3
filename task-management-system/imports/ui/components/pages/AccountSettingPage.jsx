@@ -1,3 +1,9 @@
+/**
+ * File Description: Account Settings Page
+ * Contributors: Mark, Audrey, Nikki
+ * Version: 1.3
+ */
+
 import React, {useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
 import {Meteor} from 'meteor/meteor';
@@ -13,20 +19,21 @@ import UserCollection from '../../../api/collections/user.js';
 import "../pages/registration/registration.css"
 import Input from "../general/inputs/Input";
 
-
+/**
+ * Account settings page component
+ */
 function AccountSettings() {
 
     const userData = getUserInfo();
-
     const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [emailNotifications, setEmailNotifications] = useState(userData.notificationOn ? "On" : "Off");
+    const [nameInput, setNameInput] = useState('');
+    const [emailInput, setEmailInput] = useState('');
+    const [emailNotificationOn, setEmailNotificationOn] = useState(userData.notificationOn ? "On" : "Off");
 
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
-    const [successMessage, setSuccessMessage] = useState(''); // State to store success message
+    const [updateSuccess, setUpdateSuccess] = useState(null)
 
     const [errors, setErrors] = useState({
         name: "",
@@ -38,7 +45,7 @@ function AccountSettings() {
     const isLoadingUsers = useSubscribe('all_users');
 
     const result = useTracker(() => {
-        return UserCollection.find({"emails.address": email}).fetch();
+        return UserCollection.find({"emails.address": emailInput}).fetch();
     });
 
     // state to determine if the delete modal is open or not
@@ -46,8 +53,8 @@ function AccountSettings() {
     const onOpenModal = () => setModalOpen(true);
     const onCloseModal = () => setModalOpen(false);
 
+    // get user's teams data
     const isLoading = useSubscribe('all_user_teams', userData.email)();
-
     const teamsData = useTracker(() => {
         if (!isLoading) {
             return TeamCollection.find({teamMembers: userData.email}).fetch();
@@ -55,94 +62,133 @@ function AccountSettings() {
         return [];
     }, [userData.email, isLoading]);
 
-    if (userData.id !== null && name === '' && email === '') {
-        setName(userData.name);
-        setEmail(userData.email);
-        setEmailNotifications(userData.notificationOn);
+    // default inputs
+    if (userData.id !== null && nameInput === '' && emailInput === '') {
+        setNameInput(userData.name);
+        setEmailInput(userData.email);
+        setEmailNotificationOn(userData.notificationOn ? "On" : "Off");
     }
+
+    // handler for submission
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        // reset messages
+        setUpdateSuccess(null);
         setErrorMessage('');
-        setSuccessMessage('');
-    
+
         const updatedFields = {};
         const newError = {};
         let isError = false;
-    
+
         // Check if name has changed and validate
-        if (name !== userData.name) {
-            if (name === '') {
+        if (nameInput !== userData.name) {
+            if (nameInput === '') {
                 newError.name = "Please fill in your name";
                 isError = true;
-            }
-            else if (!alphanumericSpaceRegex.test(name)) {
+            } else if (!alphanumericSpaceRegex.test(nameInput)) {
                 newError.name = "Name can only contain alphanumeric characters and spaces";
                 isError = true;
             }
-            updatedFields.name = name;
+            updatedFields.name = nameInput;
         }
-    
+
         // Check if email has changed and validate
-        if (email !== userData.email) {
-            if (email === '') {
+        if (emailInput !== userData.email) {
+            if (emailInput === '') {
                 newError.email = "Please fill in your email";
                 isError = true;
-            }
-            else if (!emailRegex.test(email)) {
+            } else if (!emailRegex.test(emailInput)) {
                 newError.email = "Please enter a valid email address";
                 isError = true;
             }
-    
+
             if (isLoadingUsers && result.length > 0) {
                 newError.email = "Email address already exists";
                 isError = true;
             }
-    
-            updatedFields.email = email;
+
+            updatedFields.email = emailInput;
         }
-    
+
         // Check if email notifications setting has changed
-        if (emailNotifications !== userData.notificationOn) {
-            updatedFields.notificationOn = emailNotifications === "On";
+        const boolEmailNotificationOn = emailNotificationOn === "On";
+        if (boolEmailNotificationOn !== userData.notificationOn) {
+            updatedFields.notificationOn = boolEmailNotificationOn;
         }
-    
+
         if (Object.keys(updatedFields).length === 0) {
             newError.updatedFields = "No changes detected";
             isError = true;
         }
         setErrors(newError);
 
-        if(!isError){
-        // Update team data if email changed
-        if (updatedFields.email) {
-            teamsData.forEach((team) => {
-                const isLeader = (team.teamLeader === userData.email)
-                const updatedTeamLeader = isLeader ? updatedFields.email : team.teamLeader
-                const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? updatedFields.email : member)
-    
-                Meteor.call('update_team', team._id, {
-                        teamName: team.teamName,
-                        teamLeader: updatedTeamLeader,
-                        teamMembers: updatedTeamMembers
-                    }, (error) => {
+        if (!isError) {
+
+            const updateUserPromise = new Promise((resolve, reject) => {
+                Meteor.call('update_user_info',
+                    userData.id, nameInput, emailInput, boolEmailNotificationOn,
+                    (error, result) => {
                         if (error) {
-                            setErrorMessage(`Failed to update team info: ${error.reason}`);
+                            reject(error)
+                        } else {
+                            resolve(result)
+                            setUpdateSuccess(true)
                         }
-                    }
-                )
-            });
-        }
-    
-        // Call method to update user info
-        Meteor.call('update_user_info', userData.id, updatedFields.name || userData.name, updatedFields.email || userData.email, updatedFields.notificationOn !== undefined ? updatedFields.notificationOn : userData.notificationOn, (error) => {
-            if (error) {
-                setErrorMessage(`Failed to update user info: ${error.reason}`);
+                    })
+            })
+
+            // Update team data if email changed
+            if (updatedFields.email) {
+                teamsData.forEach((team) => {
+                    let isErrored = false;
+
+                    const isLeader = (team.teamLeader === userData.email)
+                    const updatedTeamLeader = isLeader ? updatedFields.email : team.teamLeader
+                    const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? updatedFields.email : member)
+
+                    new Promise((resolve, reject) => {
+                        Meteor.call('update_team', team._id, team.teamInvitations, {
+                                teamName: team.teamName,
+                                teamLeader: updatedTeamLeader,
+                                teamMembers: updatedTeamMembers,
+                                teamInvitations: team.teamInvitations
+                            }, (error, result) => {
+                                if (error) {
+                                    reject(error)
+                                } else {
+                                    resolve(result)
+                                }
+                            }
+                        )
+
+                    }).catch(() => {
+                        setUpdateSuccess(false);
+                        isErrored = true;
+                        setErrorMessage(`Failed to update associated team information, please try again.`);
+
+                    }).then(() => {
+                        // check that teams update hasn't failed, if it has stop here
+                        if (!isErrored) {
+                            // Call method to update user info
+                            updateUserPromise.catch(() => {
+                                setUpdateSuccess(false)
+                                setErrorMessage(`Failed to update user information, please try again.`);
+                            })
+                        }
+
+                    })
+                });
             } else {
-                setSuccessMessage("User info updated successfully.");
+                // email not updated, can directly update user info
+                updateUserPromise.catch(() => {
+                    setUpdateSuccess(false)
+                    setErrorMessage(`Failed to update user information, please try again.`);
+                })
             }
-        });}
+        }
     };
-    
+
     const helpText = "This is the page where you can modify your account related details. " +
         "You can also delete your account and all associated data."
 
@@ -159,9 +205,9 @@ function AccountSettings() {
                     <div className={"input-error-div"}>
                         <Input
                             type="text"
-                            value={name}
+                            value={nameInput}
                             placeholder='Enter Name'
-                            onChange={e => setName(e.target.value)}
+                            onChange={e => setNameInput(e.target.value)}
                         />
                         {errors.name && <span className="text-red small-text">{errors.name}</span>}
                     </div>
@@ -172,9 +218,9 @@ function AccountSettings() {
                     <div className={"input-error-div"}>
                         <Input
                             type="email"
-                            value={email}
+                            value={emailInput}
                             placeholder='Enter Email Address'
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={e => setEmailInput(e.target.value)}
                         />
                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                     </div>
@@ -182,28 +228,21 @@ function AccountSettings() {
 
                 <div className="settings-form-input">
                     <label className={"main-text text-grey"}>Email Notifications:</label>
-                    <div className={"input-error-div"}>
-                        <select value={emailNotifications} className={"input-base input-tiny"}
-                                onChange={e => setEmailNotifications(e.target.value)}>
-                            <option value="On">On</option>
-                            <option value="Off">Off</option>
-                        </select>
-                        {errors.emailNotification &&
-                            <span className="text-red small-text">{errors.emailNotification}</span>}
-                    </div>
+                    <select defaultValue={emailNotificationOn} className={"input-base input-tiny"}
+                            onChange={e => setEmailNotificationOn(e.target.value)}>
+                        <option value="On">On</option>
+                        <option value="Off">Off</option>
+                    </select>
                 </div>
 
-                {/* Display error message */}
-                {errorMessage && <div className="text-red">{errorMessage}</div>}
-
-                {/* Display success message */}
-                {successMessage && <div className="text-green">{successMessage}</div>}
-
-                {errors.updatedFields && <span className="text-red small-text">{errors.updatedFields}</span>}
-
-                <Button
-                    className={"btn-brown btn-submit"}
-                    onClick={handleSubmit}> Save Changes </Button>
+                <Button className={"btn-brown btn-submit"} onClick={handleSubmit}>
+                    Save Changes
+                </Button>
+                {updateSuccess === null ? null :
+                    updateSuccess ?
+                        <span className="text-green small-text non-clickable">Account details has been updated!</span> :
+                        <span className="text-red small-text non-clickable">{errorMessage}</span>
+                }
             </form>
 
             <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
