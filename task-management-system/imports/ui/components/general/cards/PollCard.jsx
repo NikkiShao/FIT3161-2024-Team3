@@ -1,3 +1,10 @@
+/**
+ * File Description: Poll card component
+ * Updated Date: 18/08/2024
+ * Contributors: Mark
+ * Version: 1.2
+ */
+
 import React, { useEffect, useState } from "react";
 
 // import components and styles
@@ -8,21 +15,19 @@ import PollStatus from "../../../enums/PollStatus";
 
 /**
  * PollCard component to display poll information.
- *
  * @param {string} title - The title of the poll card.
- * @param {string} status - The current status of the poll (e.g., Open, Closed).
- * @param {string} highestVote - Information about the highest vote (e.g., Ongoing, Completed).
  * @param {string} startTime - The start time of the poll.
  * @param {string} closeTime - The close time of the poll.
+ * @param {array} options - The options of the poll.
  */
 const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
 
     // state variabless
 
-    const [pollStatus, setPollStatus] = React.useState('');
-    const [highestVote, setHighestVote] = React.useState("");
-    const [displayStartTime, setDisplayStartTime] = React.useState("");
-    const [displayCloseTime, setDisplayCloseTime] = React.useState("");
+    const [pollStatus, setPollStatus] = useState("")
+    const [highestVote, setHighestVote] = useState("");
+    const [displayStartTime, setDisplayStartTime] = useState("");
+    const [displayCloseTime, setDisplayCloseTime] = useState("");
 
     // render time in a readable format
     // 2024-09-11T22:55:00.000+00:00 -> 11 Sep 2024, 23:55

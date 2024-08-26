@@ -1,8 +1,8 @@
 /**
  * File Description: Team lobby page
- * Updated Date: 02/08/2024
- * Contributors: Nikki
- * Version: 1.0
+ * Updated Date: 18/08/2024
+ * Contributors: Nikki, Mark
+ * Version: 2.0
  */
 
 import React, {useState} from 'react';
@@ -25,13 +25,17 @@ import './team.css'
 import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
 import PollCreationModal from "../../general/modal/PollCreationModal";
+import {PollCard} from "../../general/cards/PollCard";
 
-/**
- * Non-existent page component
- */
+
 export const TeamLobbyPage = () => {
     const navigate = useNavigate()
+
+    // Grab user info from server
     const userInfo = getUserInfo();
+
+    // grab the team ID from the URL
+    const {teamId} = useParams();  
 
     // Handlers for opening and closing creation modals
     const [boardModalOpen, setBoardModalOpen] = useState(false);
@@ -43,12 +47,10 @@ export const TeamLobbyPage = () => {
     const onClosePollModal = () => setPollModalOpen(false);
 
     // variables for poll filters
-    const availableFilters = ['all', 'open', 'closed']
-    const [selectedPollFilter, setSelectedPollFilter] = useState('all')
+    const availableFilters = ['all', 'open', 'closed', 'upcoming'];
+    const [selectedPollFilter, setSelectedPollFilter] = useState('all');
 
-    // grab the team ID from the URL
-    const {teamId} = useParams();
-
+    // subscribe to data
     const isLoadingTeam = useSubscribe('specific_team', teamId);
     const isLoadingBoards = useSubscribe('all_team_boards', teamId);
     const isLoadingPolls = useSubscribe('all_team_polls', teamId);
