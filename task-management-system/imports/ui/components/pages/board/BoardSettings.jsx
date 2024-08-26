@@ -167,7 +167,16 @@ export const BoardSettings = () => {
         if (!isError) {
             const boardStatusObject = boardStatuses.map((status, index) => {
                 return {statusName: status, statusOrder: index}
-            })
+            });
+
+            const removedStatuses = boardData.boardStatuses.filter(
+                status => !boardStatuses.includes(status.statusName)).map(
+                status => status.statusName);
+
+            const removedTags = boardData.boardTags.filter(
+                tag => !boardExistingTags.some(
+                existingTag => existingTag.tagName === tag.tagName)).map(
+                tag => tag.tagName);
 
             new Promise((resolve, reject) => {
                 Meteor.call('update_board', boardId,
@@ -182,22 +191,28 @@ export const BoardSettings = () => {
                         if (error) {
                             reject(error)
                         } else {
-                            resolve(result)
-                            // set success message
-                            setUpdateSuccess(true)
+                            Meteor.call('remove_deleted_statuses_tags', boardId, removedStatuses, removedTags, (err, res) => {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(res)
+                                    // set success message
+                                    setUpdateSuccess(true)
 
-                            // clear inputs
-                            setBoardNameInput('');
-                            setBoardCodeInput('');
-                            setBoardDeadlineTimeInput('');
-                            setBoardDeadlineDateInput('');
-                            setBoardDescriptionInput('');
-                            setBoardStatuses([]);
-                            setBoardExistingTags([]);
-                            setBoardNewTagName('');
-                            setBoardNewTagHex('#000000');
-                            setBoardNewStatusInput('');
-                            setErrors({});
+                                    // clear inputs
+                                    setBoardNameInput('');
+                                    setBoardCodeInput('');
+                                    setBoardDeadlineTimeInput('');
+                                    setBoardDeadlineDateInput('');
+                                    setBoardDescriptionInput('');
+                                    setBoardStatuses([]);
+                                    setBoardExistingTags([]);
+                                    setBoardNewTagName('');
+                                    setBoardNewTagHex('#000000');
+                                    setBoardNewStatusInput('');
+                                    setErrors({});
+                                }
+                            })
                         }
                     });
             }).catch(() => {
