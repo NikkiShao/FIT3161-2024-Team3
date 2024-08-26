@@ -9,7 +9,6 @@
  * An enum of all variables that track the different types of page layout across the application
  */
 export enum PollStatus {
-    UPCOMING = 'Upcoming',
     CLOSED = 'Closed',
     OPEN = 'open',
 }

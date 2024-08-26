@@ -25,7 +25,7 @@ Meteor.methods({
 
         PollCollection.insert({
             pollTitle: title,
-            pollCreationDate: new Date(),
+            pollCreationDate: new Date().toISOString(),
             pollDeadlineDate: deadline,
             pollOptions: optionsFormatted,
             teamId: teamId

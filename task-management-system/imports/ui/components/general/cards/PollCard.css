@@ -28,11 +28,6 @@
     font-weight: bold;
 }
 
-.poll-status-upcoming {
-    color: grey;
-    font-weight: bold;
-}
-
 .poll-details {
     display: flex;
     flex-direction: column;

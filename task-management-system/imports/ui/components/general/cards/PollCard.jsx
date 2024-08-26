@@ -49,9 +49,7 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
 
     const findHighestVote = (options) => {
 
-        if (pollStatus === PollStatus.UPCOMING) {
-            setHighestVote("Not Started")
-        } else if (pollStatus === PollStatus.OPEN) {
+    if (pollStatus === PollStatus.OPEN) {
             setHighestVote("Ongoing")
         } else if (pollStatus === PollStatus.CLOSED) {
             let maxVotes = 0;
@@ -79,17 +77,14 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
     // use effect to set poll status and display time
     useEffect(() => {
 
-        // check if poll is open or closed or upcoming
+        // check if poll is open or closed
         const currentTime = new Date().toISOString();
         const current = new Date(currentTime);
         const start = new Date(startTime); // convert ISO String to date object
         const close = new Date(closeTime);
 
         // set poll status by checking start and close time
-        if (current < start) {
-            setPollStatus(PollStatus.UPCOMING);
-        }
-        else if (current < close) {
+        if (current < close) {
             setPollStatus(PollStatus.OPEN);
         }
         else {
@@ -123,11 +118,11 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
                 </div>
                 <div className="poll-item">
                     <span>Start Time:</span>
-                    <span className="poll-value">{displayStartTime}</span> {/* 使用转换后的时间 */}
+                    <span className="poll-value">{displayStartTime}</span> 
                 </div>
                 <div className="poll-item">
                     <span>Close Time:</span>
-                    <span className="poll-value">{displayCloseTime}</span> {/* 使用转换后的时间 */}
+                    <span className="poll-value">{displayCloseTime}</span> 
                 </div>
             </div>
             <Button

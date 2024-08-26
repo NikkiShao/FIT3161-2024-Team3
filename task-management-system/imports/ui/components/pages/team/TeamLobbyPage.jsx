@@ -18,14 +18,14 @@ import PollCollection from "../../../../api/collections/poll";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
-import Card from "../../general/cards/Card";
+// import Card from "../../general/cards/Card";
 import {getUserInfo} from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
 import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
 import PollCreationModal from "../../general/modal/PollCreationModal";
-import {PollCard} from "../../general/cards/PollCard";
+import PollCard from "../../general/cards/PollCard";
 
 
 export const TeamLobbyPage = () => {
@@ -47,7 +47,7 @@ export const TeamLobbyPage = () => {
     const onClosePollModal = () => setPollModalOpen(false);
 
     // variables for poll filters
-    const availableFilters = ['all', 'open', 'closed', 'upcoming'];
+    const availableFilters = ['all', 'open', 'closed'];
     const [selectedPollFilter, setSelectedPollFilter] = useState('all');
 
     // subscribe to data
@@ -115,6 +115,8 @@ export const TeamLobbyPage = () => {
                 })
             )
 
+            
+
             // filter polls based on if it is opened
             const filteredPolls = pollsData
                 .filter((poll) => {
@@ -129,13 +131,16 @@ export const TeamLobbyPage = () => {
                     return allFilterCondition || openFilterCondition || closedFilterCondition;
                 })
 
+
             const displayedPollCards = filteredPolls.map((poll) => (
                     // todo: replace with PollCards after
-                    <Card key={poll._id}>
-                        <span>{poll.pollTitle}</span>
-                        <span>{new Date(poll.pollCreationDate).toLocaleString()}</span>
-                        <span>{new Date(poll.pollDeadlineDate).toLocaleString()}</span>
-                    </Card>
+                    <PollCard
+                        key={poll._id}
+                        title={poll.pollTitle}
+                        startTime={poll.pollCreationDate}
+                        closeTime={poll.pollDeadlineDate}
+                        options={poll.pollOptions}>
+                    </PollCard>
                 )
             )
             const helpText = "This page displays a list of all the task boards and polls for this team. You can " +
