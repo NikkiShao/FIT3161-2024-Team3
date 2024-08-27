@@ -35,3 +35,9 @@ Meteor.publish("all_tasks", function () {
     return TaskCollection.find();
 });
 
+/**
+ * Publishes all tasks of a board.
+ */
+Meteor.publish("all_board_task", function (boardId) {
+    return TaskCollection.find({ boardId: {$in: boardId} });
+});

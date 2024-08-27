@@ -7,12 +7,14 @@
 import React from 'react';
 import { getUserInfo } from "/imports/ui/components/util";
 import PinnedTasks from "/imports/ui/components/pages/dashboard/PinnedTasks";
+import UpcomingDeadlines from './dashboard/UpcomingDeadlines.jsx';
 
 export const DashboardPage = () => {
     const userInfo = getUserInfo();
 
     return (
-        <div className="dashboard-pinned-container">
+        <div className="dashboard-container">
+            <UpcomingDeadlines />
             <PinnedTasks userInfo={userInfo} />
             {/* You can add more components here if needed */}
         </div>

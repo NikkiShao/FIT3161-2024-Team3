@@ -125,6 +125,10 @@ body .text-red {
     color: var(--red);
 }
 
+body .text-dark-red{
+    color: var(--dark-red);
+}
+
 body .text-green {
     color: var(--green);
 }

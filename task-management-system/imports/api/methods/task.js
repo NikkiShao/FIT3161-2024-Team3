@@ -108,4 +108,17 @@ Meteor.methods({
             },
         });
     },
+
+    "remove_deleted_statuses_tags": function(boardId, removedStatuses, removedTags){
+        TaskCollection.update(
+            {boardId: boardId, statusName: {$in: removedStatuses}},
+            {$set: {statusName:"To Do"}},
+            {multi: true}
+        );
+        TaskCollection.update(
+            {boardId: boardId, tagNames: {$in: removedTags}},
+            {$pull: {tagNames: {$in: removedTags}}},
+            {multi: true}
+        );
+    }
 });
