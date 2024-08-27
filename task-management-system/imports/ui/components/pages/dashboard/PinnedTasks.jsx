@@ -1,17 +1,20 @@
 /**
  * File Description: Dashboard page
- * File version: 1.1
- * Contributors: Samuel
+ * File version: 1.2
+ * Contributors: Samuel, Nikki
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
-import TaskCard from "/imports/ui/components/general/cards/TaskCard";
+import Spinner from "react-bootstrap/Spinner";
+import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import { TaskCollection } from '/imports/api/collections/task';
 import { BoardCollection } from '/imports/api/collections/board';
 import { TeamCollection } from '/imports/api/collections/team';
-import './PinnedTasks.css';
+import TaskCard from "/imports/ui/components/general/cards/TaskCard";
+import HoverTip from "../../general/hoverTip/HoverTip";
+import './dashboard.css';
 
 const PinnedTasks = ({ userInfo }) => {
     const [pinToggle, setPinToggle] = useState(false);
@@ -64,11 +67,22 @@ const PinnedTasks = ({ userInfo }) => {
         }).fetch();
     }, [boardIds, pinToggle]);
 
+    // for help hover
+    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
+    const helpText = "This section shows the tasks you have pinned on any of your boards.";
+
     const isLoading = isLoadingTeams() || isLoadingBoards() || isLoadingTasks();
 
     if (!isLoading) {
         return (
-            <div className="dashboard-pinned-column">
+            <div className="background-base dashboard-item dashboard-pinned-column">
+                <HoverTip icon={questionIcon}
+                          outerText={"Help"}
+                          toolTipText={helpText}
+                          divClassName={"page-help-tip"}
+                          textClassname
+                />
+
                 <h2 className="dashboard-column-title">Pinned</h2>
                 {pinnedTasks.length > 0 &&
                     pinnedTasks.map((task) => (
@@ -93,9 +107,13 @@ const PinnedTasks = ({ userInfo }) => {
                 }
             </div>
         );
+    } else {
+        return (
+            <div className="background-base dashboard-pinned-column">
+                <Spinner animation="border" variant="secondary" role="status"/>
+            </div>
+        )
     }
-
-    return <div>Loading...</div>;
 };
 
 export default PinnedTasks;

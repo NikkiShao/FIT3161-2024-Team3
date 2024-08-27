@@ -13,8 +13,8 @@ export const DashboardPage = () => {
     const userInfo = getUserInfo();
 
     return (
-        <div className="dashboard-pinned-container">
-            <UpcomingDeadlines></UpcomingDeadlines>
+        <div className="dashboard-container">
+            <UpcomingDeadlines />
             <PinnedTasks userInfo={userInfo} />
             {/* You can add more components here if needed */}
         </div>

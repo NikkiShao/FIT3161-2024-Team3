@@ -1,14 +1,23 @@
-import React, {useState} from 'react';
+/**
+ * File Description: Upcoming deadlines component
+ * File version: 1.1
+ * Contributors: Audrey, Nikki
+ */
+import React from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
-import {Meteor} from 'meteor/meteor';
 import {getUserInfo} from '../../util';
-import WhiteBackground from "../../general/whiteBackground/WhiteBackground.jsx";
 import TeamCollection from '../../../../api/collections/team.js';
 import TaskCollection from '../../../../api/collections/task.js';
 import BoardCollection from '../../../../api/collections/board.js';
-import PageLayout from '../../../enums/PageLayout'
 import Spinner from "react-bootstrap/Spinner";
+import HoverTip from "../../general/hoverTip/HoverTip";
+import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 
+/**
+ * Upcoming deadlines component for dashboard
+ * @returns {Element}
+ * @constructor
+ */
 export const UpcomingDeadlines = () =>  {
     const userInfo = getUserInfo();
 
@@ -42,13 +51,11 @@ export const UpcomingDeadlines = () =>  {
     const today = new Date();
     const filteredTasks = taskData.filter((task) => {
         const deadline = new Date(task.taskDeadlineDate);
-        const daysLeft = Math.ceil((deadline - today) / (24 * 60 * 60 * 1000));
-        const hoursLeft = Math.floor(((deadline - today) % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-        const minutesLeft = Math.floor(((deadline - today) % (60 * 60 * 1000)) / (60 * 1000));
-        return (task.statusName !== "Done") && daysLeft <= 7;
+        const daysLeft = Math.floor((deadline - today) / (24 * 60 * 60 * 1000));
+        return (task.statusName !== "Done") && daysLeft <= 6;
     }).map((task) => {
         const deadline = new Date(task.taskDeadlineDate);
-        const daysLeft = Math.ceil((deadline - today) / (24 * 60 * 60 * 1000));
+        const daysLeft = Math.floor((deadline - today) / (24 * 60 * 60 * 1000));
         const formatDate = deadline.toLocaleDateString('en-GB', {
             day: '2-digit',
             month: 'short',
@@ -58,7 +65,7 @@ export const UpcomingDeadlines = () =>  {
         const minutesLeft = Math.floor(((deadline - today) % (60 * 60 * 1000)) / (60 * 1000));
         return {
             ...task,
-            daysLeft: daysLeft <= 0 ? 'OVERDUE' : daysLeft,
+            daysLeft: daysLeft < 0 ? 'OVERDUE' : daysLeft, // negative days means overdue, 0 means there might still be some hours
             formatDate: formatDate,
             hoursLeft: hoursLeft,
             minutesLeft: minutesLeft
@@ -77,19 +84,27 @@ export const UpcomingDeadlines = () =>  {
         }
         return a.daysLeft - b.daysLeft;
     })
+    // for help hover
+    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
+    const helpText = "This section shows the tasks due within 7 days.";
 
-    const helpText = "This section shows the tasks due within 7 days highlighting overdue and urgent tasks.";
     if (isLoadingTeams() || isLoadingBoards() || isLoadingTasks()) {
         return (
-            <WhiteBackground pageLayout={PageLayout.LARGE_CENTER}>
+            <div className={"background-base dashboard-item dashboard-deadline-column"}>
                 <Spinner animation="border" variant="secondary" role="status"/>
-            </WhiteBackground>
-        )
+            </div>
+    )
     } else {
         return (
-                <WhiteBackground pageHelpText={helpText} pageLayout={PageLayout.LARGE_CENTER} style={{minWidth: '780px', maxWidth: '780px', padding: '10px', height: 'calc(60vh - 100px)', overflowY: 'auto', scrollbarWidth: 'thin'}}>
-                    <h1 className={"text-center default__heading1"}>Upcoming Deadlines</h1>
-                    {sortedTask.length ?                        
+            <div className={"background-base dashboard-item dashboard-deadline-column"}>
+                    <HoverTip icon={questionIcon}
+                              outerText={"Help"}
+                              toolTipText={helpText}
+                              divClassName={"page-help-tip"}
+                              textClassname
+                    />
+                    <h2 className={"dashboard-column-title"}>Upcoming Deadlines</h2>
+                    {sortedTask.length ?
                     <table className={"table table-striped table-bordered table-hover non-clickable"}>
                                 <thead>
                                 <tr key={'header'} className="text-center">
@@ -102,15 +117,15 @@ export const UpcomingDeadlines = () =>  {
                                 <tbody className="text-center">
                                 {sortedTask.map((task)=>(
                                     <tr key={task._id} style={{color: task.daysLeft === 'OVERDUE' ? 'var(--dark-red)' : (task.daysLeft < 3 && task.daysLeft > 0) ? 'var(--red)' : 'var(--black)'}}>
-                                        {task.daysLeft === 'OVERDUE' ? 
+                                        {task.daysLeft === 'OVERDUE' ?
                                         (<>
                                             <td><span className={"main-text text-dark-red"}>{getBoardCode(task.boardId)}</span></td>
                                             <td><span className={"main-text text-dark-red"}>{task.taskName}</span></td>
                                             {/* <td><span className={"main-text text-dark-red"}>{task.formatDate}</span></td> */}
                                             <td><span className={"main-text text-dark-red"}>{task.daysLeft}</span></td>
-                                        </>) : 
+                                        </>) :
                                         (<>
-                                        {task.daysLeft < 3 ? 
+                                        {task.daysLeft < 3 ?
                                             (<>
                                                 <td><span className={"main-text text-red"}>{getBoardCode(task.boardId)}</span></td>
                                                 <td><span className={"main-text text-red"}>{task.taskName}</span></td>
@@ -128,11 +143,11 @@ export const UpcomingDeadlines = () =>  {
                                     </tr>
                                 ))}
                                 </tbody>
-                    </table> : 
+                    </table> :
                     <span className={"main-text non-clickable"}>
                         You don't have anything due for the next 7 days.
                     </span>}
-                </WhiteBackground>
+                </div>
             );
     }
 };
