@@ -163,7 +163,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                                             <button className="icon-btn"
                                                     onClick={(event) =>
                                                         handleRemoveMember(event, member)}>
-                                                {trashIcon}
+                                                {minusIcon}
                                             </button>
                                         </div>
                                         <div></div>

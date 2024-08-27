@@ -26,6 +26,7 @@ import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
 import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
 import BoardSettings from "./components/pages/board/BoardSettings";
+import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
 
 
 /**
@@ -97,11 +98,18 @@ export const App = () => (
                         </ProtectedRoute>
                     }/>
 
-
                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
                             <TeamLobbyPage/>
                         </ProtectedRoute>
+                    }/>
+
+                    <Route path={'/accept-invite/:teamId/:token'} element={
+                        <InvitationResponsePage/>
+                    }/>
+
+                    <Route path={'/decline-invite/:teamId/:token'} element={
+                        <InvitationResponsePage/>
                     }/>
 
                     {/* Boards related routes */}

@@ -82,7 +82,7 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
                 
                         .accept-button {
                           background-color: #8fe09c;                        }
-                        .reject-button {
+                        .decline-button {
                           background-color: #f69797;
                         }
                     </style>
@@ -94,7 +94,7 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
                             <p>You have been invited to join the team <strong>${teamName}</strong>.</p>
                             <p>Please click one of the buttons below to accept or reject the invitation:</p>
                             <a href="http://localhost:3000/accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
-                            <a href="http://localhost:3000/reject-invite/${teamId}/${token}" class="btn-base reject-button">Reject Invitation</a>
+                            <a href="http://localhost:3000/decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
                             <p>Thank you!</p>
                             <br/>
                             <p>Alternatively, you may click/navigate to the below URL to accept or decline: </p>

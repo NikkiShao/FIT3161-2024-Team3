@@ -45,7 +45,7 @@ export const TeamSettingsPage = () => {
     const [isLeader, setIsLeader] = useState(false);
 
     // load team data
-    const isLoadingTeams = useSubscribe('team_by_id', teamId);
+    const isLoadingTeams = useSubscribe('specific_team', teamId);
     const teamData = useTracker(() => {
 
         const team = TeamCollection.findOne({_id: teamId});

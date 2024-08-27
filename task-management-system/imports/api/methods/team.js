@@ -54,6 +54,7 @@ Meteor.methods({
      * @param teamsData - the updated teams data
      */
     "update_team": function (teamId, existingInvites, teamsData) {
+
         TeamCollection.update(teamId, {
             $set:
                 {
