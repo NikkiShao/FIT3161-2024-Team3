@@ -22,7 +22,8 @@ import '/imports/api/methods/team.js';
 import '/imports/api/publications/team.js';
 
 import {initialiseMailer} from "./mailer";
-import {autoNotify} from "./notification";
+import {autoSendNotification} from "./notification";
+
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {
@@ -45,6 +46,7 @@ Meteor.startup(async () => {
         // initialise the node mailer
         initialiseMailer()
 
-        autoNotify()
+        // set up auto email notification
+        autoSendNotification()
     }
 });

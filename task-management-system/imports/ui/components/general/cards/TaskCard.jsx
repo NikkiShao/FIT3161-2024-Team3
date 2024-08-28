@@ -2,7 +2,7 @@
  * File Description: Task Card component
  * Updated Date: 14/08/2024
  * Contributors: Nikki, Samuel
- * Version: 1.3
+ * Version: 1.4
  */
 
 import React from "react";

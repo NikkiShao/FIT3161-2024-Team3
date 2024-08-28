@@ -1,6 +1,6 @@
 /**
  * File Description: Task Modal component for adding/Viewing tasks
- * File version: 1.2
+ * File version: 1.3
  * Contributors: Sam, Nikki
  */
 

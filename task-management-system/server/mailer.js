@@ -1,6 +1,6 @@
 /**
  * File Description: Mailer for emailing
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Nikki
  */
 
@@ -53,7 +53,7 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
 
     const info = await transporter.sendMail({
         from: '"Task Management System"<invitation@tms.com>', // sender address
-        to: "nsha0054@student.monash.edu", //email, // list of receivers
+        to: email, // list of receivers
         subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
         html: `
             <html lang="en">
@@ -143,7 +143,7 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
 
     const info = await transporter.sendMail({
         from: '"Task Management System"<reminders@tms.com>', // sender address
-        to: "nsha0054@student.monash.edu", //email, // list of receivers
+        to: email, // list of receivers
         subject: `[Task Management System] - Upcoming Deadlines`, // Subject line
         html: `
     <!DOCTYPE html>
@@ -154,15 +154,12 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
                     line-height: 1.6;
                     color: #282828;
                 }
-               
-               .urgent {
-                   color: #F45151 !important;
-               } 
-               
-               .overdue {
-                   color: #B74C4C !important;
-               }
-                
+                .urgent {
+                    color: #F45151 !important;
+                } 
+                .overdue {
+                    color: #B74C4C !important;
+                }
                 h3 {
                     font-size: 18px;
                     margin-bottom: 0;
@@ -191,5 +188,4 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
         </body>
     </html>`, // html body
     });
-    
 }

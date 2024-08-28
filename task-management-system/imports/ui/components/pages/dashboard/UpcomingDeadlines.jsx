@@ -1,6 +1,6 @@
 /**
  * File Description: Upcoming deadlines component
- * File version: 1.1
+ * File version: 1.2
  * Contributors: Audrey, Nikki
  */
 import React from 'react';

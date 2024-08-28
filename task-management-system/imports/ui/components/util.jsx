@@ -1,7 +1,7 @@
 /**
  * File Description: General utility functions
- * File version: 1.3
- * Contributors: Nikki, Sam
+ * File version: 1.4
+ * Contributors: Nikki
  */
 
 import React, {useState} from "react";

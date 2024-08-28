@@ -1,3 +1,10 @@
+/**
+ * File Description: Email notification reminder related functions
+ * File version: 1.0
+ * Contributors: Nikki
+ */
+
+import {Meteor} from "meteor/meteor";
 import UserCollection from "../imports/api/collections/user";
 import TeamCollection from "../imports/api/collections/team";
 import BoardCollection from "../imports/api/collections/board";
@@ -6,7 +13,35 @@ import {isUrgentOverdue} from "../imports/ui/components/util";
 import {sendReminder} from "./mailer";
 
 
-export function autoNotify() {
+/**
+ * Automatically sends notification about reminders every set interval, at a specific hour
+ * @param hour - the hour to send the notification at, by default it is at 8am.
+ */
+export function autoSendNotification (hour = 8) {
+    const now = new Date();
+    const sendTime = new Date(now);
+    sendTime.setHours(hour, 0, 0, 0);
+    const timeUntilSend = sendTime - now;
+
+    const dayInMilliseconds = 1000 * 60 * 60 * 24;
+    // const minInMilliseconds = 1000 * 60 ; // for testing purposes, fires each minute
+
+    // Run the task immediately and then at midnight
+    Meteor.setTimeout(() => {
+        sendReminderNotification();
+        Meteor.setInterval(sendReminderNotification, dayInMilliseconds);
+    }, timeUntilSend);
+}
+
+/**
+ * Checks through every user, team, board, task for ones that need to send emails about.
+ *
+ * This includes every non-done task on an OVERDUE board and all URGENT or OVERDUE tasks.
+ * Emails will only be sent to users who turned their email notification on.
+ */
+export function sendReminderNotification() {
+    console.log("i sending notification!!!")
+
     const now = new Date();
 
     // getting data
@@ -134,4 +169,7 @@ export function autoNotify() {
 
         }
     }
+
+    console.log("i finished sending notification!")
+
 }

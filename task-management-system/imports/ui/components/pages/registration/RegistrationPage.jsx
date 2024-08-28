@@ -2,7 +2,7 @@
  * File Description: Registration form page
  * Updated Date: 28/07/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React, {useState} from 'react';
