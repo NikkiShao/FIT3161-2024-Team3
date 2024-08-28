@@ -50,15 +50,12 @@ export function initialiseMailer() {
 export async function sendTeamInvitation(email, token, teamName, teamId) {
     console.log("i sending to " + email)
 
-    // todo: uncomment afterwards
-    // return;
     const info = await transporter.sendMail({
         from: '"Task Management System"<reminders@tms.com>', // sender address
         to: email, // list of receivers
         subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
-        // text: `You have been invited to the team: ${teamName}.`, // plain text body
         html: `
-            <html>
+            <html lang="en">
                 <head>
                     <style>
                     
@@ -79,7 +76,6 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
                             align-items: center;
                             border-radius: 9999px;
                         }
-                
                         .accept-button {
                           background-color: #8fe09c;                        }
                         .decline-button {
@@ -107,5 +103,8 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
             </html>`, // html body
     });
     console.log("i sent!")
+}
+
+export async function sendReminder(email, token) {
 
 }
