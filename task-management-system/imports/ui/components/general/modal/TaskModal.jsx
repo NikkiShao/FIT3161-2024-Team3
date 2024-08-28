@@ -16,6 +16,7 @@ import TaskPin from "../cards/TaskPin";
 import TaskTag from "../cards/TaskTag";
 import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
+import {isUrgentOverdue} from "../../util";
 
 /**
  * Task modal to view/edit or create tasks
@@ -298,20 +299,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             setContributions(newContributions)
         }
 
-        let displayText = null;
-        if (taskData) {
-            const today = new Date();
-            const taskDeadlineDate = new Date(taskData.taskDeadlineDate);
-            let urgentStartDate = new Date();
-            urgentStartDate.setTime(taskDeadlineDate.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
-
-            if (today >= taskDeadlineDate && taskData.statusName.toLowerCase() !== "done") {
-                // after current datetime and NOT done
-                displayText = "OVERDUE";
-            } else if (today >= urgentStartDate && taskData.statusName.toLowerCase() !== "done") {
-                displayText = "URGENT";
-            }
-        }
+        let displayText = taskData ? isUrgentOverdue(taskData.taskDeadlineDate, taskData.statusName).toUpperCase() : null;
 
         // check if there is any team member's contribution not added, display their options if so
         const allMembersAdded = membersData.filter((member) => contributions[member.emails[0].address] === undefined).length === 0;
@@ -342,8 +330,8 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                     <span className={"main-text text-grey non-clickable"}>Press to pin</span>
                                 </div>
 
-                                <h1 style={{color: "var(--dark-red)", marginRight: "25px"}}
-                                    className={"no-margin"}>{displayText}</h1>
+                                {displayText && <h1 style={{color: "var(--dark-red)", marginRight: "25px"}}
+                                     className={"no-margin"}>{displayText}</h1>}
 
                                 <div style={{width: "170px"}}/>
                             </div>

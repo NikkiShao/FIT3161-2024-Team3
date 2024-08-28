@@ -140,7 +140,6 @@ export const RegistrationPage = () => {
                 profile: {
                     name: name,
                     notificationOn: true,
-                    teamIds: []
                 }
             };
 

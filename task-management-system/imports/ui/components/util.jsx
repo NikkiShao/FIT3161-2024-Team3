@@ -4,7 +4,7 @@
  * Contributors: Nikki, Sam
  */
 
-import {useState} from "react";
+import React, {useState} from "react";
 import {Tracker} from "meteor/tracker";
 import {Meteor} from "meteor/meteor";
 
@@ -40,6 +40,28 @@ export const renderTime = (isoString) => {
     return `${day} ${month} ${year}, ${hours}:${minutes}`;
 }
 
+
+/**
+ * returns whether if a date (and status) is urgent/overdue
+ *
+ * @param deadlineDate {Date | String} - the deadline date
+ * @param status {string} - optional, status of a task (done, to do, etc.)
+ * @returns {string} - "urgent" for less than 3 days, "overdue" for passed now, otherwise empty string ""
+ */
+export const isUrgentOverdue = (deadlineDate, status = "") => {
+    const today = new Date();
+    const deadlineObject = new Date(deadlineDate);
+    let urgentStartDate = new Date();
+    urgentStartDate.setTime(deadlineObject.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
+
+    if (today >= deadlineObject && status.toLowerCase() !== "done") {
+        // after current datetime and NOT done
+        return "overdue"
+    } else if (today >= urgentStartDate && status.toLowerCase() !== "done") {
+        return "urgent"
+    }
+    return "";
+}
 
 /**
  * Retrieves current logged-in user's information
