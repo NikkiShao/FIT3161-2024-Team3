@@ -42,6 +42,21 @@ export const renderTime = (isoString) => {
 
 
 /**
+ *
+ * @param date {string | Date} - date to find how many days, hours and minutes until now
+ */
+export const timeLeft = (date) => {
+    const today = new Date();
+    const dateObject = new Date(date);
+
+    const daysLeft = Math.floor((dateObject - today) / (24 * 60 * 60 * 1000));
+    const hoursLeft = Math.floor(((dateObject - today) % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+    const minutesLeft = Math.floor(((dateObject - today) % (60 * 60 * 1000)) / (60 * 1000));
+
+    return {daysLeft, hoursLeft, minutesLeft};
+}
+
+/**
  * returns whether if a date (and status) is urgent/overdue
  *
  * @param deadlineDate {Date | String} - the deadline date

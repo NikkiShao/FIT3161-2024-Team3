@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
-import {getUserInfo} from '../../util';
+import {getUserInfo, timeLeft} from '../../util';
 import TeamCollection from '../../../../api/collections/team.js';
 import TaskCollection from '../../../../api/collections/task.js';
 import BoardCollection from '../../../../api/collections/board.js';
@@ -47,29 +47,27 @@ export const UpcomingDeadlines = () =>  {
         return board[0].boardCode;
     }
 
-    //filter and calculate days
+    // filter and calculate days
     const today = new Date();
+
     const filteredTasks = taskData.filter((task) => {
+
         const deadline = new Date(task.taskDeadlineDate);
         const daysLeft = Math.floor((deadline - today) / (24 * 60 * 60 * 1000));
         return (task.statusName !== "Done") && daysLeft <= 6;
+
     }).map((task) => {
+
         const deadline = new Date(task.taskDeadlineDate);
-        const daysLeft = Math.floor((deadline - today) / (24 * 60 * 60 * 1000));
-        const formatDate = deadline.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        });
-        const hoursLeft = Math.floor(((deadline - today) % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-        const minutesLeft = Math.floor(((deadline - today) % (60 * 60 * 1000)) / (60 * 1000));
+        const {daysLeft, hoursLeft, minutesLeft} =  timeLeft(deadline)
+
         return {
             ...task,
             daysLeft: daysLeft < 0 ? 'OVERDUE' : daysLeft, // negative days means overdue, 0 means there might still be some hours
-            formatDate: formatDate,
             hoursLeft: hoursLeft,
             minutesLeft: minutesLeft
         };
+
     });
 
     const sortedTask = filteredTasks.sort((a,b)=>{
@@ -121,7 +119,6 @@ export const UpcomingDeadlines = () =>  {
                                         (<>
                                             <td><span className={"main-text text-dark-red"}>{getBoardCode(task.boardId)}</span></td>
                                             <td><span className={"main-text text-dark-red"}>{task.taskName}</span></td>
-                                            {/* <td><span className={"main-text text-dark-red"}>{task.formatDate}</span></td> */}
                                             <td><span className={"main-text text-dark-red"}>{task.daysLeft}</span></td>
                                         </>) :
                                         (<>
@@ -129,13 +126,11 @@ export const UpcomingDeadlines = () =>  {
                                             (<>
                                                 <td><span className={"main-text text-red"}>{getBoardCode(task.boardId)}</span></td>
                                                 <td><span className={"main-text text-red"}>{task.taskName}</span></td>
-                                                {/* <td><span className={"main-text text-red"}>{task.formatDate}</span></td> */}
                                                 <td><span className={"main-text text-red"}>{task.daysLeft} d {task.hoursLeft} hr {task.minutesLeft} min</span></td>
                                             </>) :
                                             (<>
                                                 <td><span className={"main-text"}>{getBoardCode(task.boardId)}</span></td>
                                                 <td><span className={"main-text"}>{task.taskName}</span></td>
-                                                {/* <td><span className={"main-text"}>{task.formatDate}</span></td> */}
                                                 <td><span className={"main-text"}>{task.daysLeft} d {task.hoursLeft} hr {task.minutesLeft} min</span></td>
                                             </>)}
                                         </>)}
