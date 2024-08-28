@@ -133,7 +133,7 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
                     </li>`
             }).join('');
 
-            return `<h4>Board: ${board.boardName} ${boardUrgency? "- " + boardUrgency.toUpperCase() : ""}</h4>
+            return `<h4>Board: ${board.boardName} ${boardUrgency === "overdue" ? "- OVERDUE" : ""}</h4>
                 <ul>${tasksSection}</ul>`;
         }).join('');
 
