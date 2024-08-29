@@ -1,8 +1,8 @@
 /**
  * File Description: Poll card component
- * Updated Date: 18/08/2024
+ * Updated Date: 30/08/2024
  * Contributors: Mark
- * Version: 1.2
+ * Version: 1.3
  */
 
 import React, { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import Card from "../cards/Card";
 import Button from "../buttons/Button";
 import './PollCard.css';
 import PollStatus from "../../../enums/PollStatus";
+
 
 /**
  * PollCard component to display poll information.
@@ -48,31 +49,29 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
     }
 
     const findHighestVote = (options) => {
-
-    if (pollStatus === PollStatus.OPEN) {
-            setHighestVote("Ongoing")
+        if (pollStatus === PollStatus.OPEN) {
+            setHighestVote("Ongoing");
         } else if (pollStatus === PollStatus.CLOSED) {
             let maxVotes = 0;
             let highestVotedOptions = [];
-
+    
             options.forEach(option => {
                 const voterCount = option.voterIds.length;
-
-                // If a new max is found, reset the array
+    
                 if (voterCount > maxVotes) {
                     maxVotes = voterCount;
-                    highestVotedOptions = [option.optionText];
-                }
-
-                // If the current option has the same votes as the max, add it to the array
-                if (voterCount === maxVotes) {
-                    highestVotedOptions.push(option.optionText);
+                    highestVotedOptions = [option.optionText]; // 重置为新的最高票数选项
+                } else if (voterCount === maxVotes) {
+                    if (!highestVotedOptions.includes(option.optionText)) {
+                        highestVotedOptions.push(option.optionText); // 只添加一次
+                    }
                 }
             });
-
+    
             setHighestVote(highestVotedOptions.join(", "));
         }
     }
+
 
     // use effect to set poll status and display time
     useEffect(() => {
@@ -106,15 +105,15 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
 
     return (
         <Card className="poll-card">
+            <span className={`poll-status-${pollStatus.toLowerCase()}`}>{pollStatus}</span>
             <div className="poll-header">
                 <h4>{title}</h4>
             </div>
-            <span className={`poll-status-${pollStatus.toLowerCase()}`}>{pollStatus}</span>
 
             <div className="poll-details">
                 <div className="poll-item">
-                    <span>Highest Vote(s):</span>
-                    <span className="poll-value">{highestVote}</span>
+                    <span className="poll-label">Highest Vote(s):</span>
+                    <span className="highest-vote">{highestVote}</span>
                 </div>
                 <div className="poll-item">
                     <span>Start Time:</span>

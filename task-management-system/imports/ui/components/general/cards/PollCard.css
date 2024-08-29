@@ -1,8 +1,15 @@
+/**
+ * File Description: Poll card CSS
+ * Updated Date: 30/08/2024
+ * Contributors: Mark
+ * Version: 1.1
+ */
+
 .poll-card {
     border-radius: 5px;
     transition: box-shadow 0.3s ease;
-    width: 450px !important;
-    height: 320px !important;
+    width: 400px !important;
+    height: 300px !important;
     justify-content: space-between;
     margin: 10px;
 }
@@ -19,13 +26,15 @@
 }
 
 .poll-status-open {
-    color: green;
+    color: darkseagreen;
     font-weight: bold;
+    margin-left: auto;
 }
 
 .poll-status-closed {
-    color: red;
+    color: dimgray;
     font-weight: bold;
+    margin-left: auto;
 }
 
 .poll-details {
@@ -44,4 +53,12 @@
 
 .poll-value {
     font-weight: bold;
+}
+
+.highest-vote {
+    font-weight: bold;
+    max-width: 10ch; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
 }
