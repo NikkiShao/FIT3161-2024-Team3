@@ -1,8 +1,8 @@
 /**
  * File Description: Team lobby page
- * Updated Date: 02/08/2024
- * Contributors: Nikki
- * Version: 1.0
+ * Updated Date: 18/08/2024
+ * Contributors: Nikki, Mark
+ * Version: 2.0
  */
 
 import React, {useState} from 'react';
@@ -18,20 +18,24 @@ import PollCollection from "../../../../api/collections/poll";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
-import Card from "../../general/cards/Card";
+// import Card from "../../general/cards/Card";
 import {getUserInfo} from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
 import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
 import PollCreationModal from "../../general/modal/PollCreationModal";
+import PollCard from "../../general/cards/PollCard.jsx";
 
-/**
- * Non-existent page component
- */
+
 export const TeamLobbyPage = () => {
     const navigate = useNavigate()
+
+    // Grab user info from server
     const userInfo = getUserInfo();
+
+    // grab the team ID from the URL
+    const {teamId} = useParams();  
 
     // Handlers for opening and closing creation modals
     const [boardModalOpen, setBoardModalOpen] = useState(false);
@@ -43,12 +47,10 @@ export const TeamLobbyPage = () => {
     const onClosePollModal = () => setPollModalOpen(false);
 
     // variables for poll filters
-    const availableFilters = ['all', 'open', 'closed']
-    const [selectedPollFilter, setSelectedPollFilter] = useState('all')
+    const availableFilters = ['all', 'open', 'closed'];
+    const [selectedPollFilter, setSelectedPollFilter] = useState('all');
 
-    // grab the team ID from the URL
-    const {teamId} = useParams();
-
+    // subscribe to data
     const isLoadingTeam = useSubscribe('specific_team', teamId);
     const isLoadingBoards = useSubscribe('all_team_boards', teamId);
     const isLoadingPolls = useSubscribe('all_team_polls', teamId);
@@ -113,6 +115,8 @@ export const TeamLobbyPage = () => {
                 })
             )
 
+            
+
             // filter polls based on if it is opened
             const filteredPolls = pollsData
                 .filter((poll) => {
@@ -127,13 +131,16 @@ export const TeamLobbyPage = () => {
                     return allFilterCondition || openFilterCondition || closedFilterCondition;
                 })
 
+
             const displayedPollCards = filteredPolls.map((poll) => (
                     // todo: replace with PollCards after
-                    <Card key={poll._id}>
-                        <span>{poll.pollTitle}</span>
-                        <span>{new Date(poll.pollCreationDate).toLocaleString()}</span>
-                        <span>{new Date(poll.pollDeadlineDate).toLocaleString()}</span>
-                    </Card>
+                    <PollCard
+                        key={poll._id}
+                        title={poll.pollTitle}
+                        startTime={poll.pollCreationDate}
+                        closeTime={poll.pollDeadlineDate}
+                        options={poll.pollOptions}>
+                    </PollCard>
                 )
             )
             const helpText = "This page displays a list of all the task boards and polls for this team. You can " +
