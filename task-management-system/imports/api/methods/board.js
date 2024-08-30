@@ -48,7 +48,7 @@ Meteor.methods({
 
         // Log the board creation action
         try {
-            await Meteor.callPromise('logEntry.insert', `created board: ${name}`, boardId);
+            await Meteor.callPromise('logEntry.insert', `created board: ${name}`, teamId, boardId);
             console.log("Board creation logged successfully");
         } catch (error) {
             console.error("Failed to log board creation:", error);
@@ -141,9 +141,9 @@ Meteor.methods({
                 }
             });
 
-            const logMessage = changes.join(', ');
+            const logMessage = changes.join('; ');
             try {
-                await Meteor.callPromise('logEntry.insert', `${logMessage}`, boardId);
+                await Meteor.callPromise('logEntry.insert', `${logMessage}`, currentBoard.teamId, boardId);
                 console.log("Board update logged successfully");
             } catch (error) {
                 console.error("Failed to log board update:", error);
@@ -171,12 +171,15 @@ Meteor.methods({
             }
         }
 
+        // get ID of the team which the board belongs to
+        const teamId = BoardCollection.findOne(boardId).teamId;
+
         // Delete the board itself
         BoardCollection.remove({ _id: boardId });
 
         // Log the board deletion action
         try {
-            await Meteor.callPromise('logEntry.insert', `deleted board with ID: ${boardId}`, boardId);
+            await Meteor.callPromise('logEntry.insert', `deleted board with ID: ${boardId}`, teamId, boardId);
             console.log("Board deletion logged successfully");
         } catch (error) {
             console.error("Failed to log board deletion:", error);
