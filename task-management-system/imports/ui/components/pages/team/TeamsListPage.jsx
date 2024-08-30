@@ -132,9 +132,9 @@ export const TeamsListPage = () => {
                                     <td><span className={"main-text"}>{getBoard(team._id)}</span></td>
                                     <td>
                                         <Button className={"btn-brown"}
-                                                style={{minWidth: "117px", display: "inline-flex"}}
+                                                style={{minWidth: "125px", display: "inline-flex"}}
                                                 onClick={() => navigate(team._id)}>
-                                            View Detail</Button>
+                                            View Details</Button>
                                     </td>
                                 </tr>
                             ))}

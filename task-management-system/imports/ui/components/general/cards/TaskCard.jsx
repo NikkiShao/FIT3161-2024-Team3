@@ -38,7 +38,7 @@ const TaskCard = ({
                       taskIsPinned,
                       tagNames = [],
                       boardId,
-                      boardTags,
+                      boardTags = [],
                       onDashboard,
                       className,
                       onPinChange,

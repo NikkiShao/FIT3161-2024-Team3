@@ -21,6 +21,10 @@ import '/imports/api/collections/team.js';
 import '/imports/api/methods/team.js';
 import '/imports/api/publications/team.js';
 
+import '/imports/api/collections/logEntry.js';
+import '/imports/api/methods/logEntry.js';
+import '/imports/api/publications/logEntry.js';
+
 import {initialiseMailer} from "./mailer";
 
 Accounts.emailTemplates.verifyEmail = {

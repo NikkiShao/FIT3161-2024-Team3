@@ -125,7 +125,7 @@ const ViewBoardPage = () => {
                     </Button>
                     <div className="viewboard-top-right-buttons">
                         <Button className="btn-light-grey view-button" onClick={handleManageBoardClick}>Manage Board</Button>
-                        <Button className="btn-light-grey view-button">View Logs</Button>
+                        <Button className="btn-light-grey view-button" onClick={() => navigate(`/teams/${teamId}/logs/${boardId}`)}>View Logs</Button>
                     </div>
                     <h1>Board: {boardData.boardName}</h1>
                     <div className="viewboard-board" style={{display: 'flex', overflowX: 'auto'}}>

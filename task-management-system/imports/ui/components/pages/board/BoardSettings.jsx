@@ -183,7 +183,7 @@ export const BoardSettings = () => {
                     {
                         boardName: boardNameInput,
                         boardCode: boardCodeInput,
-                        boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
+                        boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}Z`,
                         boardDescription: boardDescriptionInput,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags

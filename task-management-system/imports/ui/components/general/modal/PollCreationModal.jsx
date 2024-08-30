@@ -128,8 +128,6 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
             })
         }
     }
-    console.log(pollOptions)
-
     return (
         <Modal
             closeIcon={closeIcon}
