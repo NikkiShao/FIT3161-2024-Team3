@@ -12,6 +12,9 @@ import Card from "../cards/Card";
 import Button from "../buttons/Button";
 import './PollCard.css';
 import PollStatus from "../../../enums/PollStatus";
+import PollResultModal from '../modal/PollResultModal.jsx';
+import VotePollModal from '../modal/VotePollModal.jsx';
+import TeamCreationModal from "../modal/TeamCreationModal.jsx";
 
 /**
  * PollCard component to display poll information.
@@ -28,6 +31,15 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
     const [highestVote, setHighestVote] = useState("");
     const [displayStartTime, setDisplayStartTime] = useState("");
     const [displayCloseTime, setDisplayCloseTime] = useState("");
+
+
+    const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
+    const openVoteModal = () => setIsVoteModalOpen(true);
+    const closeVoteModal = () => setIsVoteModalOpen(false);
+
+    const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+    const showResultModal = () => setIsResultModalOpen(true);
+    const closeResultModal = () => setIsResultModalOpen(false);
 
     // render time in a readable format
     // 2024-09-11T22:55:00.000+00:00 -> 11 Sep 2024, 23:55
@@ -71,6 +83,8 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
         }
     }
 
+    
+
     // use effect to set poll status and display time
     useEffect(() => {
 
@@ -99,6 +113,16 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
         findHighestVote(options);
     }, [pollStatus, options]);
 
+    const handleViewPollClick = () => {
+        if (pollStatus === PollStatus.CLOSED) {
+            showResultModal();
+        } else if (pollStatus === PollStatus.OPEN) {
+            openVoteModal();
+        }
+    };
+
+
+
     return (
         <Card className="poll-card">
             <span className={`poll-status-${pollStatus.toLowerCase()}`}>{pollStatus}</span>
@@ -123,9 +147,24 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
             <Button
                 type={"submit"}
                 className="btn-brown"
-                onClick={() => console.log("button clicked!")}>
+                onClick={handleViewPollClick}>
                 View Poll
             </Button>
+
+        
+            <PollResultModal 
+                open={isResultModalOpen}
+                closeHandler={closeResultModal}
+                pollData={{ title, options }} 
+            />
+
+            <VotePollModal
+                open={isVoteModalOpen}
+                closeHandler={closeVoteModal}
+                pollData={{ title, options }}
+            />
+        
+
         </Card>
     );
 };

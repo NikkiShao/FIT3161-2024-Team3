@@ -133,7 +133,6 @@ export const TeamLobbyPage = () => {
 
 
             const displayedPollCards = filteredPolls.map((poll) => (
-                    // todo: replace with PollCards after
                     <PollCard
                         key={poll._id}
                         title={poll.pollTitle}
