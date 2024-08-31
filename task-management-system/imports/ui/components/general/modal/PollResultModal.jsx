@@ -24,7 +24,7 @@ const PollResultModal = ({ open, closeHandler, pollData }) => {
             onClose={closeHandler}
             center>
             <h1>Poll Results</h1>
-
+            <p>To be implemented</p>
         </Modal>
     );
 };

@@ -12,8 +12,6 @@ import classNames from "classnames";
  * @param {object} pollData - Data for the poll, including title and options.
  */
 const VotePollModal = ({ open, closeHandler, pollData }) => {
-    const [selectedOption, setSelectedOption] = useState("");
-
     const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
 
 
@@ -30,34 +28,8 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
             open={open}
             onClose={closeHandler}
             center>
-            <div className="modal-div-center">
-                <h2 className="text-center">{pollData.title}</h2>
-
-                <form onSubmit={handleVote}>
-                    {/* Render poll options */}
-                    <div className='input-group'>
-                        {pollData.options.map((option, index) => (
-                            <div key={index} className="poll-option">
-                                <label className="main-text">
-                                    <input
-                                        type="radio"
-                                        name="pollOption"
-                                        value={option.optionText}
-                                        checked={selectedOption === option.optionText}
-                                        onChange={() => setSelectedOption(option.optionText)}
-                                    />
-                                    {option.optionText}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Button to submit the vote */}
-                    <Button type="submit" className="btn-brown btn-submit">
-                        Vote
-                    </Button>
-                </form>
-            </div>
+            <h1>Voting</h1>
+            <p>To be implemented</p>
         </Modal>
     );
 };
