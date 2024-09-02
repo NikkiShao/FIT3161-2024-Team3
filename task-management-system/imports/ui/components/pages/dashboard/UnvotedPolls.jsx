@@ -35,9 +35,7 @@ export const UnvotedPolls = () =>  {
     const pollData = useTracker(() => {
         return PollCollection.find({teamId: {$in: teamIds}}).fetch();
     });
-    console.log(pollData);
 
-    //uncomment when add polls is done
     const pollsToDo = pollData.filter((poll)=>{
         const deadline = new Date(poll.pollDeadlineDate);
         const today = new Date();
@@ -45,8 +43,6 @@ export const UnvotedPolls = () =>  {
         const unvotedPolls = poll.pollOptions.every(option => !option.voterIds.includes(userInfo.id));
         return unvotedPolls && (daysLeft >= 0);
     });
-
-    console.log(pollsToDo);
 
     // for help hover
     const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
