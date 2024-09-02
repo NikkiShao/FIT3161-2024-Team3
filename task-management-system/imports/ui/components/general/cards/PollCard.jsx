@@ -5,7 +5,7 @@
  * Version: 1.3
  */
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 
 // import components and styles
 import Card from "../cards/Card";
@@ -14,7 +14,9 @@ import './PollCard.css';
 import PollStatus from "../../../enums/PollStatus";
 import PollResultModal from '../modal/PollResultModal.jsx';
 import VotePollModal from '../modal/VotePollModal.jsx';
-import TeamCreationModal from "../modal/TeamCreationModal.jsx";
+import {getUserInfo, renderTime} from "../../util";
+import {ExclamationCircleIcon} from "@heroicons/react/16/solid";
+import {CheckIcon} from "@heroicons/react/24/outline";
 
 /**
  * PollCard component to display poll information.
@@ -23,15 +25,14 @@ import TeamCreationModal from "../modal/TeamCreationModal.jsx";
  * @param {string} closeTime - The close time of the poll.
  * @param {array} options - The options of the poll.
  */
-const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
+const PollCard = ({pollId, title, startTime, closeTime, options}) => {
+    const userInfo = getUserInfo();
 
-    // state variabless
-
+    // state variables
     const [pollStatus, setPollStatus] = useState("")
     const [highestVote, setHighestVote] = useState("");
     const [displayStartTime, setDisplayStartTime] = useState("");
     const [displayCloseTime, setDisplayCloseTime] = useState("");
-
 
     const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
     const openVoteModal = () => setIsVoteModalOpen(true);
@@ -41,34 +42,16 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
     const showResultModal = () => setIsResultModalOpen(true);
     const closeResultModal = () => setIsResultModalOpen(false);
 
-    // render time in a readable format
-    // 2024-09-11T22:55:00.000+00:00 -> 11 Sep 2024, 23:55
-    const renderTime = (isoString) => {
-        const date = new Date(isoString);
-
-        // Get date part
-        const day = date.getDate();
-        const month = date.toLocaleString('default', { month: 'short' });
-        const year = date.getFullYear();
-
-        // Get time part
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        const time = `${day} ${month} ${year}, ${hours}:${minutes}`;
-        return time;
-    }
-
     const findHighestVote = (options) => {
         if (pollStatus === PollStatus.OPEN) {
             setHighestVote("Ongoing");
         } else if (pollStatus === PollStatus.CLOSED) {
             let maxVotes = 0;
             let highestVotedOptions = [];
-    
+
             options.forEach(option => {
                 const voterCount = option.voterIds.length;
-    
+
                 if (voterCount > maxVotes) {
                     maxVotes = voterCount;
                     highestVotedOptions = [option.optionText]; // 重置为新的最高票数选项
@@ -78,12 +61,22 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
                     }
                 }
             });
-    
+
             setHighestVote(highestVotedOptions.join(", "));
         }
     }
 
-    
+    // display icons depending on if already voted for
+    const tickIcon = <CheckIcon color={"var(--dark-grey)"} strokeWidth={3} viewBox="0 0 24 24" width={25} height={25}/>;
+    const alertIcon = <ExclamationCircleIcon color={"var(--dark-red)"} strokeWidth={1} viewBox="0 0 16 16" width={25} height={25}/>;
+
+        let votedForAlready = false;
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].voterIds.includes(userInfo.id)) {
+            votedForAlready = true;
+            break;
+        }
+    }
 
     // use effect to set poll status and display time
     useEffect(() => {
@@ -97,8 +90,7 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
         // set poll status by checking start and close time
         if (current < close) {
             setPollStatus(PollStatus.OPEN);
-        }
-        else {
+        } else {
             setPollStatus(PollStatus.CLOSED);
         }
 
@@ -109,7 +101,7 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
     }, [startTime, closeTime, pollStatus]);
 
     useEffect(() => {
-        // set highest vote
+        // set the highest vote
         findHighestVote(options);
     }, [pollStatus, options]);
 
@@ -121,50 +113,47 @@ const PollCard = ({ pollId, title, startTime, closeTime, options }) => {
         }
     };
 
-
-
     return (
-        <Card className="poll-card">
-            <span className={`poll-status-${pollStatus.toLowerCase()}`}>{pollStatus}</span>
-            <div className="poll-header">
-                <h4>{title}</h4>
+        <Card className="poll-card non-clickable">
+            <div className="poll-card__header">
+                {votedForAlready ? tickIcon : alertIcon}
+                <span className={`main-text`}
+                      style={{color: pollStatus === PollStatus.OPEN ? "var(--green)" : "var(--dark-grey)"}}>
+                {pollStatus}</span>
             </div>
+            <span className={"main-text one-line"}>{title}</span>
 
             <div className="poll-details">
                 <div className="poll-item">
-                    <span className="poll-label">Highest Vote(s):</span>
-                    <span className="highest-vote">{highestVote}</span>
+                    <span className={"text-grey small-text"}>Highest Vote(s):</span>
+                    <span className="small-text one-line">{highestVote}</span>
                 </div>
                 <div className="poll-item">
-                    <span>Start Time:</span>
-                    <span className="poll-value">{displayStartTime}</span> 
+                    <span className={"text-grey small-text"}>Start Time:</span>
+                    <span className="small-text">{displayStartTime}</span>
                 </div>
                 <div className="poll-item">
-                    <span>Close Time:</span>
-                    <span className="poll-value">{displayCloseTime}</span> 
+                    <span className={"text-grey small-text"}>Close Time:</span>
+                    <span className="small-text">{displayCloseTime}</span>
                 </div>
             </div>
             <Button
-                type={"submit"}
-                className="btn-brown"
+                className="btn-brown view-button"
                 onClick={handleViewPollClick}>
-                View Poll
+                View
             </Button>
 
-        
-            <PollResultModal 
+            <PollResultModal
                 open={isResultModalOpen}
                 closeHandler={closeResultModal}
-                pollData={{ title, options }} 
+                pollData={{title, options}}
             />
 
             <VotePollModal
                 open={isVoteModalOpen}
                 closeHandler={closeVoteModal}
-                pollData={{ title, options }}
+                pollData={{title, options}}
             />
-        
-
         </Card>
     );
 };
