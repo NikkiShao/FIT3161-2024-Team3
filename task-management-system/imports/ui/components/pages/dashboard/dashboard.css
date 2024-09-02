@@ -1,4 +1,3 @@
-/* Pinned tasks CSS */
 .dashboard-container {
     max-width: calc(100vw - 300px);
     text-align: center;
@@ -18,7 +17,11 @@
 .dashboard-pinned-column {
     min-width: 310px;
     max-width: 310px;
-    height: calc(100vh - 150px);
+    height: calc(105vh -100px);
+}
+
+.dashboard-wrap-container{
+    flex-wrap: wrap;
 }
 
 .dashboard-item {

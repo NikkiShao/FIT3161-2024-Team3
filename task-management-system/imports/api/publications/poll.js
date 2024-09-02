@@ -23,3 +23,7 @@ Meteor.publish('all_team_polls', function (teamId) {
 Meteor.publish('all_polls', function () {
     return PollCollection.find();
 });
+
+Meteor.publish('all_teams_polls', function (teamIds) {
+    return PollCollection.find({teamId: {$in: teamIds}});
+});
