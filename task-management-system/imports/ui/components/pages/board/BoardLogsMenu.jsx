@@ -133,7 +133,7 @@ export const BoardLogsMenu = () => {
                         Back
                     </Button>
 
-                    <h1 className={"text-center"}>Board History</h1>
+                    <h1 className={"text-center"}>Boards History</h1>
                     <div style={{width: "120px"}}/>
                 </div>
 

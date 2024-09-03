@@ -183,8 +183,7 @@ export const TeamLobbyPage = () => {
                     </div>
 
                     <Button className={"view-button btn-light-grey"}
-                            onClick={() => navigate("logs")}
-                            style={{minWidth: "200px !important", width: "200px !important", maxWidth: "200px !important"}}>Board History Logs</Button>
+                            onClick={() => navigate("logs")}>Board History Logs</Button>
 
                     <hr className={"teams__hr"}/>
 
