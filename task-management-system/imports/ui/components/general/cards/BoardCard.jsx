@@ -11,6 +11,7 @@ import Card from "./Card";
 import './BoardCard.css';
 import { useNavigate } from "react-router-dom";
 import Button from "../buttons/Button";
+import {renderTime} from "../../util";
 
 /**
  * Board card used to display brief details on any Board
@@ -63,7 +64,7 @@ const BoardCard = ({
             {/* card middle div */}
             <div className="board-small-text text-grey">{`Code: ${boardNickname}`}</div>
             <div className="board-small-text text-grey text-left-aligned two-line">{boardDesc}</div>
-            <div className="small-text" id={"board-card__deadline"}>{`Deadline: ${boardDeadlineDate.toLocaleString()}`}</div>
+            <div className="small-text" id={"board-card__deadline"}>{`Deadline: ${renderTime(boardDeadlineDate.toISOString())}`}</div>
             {/* card bottom div */}
             <Button className="view-button btn-brown" onClick={handleViewClick}>View</Button>
         </Card>

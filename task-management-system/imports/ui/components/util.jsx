@@ -22,6 +22,25 @@ export const generateInvitationToken = () => {
     return rand() + rand() + rand();
 }
 
+
+// render time in a readable format
+// 2024-09-11T22:55:00.000+00:00 -> 11 Sep 2024, 23:55
+export const renderTime = (isoString) => {
+    const date = new Date(isoString);
+
+    // Get date part
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+
+    // Get time part
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day} ${month} ${year}, ${hours}:${minutes}`;
+}
+
+
 /**
  * Retrieves current logged-in user's information
  * This can be extended to include more user related attributes.
