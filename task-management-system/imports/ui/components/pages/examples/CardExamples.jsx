@@ -24,67 +24,42 @@ const CardExamples = () => {
                 This is a task card on the DASHBOARD: on click, takes you to the baord
             </span>
             <TaskCard
-                taskName={"Task 1 aaaaaaaaa aaaaaa aaaaaaaaaa aa aaaaaaaaaaaaa  aaaaa aaa aaaaaaaaa"}
-                taskDeadline={"2024-07-31T06:23:34.733Z"}
-                isPinned={false}
+                taskId={"1"}
+                taskName={"AAAA"}
+                taskDeadlineDate={"2024-07-25T06:23:34.733Z"}
+                statusName="To do"
+                taskIsPinned={false}
+                tagNames={["nom", "nom", "nom","nom"]}
+                boardId={"AAA"}
+                boardTags={[{tagName:"nom", tagColour:"#ffd9d9"}]}
                 onDashboard={true}
-                tags={[{
-                    tagName: "tag1",
-                    tagColour: "#fcd6ab",
-                }, {
-                    tagName: "tagtag2",
-                    tagColour: "#b3d9ae",
-                }, {
-                    tagName: "tagtagtag3",
-                    tagColour: "#ced0dc",
-                }, {
-                    tagName: "tagtagtag4",
-                    tagColour: "#aaacbd",
-                }
-                ]}
-                boardId={"11111"}>
-            </TaskCard>
+            />
 
             <span>
             This is a task card on the BOARD: on click, it will open up the task popup
             </span>
             <TaskCard
-                taskName={"BBB"}
-                taskDeadline={"2024-07-25T06:23:34.733Z"}
-                isPinned={true}
+                taskId={"1"}
+                taskName={"AAAA"}
+                taskDeadlineDate={"2024-07-25T06:23:34.733Z"}
+                statusName="To do"
+                taskIsPinned={false}
+                tagNames={[]}
+                boardId={"AAA"}
+                boardTags={[]}
                 onDashboard={false}
-                tags={[{
-                    tagName: "a",
-                    tagColour: "#f5f0d7",
-                }, {
-                    tagName: "b",
-                    tagColour: "#ccb7e3",
-                }, {
-                    tagName: "c",
-                    tagColour: "#e7adc0",
-                }
-                ]}
-                boardId={"222222"}>
-            </TaskCard>
+            />
             <TaskCard
-                taskName={"BBB"}
-                taskDeadline={"2024-08-12T06:23:34.733Z"}
-                isPinned={true}
+                taskId={"1"}
+                taskName={"AAAA"}
+                taskDeadlineDate={"2024-07-25T06:23:34.733Z"}
+                statusName="To do"
+                taskIsPinned={false}
+                tagNames={[]}
+                boardId={"AAA"}
+                boardTags={[]}
                 onDashboard={false}
-                tags={[{
-                    tagName: "a",
-                    tagColour: "#f5f0d7",
-                }, {
-                    tagName: "b",
-                    tagColour: "#ccb7e3",
-                }, {
-                    tagName: "c",
-                    tagColour: "#e7adc0",
-                }
-                ]}
-                boardId={"222222"}>
-            </TaskCard>
-
+            />
         </div>
     );
 };

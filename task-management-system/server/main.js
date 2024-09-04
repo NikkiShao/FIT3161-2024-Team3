@@ -26,6 +26,8 @@ import '/imports/api/methods/logEntry.js';
 import '/imports/api/publications/logEntry.js';
 
 import {initialiseMailer} from "./mailer";
+import {autoSendNotification} from "./notification";
+
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {
@@ -47,5 +49,8 @@ Meteor.startup(async () => {
     if (Meteor.isServer) {
         // initialise the node mailer
         initialiseMailer()
+
+        // set up auto email notification
+        autoSendNotification()
     }
 });

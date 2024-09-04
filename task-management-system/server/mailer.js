@@ -1,11 +1,12 @@
 /**
  * File Description: Mailer for emailing
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Nikki
  */
 
 import nodemailer from "nodemailer";
-import {emailPass, emailUser} from "./secrets"; // file in the same folder containing creds for mail server
+import {emailPass, emailUser} from "./secrets";
+import {isUrgentOverdue, timeLeft} from "../imports/ui/components/util"; // file in the same folder containing creds for mail server
 
 
 let transporter;
@@ -50,18 +51,14 @@ export function initialiseMailer() {
 export async function sendTeamInvitation(email, token, teamName, teamId) {
     console.log("i sending to " + email)
 
-    // todo: uncomment afterwards
-    // return;
     const info = await transporter.sendMail({
-        from: '"Task Management System"<reminders@tms.com>', // sender address
+        from: '"Task Management System"<invitation@tms.com>', // sender address
         to: email, // list of receivers
         subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
-        // text: `You have been invited to the team: ${teamName}.`, // plain text body
         html: `
-            <html>
+            <html lang="en">
                 <head>
                     <style>
-                    
                         .email-container {
                           line-height: 1.6;
                           color: #282828;
@@ -79,7 +76,6 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
                             align-items: center;
                             border-radius: 9999px;
                         }
-                
                         .accept-button {
                           background-color: #8fe09c;                        }
                         .decline-button {
@@ -107,5 +103,89 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
             </html>`, // html body
     });
     console.log("i sent!")
+}
 
+/**
+ * Sends out a reminder email to a specific user based on given information
+ *
+ * @param email - email address to send
+ * @param name - name of user
+ * @param teamsToSend - the list of team IDs and the team names to send about
+ * @param boardsByTeam - object containing each board that needs to be sent grouped by team IDs
+ */
+export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
+
+    let teamSections = teamsToSend.map(team => {
+
+        const teamBoards = boardsByTeam[team.teamId]
+
+        let boardsSection = teamBoards.map(board => {
+            const boardUrgency = isUrgentOverdue(board.boardDeadline)
+
+            let tasksSection = board.tasks.map(task => {
+                const taskUrgency = isUrgentOverdue(task.taskDeadlineDate, task.statusName)
+                const {daysLeft, hoursLeft, minutesLeft} = timeLeft(task.taskDeadlineDate)
+                const formatedStr = daysLeft > 0 ? `(${daysLeft} d ${hoursLeft} hr ${minutesLeft} min)` : "OVERDUE"
+
+                return `
+                    <li>
+                        ${task.taskName}:  <span class="${taskUrgency}">${formatedStr}</span>
+                    </li>`
+            }).join('');
+
+            return `<h4>Board: ${board.boardName} ${boardUrgency === "overdue" ? "- OVERDUE" : ""}</h4>
+                <ul>${tasksSection}</ul>`;
+        }).join('');
+
+        return `<h3>Team: ${team.teamName}</h3>${boardsSection}`;
+        
+    }).join('<br />');
+
+    const info = await transporter.sendMail({
+        from: '"Task Management System"<reminders@tms.com>', // sender address
+        to: email, // list of receivers
+        subject: `[Task Management System] - Upcoming Deadlines`, // Subject line
+        html: `
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <style>
+                .email-container {
+                    line-height: 1.6;
+                    color: #282828;
+                }
+                .urgent {
+                    color: #F45151 !important;
+                } 
+                .overdue {
+                    color: #B74C4C !important;
+                }
+                h3 {
+                    font-size: 18px;
+                    margin-bottom: 0;
+                    color: #4A4E69 !important;
+                }
+                h4 {
+                    font-size: 14px;
+                    margin-bottom: 0;
+                    color: #725245 !important;
+                    text-decoration: underline;
+                    text-decoration-thickness: 2px;
+                }
+                
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <h2>Task Management System: Upcoming Deadlines</h2>
+                <p>Hi ${name},</p>
+                <p>You have the following upcoming deadlines from your teams:</p>
+                ${teamSections}
+                <br />
+                <p>Note that an email reminder will no longer be sent out for any boards that are more than 7 days overdue.</p>
+                <p>You may also manually disable this email notification in your account settings.</p>
+            </div>
+        </body>
+    </html>`, // html body
+    });
 }
