@@ -11,7 +11,6 @@ import PollCollection from '../../../../api/collections/poll.js';
 import Spinner from "react-bootstrap/Spinner";
 import HoverTip from "../../general/hoverTip/HoverTip";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
-import {useNavigate} from "react-router-dom";
 import PollCard from "../../general/cards/PollCard";
 
 /**

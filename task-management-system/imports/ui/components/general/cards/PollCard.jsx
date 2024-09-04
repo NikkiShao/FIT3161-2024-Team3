@@ -19,6 +19,7 @@ import {ExclamationCircleIcon} from "@heroicons/react/16/solid";
 import {CheckIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import {useLocation} from "react-router-dom";
+import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 /**
  * PollCard component to display poll information.
