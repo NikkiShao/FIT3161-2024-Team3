@@ -4,8 +4,9 @@ import LogEntryCollection from '../collections/logEntry';
 import {getUserInfoSync} from '/imports/ui/components/util';
 
 Meteor.methods({
-    'logEntry.insert'(logEntryAction, boardId, taskId = null) {
+    'logEntry.insert'(logEntryAction, teamId, boardId, taskId = null) {
         check(logEntryAction, String);
+        check(teamId, String);
         check(boardId, String);
         if (taskId !== null) {
             check(taskId, String);
@@ -27,6 +28,7 @@ Meteor.methods({
         LogEntryCollection.insert({
             logEntryDatetime,
             logEntryAction,
+            teamId,
             boardId,
             taskId,
             username,

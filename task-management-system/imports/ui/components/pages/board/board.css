@@ -39,3 +39,11 @@
     gap: 10px;
     flex-wrap: wrap;
 }
+
+.logs-background {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
+    width: 100%;
+}

@@ -162,8 +162,7 @@ export const TeamLobbyPage = () => {
                             </Button>
                         </div>
                         <h1 className={"text-center"}>Team: {teamData.teamName}</h1>
-                        <Button className={"btn-light-grey"} onClick={() => navigate('/' + BaseUrlPath.TEAMS + '/' + teamId + '/settings')}>{CogIcon}Team
-                            Settings</Button>
+                        <Button className={"btn-light-grey"} onClick={() => navigate('settings')}>{CogIcon}Team Settings</Button>
                     </div>
 
                     <hr className={"teams__hr"}/>
@@ -182,6 +181,9 @@ export const TeamLobbyPage = () => {
                                   style={{marginTop: "20px", marginBottom: "20px"}}>
                                     There are no boards yet!</span>}
                     </div>
+
+                    <Button className={"board-log-button btn-light-grey"}
+                            onClick={() => navigate("logs")}>Board History Logs</Button>
 
                     <hr className={"teams__hr"}/>
 

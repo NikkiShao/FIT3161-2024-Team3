@@ -9,6 +9,7 @@ import { check, Match } from 'meteor/check';
 import { TaskCollection } from "/imports/api/collections/task.js";
 import { Accounts } from 'meteor/accounts-base';
 import "../methods/logEntry";
+import BoardCollection from "../collections/board";
 
 Meteor.methods({
     /**
@@ -45,10 +46,11 @@ Meteor.methods({
 
             let logAction = '';
             const logChanges = [];
+            let taskId = taskData._id;
 
             // If inserting a new task
             if (isInsert) {
-                TaskCollection.insert({
+                taskId = TaskCollection.insert({
                     taskName: taskData.taskName,
                     taskDesc: taskData.taskDesc,
                     taskDeadlineDate: taskData.taskDeadlineDate,
@@ -140,14 +142,17 @@ Meteor.methods({
                         }
                     });
 
-                    logAction = logChanges.join(', ');
+                    logAction = logChanges.join(';');
                 }
             }
+
+            // get ID of the team which the task belongs to
+            const teamId = BoardCollection.findOne(taskData.boardId).teamId;
 
             // Log the task action if there were changes
             if (logAction) {
                 try {
-                    await Meteor.callPromise('logEntry.insert', logAction, taskData.boardId, taskData._id);
+                    await Meteor.callPromise('logEntry.insert', logAction, teamId, taskData.boardId, taskId);
                     console.log("Task logged successfully");
                 } catch (error) {
                     console.error("Task logging error:", error);
@@ -173,11 +178,15 @@ Meteor.methods({
             throw new Meteor.Error('task-not-found', 'Task not found');
         }
 
+        // get ID of the team which the task belongs to
+        const teamId = BoardCollection.findOne(task.boardId).teamId;
+
+        // delete the task
         TaskCollection.remove({_id: taskId});
 
         // Log task deletion
         try {
-            await Meteor.callPromise('logEntry.insert', `deleted task: ${task.taskName}`, task.boardId, taskId);
+            await Meteor.callPromise('logEntry.insert', `deleted task: ${task.taskName}`, teamId, task.boardId, taskId);
             console.log("Task deletion logged successfully");
         } catch (error) {
             console.error("Task deletion logging error:", error);
@@ -207,10 +216,13 @@ Meteor.methods({
             },
         });
 
+        // get ID of the team which the task belongs to
+        const teamId = BoardCollection.findOne(task.boardId).teamId;
+
         // Log pinned state change
         try {
             const action = isPinned ? 'pinned task' : 'unpinned task';
-            await Meteor.callPromise('logEntry.insert', `${action}: ${task.taskName}`, task.boardId, taskId);
+            await Meteor.callPromise('logEntry.insert', `${action}: ${task.taskName}`, teamId, task.boardId, taskId);
             console.log("Task pinned state logged successfully");
         } catch (error) {
             console.error("Task pinning logging error:", error);

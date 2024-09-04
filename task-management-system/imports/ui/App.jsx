@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../client/main.css"
 
-// import Button from 'react-bootstrap/Button';
 import ExamplesPage from "./components/pages/examples/Examples";
 
 import EmptyPage from "./components/pages/EmptyPage";
@@ -27,6 +26,8 @@ import BaseUrlPath from "./enums/BaseUrlPath";
 import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
 import BoardSettings from "./components/pages/board/BoardSettings";
 import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
+import BoardLogsMenu from "./components/pages/board/BoardLogsMenu";
+import BoardLog from "./components/pages/board/BoardLog";
 import Preview from './components/pages/Preview';
 
 
@@ -45,12 +46,13 @@ export const App = () => (
                     <Route path="/examples" element={<ExamplesPage/>}/>
 
                     {/* base & home routes */}
+                    <Route path="*" element={<EmptyPage/>}/>
+
                     <Route path={'/'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_OUT_ONLY}>
                             <SignInPage/>
                         </ProtectedRoute>
                     }/>
-                    <Route path="*" element={<EmptyPage/>}/>
 
                     {/* Register/Sign in related pages */}
                     <Route path={'/' + BaseUrlPath.LOGIN} element={
@@ -129,6 +131,18 @@ export const App = () => (
                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/boards/:boardId'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
                             <ViewBoardPage/>
+                        </ProtectedRoute>
+                    }/>
+
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/logs'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <BoardLogsMenu/>
+                        </ProtectedRoute>
+                    }/>
+
+                    <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId/logs/:boardId'} element={
+                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
+                            <BoardLog/>
                         </ProtectedRoute>
                     }/>
 
