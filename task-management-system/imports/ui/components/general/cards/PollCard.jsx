@@ -1,8 +1,8 @@
 /**
  * File Description: Poll card component
  * Updated Date: 30/08/2024
- * Contributors: Mark
- * Version: 1.3
+ * Contributors: Mark, Nikki
+ * Version: 1.4
  */
 
 import React, {useEffect, useState} from "react";
@@ -16,7 +16,9 @@ import PollResultModal from '../modal/PollResultModal.jsx';
 import VotePollModal from '../modal/VotePollModal.jsx';
 import {getUserInfo, renderTime} from "../../util";
 import {ExclamationCircleIcon} from "@heroicons/react/16/solid";
-import {CheckIcon} from "@heroicons/react/24/outline";
+import {CheckIcon, XMarkIcon} from "@heroicons/react/24/outline";
+import classNames from "classnames";
+import {useLocation} from "react-router-dom";
 
 /**
  * PollCard component to display poll information.
@@ -24,9 +26,11 @@ import {CheckIcon} from "@heroicons/react/24/outline";
  * @param {string} startTime - The start time of the poll.
  * @param {string} closeTime - The close time of the poll.
  * @param {array} options - The options of the poll.
+ * @param {string} teamName - The team name of the team the poll belongs to. Optional, only used when on dashboard.
  */
-const PollCard = ({pollId, title, startTime, closeTime, options}) => {
+const PollCard = ({pollId, title, startTime, closeTime, options, teamName=""}) => {
     const userInfo = getUserInfo();
+    const isOnDashboard = useLocation().pathname.split('/')[1] === BaseUrlPath.DASHBOARD;
 
     // state variables
     const [pollStatus, setPollStatus] = useState("")
@@ -68,9 +72,10 @@ const PollCard = ({pollId, title, startTime, closeTime, options}) => {
 
     // display icons depending on if already voted for
     const tickIcon = <CheckIcon color={"var(--dark-grey)"} strokeWidth={3} viewBox="0 0 24 24" width={25} height={25}/>;
+    const crossIcon = <XMarkIcon color={"var(--dark-grey)"} strokeWidth={3} viewBox="0 0 24 24" width={25} height={25}/>;
     const alertIcon = <ExclamationCircleIcon color={"var(--dark-red)"} strokeWidth={1} viewBox="0 0 16 16" width={25} height={25}/>;
 
-        let votedForAlready = false;
+    let votedForAlready = false;
     for (let i = 0; i < options.length; i++) {
         if (options[i].voterIds.includes(userInfo.id)) {
             votedForAlready = true;
@@ -96,7 +101,7 @@ const PollCard = ({pollId, title, startTime, closeTime, options}) => {
 
         // set and render display time
         setDisplayStartTime(renderTime(startTime));
-        setDisplayCloseTime(renderTime(closeTime));
+        setDisplayCloseTime(renderTime(closeTime, !isOnDashboard));
 
     }, [startTime, closeTime, pollStatus]);
 
@@ -113,10 +118,19 @@ const PollCard = ({pollId, title, startTime, closeTime, options}) => {
         }
     };
 
+    // checks if currently on DASHBOARD
+    let cardClassnames = "poll-card non-clickable"
+    if (isOnDashboard) {
+        cardClassnames = classNames(cardClassnames, "poll-card-mini")
+    } else {
+        cardClassnames = classNames(cardClassnames, "poll-card-standard")
+    }
+
+
     return (
-        <Card className="poll-card non-clickable">
+        <Card className={cardClassnames}>
             <div className="poll-card__header">
-                {votedForAlready ? tickIcon : alertIcon}
+                {votedForAlready ? tickIcon : pollStatus === PollStatus.OPEN ? alertIcon : crossIcon}
                 <span className={`main-text`}
                       style={{color: pollStatus === PollStatus.OPEN ? "var(--green)" : "var(--dark-grey)"}}>
                 {pollStatus}</span>
@@ -124,14 +138,24 @@ const PollCard = ({pollId, title, startTime, closeTime, options}) => {
             <span className={"main-text one-line"}>{title}</span>
 
             <div className="poll-details">
-                <div className="poll-item">
-                    <span className={"text-grey small-text"}>Highest Vote(s):</span>
-                    <span className="small-text one-line">{highestVote}</span>
-                </div>
-                <div className="poll-item">
-                    <span className={"text-grey small-text"}>Start Time:</span>
-                    <span className="small-text">{displayStartTime}</span>
-                </div>
+                {isOnDashboard ?
+                    <div className="poll-item">
+                        <span className={"text-grey small-text"}>Team:</span>
+                        <span className="small-text one-line">{teamName}</span>
+                    </div>
+                    :
+                    <div className="poll-item">
+                        <span className={"text-grey small-text"}>Highest Vote(s):</span>
+                        <span className="small-text one-line">{highestVote}</span>
+                    </div>
+                }
+                {isOnDashboard ? null :
+                    <div className="poll-item">
+                        <span className={"text-grey small-text"}>Start Time:</span>
+                        <span className="small-text">{displayStartTime}</span>
+                    </div>
+                }
+
                 <div className="poll-item">
                     <span className={"text-grey small-text"}>Close Time:</span>
                     <span className="small-text">{displayCloseTime}</span>
@@ -140,7 +164,7 @@ const PollCard = ({pollId, title, startTime, closeTime, options}) => {
             <Button
                 className="btn-brown view-button"
                 onClick={handleViewPollClick}>
-                View
+                Vote
             </Button>
 
             <PollResultModal

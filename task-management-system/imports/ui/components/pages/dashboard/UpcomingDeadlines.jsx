@@ -96,7 +96,6 @@ export const UpcomingDeadlines = () =>  {
         return (
             <div className={"background-base dashboard-item dashboard-deadline-column"}>
                     <HoverTip icon={questionIcon}
-                              outerText={"Help"}
                               toolTipText={helpText}
                               divClassName={"page-help-tip"}
                               textClassname
