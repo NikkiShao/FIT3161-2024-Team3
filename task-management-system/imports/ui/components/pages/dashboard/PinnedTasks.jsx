@@ -1,6 +1,6 @@
 /**
  * File Description: Dashboard page
- * File version: 1.2
+ * File version: 1.3
  * Contributors: Samuel, Nikki
  */
 
@@ -77,14 +77,13 @@ const PinnedTasks = ({ userInfo }) => {
         return (
             <div className="background-base dashboard-item dashboard-pinned-column">
                 <HoverTip icon={questionIcon}
-                          outerText={"Help"}
                           toolTipText={helpText}
                           divClassName={"page-help-tip"}
                           textClassname
                 />
 
                 <h2 className="dashboard-column-title">Pinned</h2>
-                {pinnedTasks.length > 0 &&
+                {pinnedTasks.length > 0 ?
                     pinnedTasks.map((task) => (
                         <TaskCard
                             key={task._id}
@@ -103,14 +102,17 @@ const PinnedTasks = ({ userInfo }) => {
                                 navigate(`/teams/${teamId}/boards/${task.boardId}#${task._id}`);
                             }}
                         />
-                    ))
+                    )) :
+                    <span className={"main-text text-grey non-clickable"}>
+                        You don't have any pinned tasks.
+                    </span>
                 }
             </div>
         );
     } else {
         return (
             <div className="background-base dashboard-pinned-column">
-                <Spinner animation="border" variant="secondary" role="status"/>
+            <Spinner animation="border" variant="secondary" role="status"/>
             </div>
         )
     }

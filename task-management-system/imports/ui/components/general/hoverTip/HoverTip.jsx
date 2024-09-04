@@ -12,8 +12,14 @@ import classNames from "classnames";
 import "./hoverTip.css"
 
 /**
- * General hover tip component.
+ * General hover tip component
  *
+ * @param icon - the icon to display
+ * @param outerText - the text to display next to the icon
+ * @param toolTipText - the text to display on hover
+ * @param divClassName - extra class names to give to the component's external div
+ * @param textClassname - extra class names to give to the component's text
+ * @param props - other properties
  */
 const HoverTip = ({icon, outerText, toolTipText, divClassName, textClassname, ...props}) => {
     const hoverTipClasses = classNames("hover-tip-base main-text", divClassName);
