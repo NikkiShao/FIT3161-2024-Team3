@@ -54,3 +54,10 @@
     gap: 5px;
     width: 100%;
 }
+
+.board-log-button {
+    padding: 5px 20px !important;
+    font-size: 0.9em;
+    height: 35px !important;
+    min-width: fit-content !important;
+}

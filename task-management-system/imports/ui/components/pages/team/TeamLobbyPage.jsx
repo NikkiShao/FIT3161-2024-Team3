@@ -182,7 +182,7 @@ export const TeamLobbyPage = () => {
                                     There are no boards yet!</span>}
                     </div>
 
-                    <Button className={"view-button btn-light-grey"}
+                    <Button className={"board-log-button btn-light-grey"}
                             onClick={() => navigate("logs")}>Board History Logs</Button>
 
                     <hr className={"teams__hr"}/>

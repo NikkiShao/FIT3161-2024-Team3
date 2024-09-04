@@ -52,7 +52,7 @@ export const BoardLog = () => {
                 <div className="header-space-between">
                     <Button className={"flex flex-row gap-2 btn-back"}
                             onClick={() => {
-                                navigate('/' + BaseUrlPath.TEAMS + "/" + teamId + "/logs");
+                                navigate(-1);
                             }}>
                         <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
                         Back
