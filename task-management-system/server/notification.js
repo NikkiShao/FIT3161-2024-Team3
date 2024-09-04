@@ -82,12 +82,18 @@ export function sendReminderNotification() {
         const boardDeadlineDate = new Date(boardsData[i].boardDeadline)
         let relevantTasks = [] // relevant tasks
         const allBoardTask = tasksByBoard[boardsData[i]._id]; // all of this board's tasks
+        let sevenDaysLater = new Date();
+        sevenDaysLater.setTime(boardDeadlineDate.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days after now
 
         // if allBoardTask is undefined, then there are no tasks, relevant tasks stay empty
         if (allBoardTask !== undefined) {
 
-            if (boardDeadlineDate < now) {
-                // BOARD deadline passed, ALL non-done tasks has to be emailed for
+            if (sevenDaysLater < now) {
+                // board is MORE than 7 days after deadline, no longer email about it
+                continue;
+
+            } else if (boardDeadlineDate < now) {
+                // BOARD deadline passed, but not more than 7 days, ALL non-done tasks has to be emailed for
                 relevantTasks = allBoardTask;
 
             } else {

@@ -67,7 +67,7 @@ export const isUrgentOverdue = (deadlineDate, status = "") => {
     const today = new Date();
     const deadlineObject = new Date(deadlineDate);
     let urgentStartDate = new Date();
-    urgentStartDate.setTime(deadlineObject.getTime() - 3 * 24 * 60 * 60 * 1000) // three before now after
+    urgentStartDate.setTime(deadlineObject.getTime() - 3 * 24 * 60 * 60 * 1000) // 3 days before now
 
     if (today >= deadlineObject && status.toLowerCase() !== "done") {
         // after current datetime and NOT done
