@@ -1,0 +1,64 @@
+/**
+ * File Description: Ongoing polls Modal css styles
+ * File version: 1.0
+ * Contributors: Mark
+ */
+
+.poll-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* 每个选项之间的垂直间距 */
+    margin: 0px 0px; 
+    padding-bottom: 40px;
+}
+
+.poll-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px; /* 内边距 */
+    border: 1px solid #e2e2e2; /* 边框颜色 */
+    border-radius: 12px; /* 圆角 */
+    width: 100%;
+    min-width: 300px;
+    max-width: 600px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+.poll-option label {
+    white-space: nowrap; /* 禁止换行 */
+    overflow: hidden; /* 超出部分隐藏 */
+    text-overflow: ellipsis; /* 用省略号表示超出部分 */
+    flex-grow: 1; /* 让 label 占据最大可用宽度 */
+}
+
+.poll-option input[type="radio"] {
+    margin-right: 16px; /* 单选按钮和文本之间的距离 */
+    width: 18px;
+    height: 18px;
+}
+
+.poll-option label {
+    font-size: 16px;
+    color: #333;
+    cursor: pointer; 
+}
+
+.poll-option:hover {
+    background-color: #f9f9f9; 
+}
+
+.poll-option input[type="radio"]:checked + label {
+    font-weight: bold; /* 选中时加粗文本 */
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}

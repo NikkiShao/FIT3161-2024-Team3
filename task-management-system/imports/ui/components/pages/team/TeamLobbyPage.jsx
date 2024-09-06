@@ -1,8 +1,8 @@
 /**
  * File Description: Team lobby page
- * Updated Date: 18/08/2024
+ * Updated Date: 06/09/2024
  * Contributors: Nikki, Mark
- * Version: 2.0
+ * Version: 3.0
  */
 
 import React, {useState} from 'react';
@@ -33,6 +33,7 @@ export const TeamLobbyPage = () => {
 
     // Grab user info from server
     const userInfo = getUserInfo();
+    const userName = userInfo.username;
 
     // grab the team ID from the URL
     const {teamId} = useParams();  
@@ -135,10 +136,13 @@ export const TeamLobbyPage = () => {
             const displayedPollCards = filteredPolls.map((poll) => (
                     <PollCard
                         key={poll._id}
+                        pollId={poll._id}
                         title={poll.pollTitle}
                         startTime={poll.pollCreationDate}
                         closeTime={poll.pollDeadlineDate}
-                        options={poll.pollOptions}>
+                        options={poll.pollOptions}
+                        userName={userName}
+                        >
                     </PollCard>
                 )
             )

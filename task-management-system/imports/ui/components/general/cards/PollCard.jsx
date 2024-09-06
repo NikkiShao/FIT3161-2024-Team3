@@ -1,8 +1,8 @@
 /**
  * File Description: Poll card component
- * Updated Date: 30/08/2024
+ * Updated Date: 06/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.4
+ * Version: 1.5
  */
 
 import React, {useEffect, useState} from "react";
@@ -23,13 +23,15 @@ import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 /**
  * PollCard component to display poll information.
+ * @param {string} pollId - The id of the poll.
  * @param {string} title - The title of the poll card.
  * @param {string} startTime - The start time of the poll.
  * @param {string} closeTime - The close time of the poll.
  * @param {array} options - The options of the poll.
+ * @param {string} userName - The user name of the current user.
  * @param {string} teamName - The team name of the team the poll belongs to. Optional, only used when on dashboard.
  */
-const PollCard = ({pollId, title, startTime, closeTime, options, teamName=""}) => {
+const PollCard = ({pollId, title, startTime, closeTime, options, userName, teamName=""}) => {
     const userInfo = getUserInfo();
     const isOnDashboard = useLocation().pathname.split('/')[1] === BaseUrlPath.DASHBOARD;
 
@@ -177,7 +179,8 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName=""}) =
             <VotePollModal
                 open={isVoteModalOpen}
                 closeHandler={closeVoteModal}
-                pollData={{title, options}}
+                pollData={{pollId, title, options}}
+                userName={userName}
             />
         </Card>
     );

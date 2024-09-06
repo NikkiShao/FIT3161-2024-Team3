@@ -1,7 +1,7 @@
 /**
  * File Description: Poll database entity
- * File version: 1.0
- * Contributors: Nikki
+ * File version: 2.0
+ * Contributors: Nikki，Mark
  */
 
 import PollCollection from "../collections/poll";
@@ -31,4 +31,25 @@ Meteor.methods({
             teamId: teamId
         })
     },
-})
+
+    /**
+     * Updates an entire poll with new data
+     *
+     * @param updatedPollData - the updated poll data
+     */
+    "update_poll": function (pollId, updatedPollData) {
+        const poll = PollCollection.findOne({ _id: updatedPollData.pollId });
+        console.log("Poll: ", poll);
+        if (!poll) {
+            throw new Meteor.Error("Poll not found");
+        }
+
+        PollCollection.update(pollId,
+            {
+                $set: {
+                    "pollOptions": updatedPollData.options,
+                }
+            }
+        );
+    }
+});
