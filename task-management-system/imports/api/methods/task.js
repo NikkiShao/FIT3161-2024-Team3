@@ -1,6 +1,6 @@
 /**
  * File Description: Task database entity
- * File version: 1.5
+ * File version: 1.6
  * Contributors: Nikki, Sam
  */
 
@@ -130,6 +130,13 @@ Meteor.methods({
             logChanges.push(`task status changed from '${currentTask.statusName}' to '${taskData.statusName}'`);
         }
 
+        // Check for pinning state change and log it
+        if (currentTask.taskIsPinned !== taskData.taskIsPinned) {
+            const pinAction = taskData.taskIsPinned ? `pinned task: ${taskData.taskName}` : `unpinned task: ${taskData.taskName}`;
+            logChanges.push(pinAction);
+        }
+
+
         const removedTags = currentTask.tagNames.filter(tag => !taskData.tagNames.includes(tag));
         const addedTags = taskData.tagNames.filter(tag => !currentTask.tagNames.includes(tag));
 
@@ -207,9 +214,8 @@ Meteor.methods({
             }
         }
         console.log("Task updated successfully");
-    },
-
-
+    }
+},
     /**
      * Deletes the task.
      *
@@ -250,6 +256,7 @@ Meteor.methods({
     "set_is_pinned": async function (taskId, isPinned, username) {
         check(taskId, String);
         check(isPinned, Boolean);
+        check(username, String);
 
         const task = TaskCollection.findOne(taskId);
         if (!task) {
@@ -263,15 +270,12 @@ Meteor.methods({
             },
         });
 
-        console.log(TaskCollection.find({_id: taskId}));
-
         if (Meteor.isServer) {
-            // get ID of the team which the task belongs to
             const teamId = BoardCollection.findOne(task.boardId).teamId;
+            const action = isPinned ? 'pinned task' : 'unpinned task';
 
             // Log pinned state change
             try {
-                const action = isPinned ? 'pinned task' : 'unpinned task';
                 await Meteor.callPromise('logEntry.insert', `${action}: ${task.taskName}`, username, teamId, task.boardId, taskId);
                 console.log("Task pinned state logged successfully");
             } catch (error) {
