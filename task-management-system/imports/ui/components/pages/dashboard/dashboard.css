@@ -17,7 +17,7 @@
 .dashboard-pinned-column {
     min-width: 310px;
     max-width: 310px;
-    height: calc(105vh -100px);
+    height: calc(100vh + 30px);
 }
 
 .dashboard-wrap-container{
@@ -32,6 +32,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
+
 }
 
 .dashboard-column-title {

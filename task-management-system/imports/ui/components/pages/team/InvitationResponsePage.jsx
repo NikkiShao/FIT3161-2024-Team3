@@ -209,6 +209,7 @@ export const InvitationResponsePage = () => {
                 <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
                     <h1>Please login</h1>
                     <span>You must login before you can accept a team invitation.</span>
+                    <span>If you do not have an account you will have to register first.</span>
                     <br/>
                     <Button className={"btn-brown"}
                             onClick={() => {
