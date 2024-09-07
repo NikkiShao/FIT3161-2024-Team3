@@ -1,12 +1,12 @@
 /**
  * File Description: Team database entity
- * File version: 1.2
+ * File version: 1.3
  * Contributors: Audrey, Nikki
  */
 
 import {Meteor} from 'meteor/meteor'
 import {TeamCollection} from '/imports/api/collections/team.js';
-import {sendTeamInvitation} from "../../../server/mailer";
+import {sendTeamInvitation} from "../mailer";
 import {generateInvitationToken} from "../../ui/components/util";
 import BoardCollection from "../collections/board";
 import BaseUrlPath from "../../ui/enums/BaseUrlPath";
@@ -18,8 +18,9 @@ Meteor.methods({
      * @param name - name of the team
      * @param members - array of emails of team members
      * @param leader - leader's email
+     * @param emailOn - true to email, false to not send email
      */
-    "add_team": function (name, members, leader) {
+    "add_team": function (name, members, leader, emailOn) {
 
         const invitedEmailWithTokens = members.map(
             (member) => {
@@ -29,7 +30,7 @@ Meteor.methods({
                 })
             })
 
-        const id = TeamCollection.insert({
+        const teamId = TeamCollection.insert({
             "teamName": name,
             "teamMembers": [leader],
             "teamLeader": leader,
@@ -37,13 +38,17 @@ Meteor.methods({
         })
 
         // send email here
-        for (let i = 0, len = invitedEmailWithTokens.length; i < len; i++) {
-            sendTeamInvitation(invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, id)
-                .catch((error) => {
-                    console.log("Email sent with error: " + email)
-                    console.log(error);
-                })
+        if (emailOn) {
+            for (let i = 0, len = invitedEmailWithTokens.length; i < len; i++) {
+                sendTeamInvitation(invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, id)
+                    .catch((error) => {
+                        console.log("Email sent with error: " + invitedEmailWithTokens[i].email)
+                        console.log(error);
+                    })
+            }
         }
+
+        return teamId;
     },
 
     /**
@@ -52,8 +57,9 @@ Meteor.methods({
      * @param teamId - ID of team to update
      * @param existingInvites - the existing/previous list of invites
      * @param teamsData - the updated teams data
+     * @param emailOn - true to email, false to not send email
      */
-    "update_team": function (teamId, existingInvites, teamsData) {
+    "update_team": function (teamId, existingInvites, teamsData, emailOn) {
 
         TeamCollection.update(teamId, {
             $set:
@@ -65,26 +71,30 @@ Meteor.methods({
                 }
         });
 
-        // send email here
-        const existingInviteEmails = existingInvites.map((invite) => invite.email.toLowerCase());
-        for (let i = 0, len = teamsData.teamInvitations.length; i < len; i++) {
+        if (emailOn) {
+            // send email here
+            const existingInviteEmails = existingInvites.map((invite) => invite.email.toLowerCase());
+            for (let i = 0, len = teamsData.teamInvitations.length; i < len; i++) {
 
-            if (!existingInviteEmails.includes(teamsData.teamInvitations[i].email.toLowerCase())) {
-                // existing emails DOES NOT include this email, send
-                sendTeamInvitation(teamsData.teamInvitations[i].email, teamsData.teamInvitations[i].token, teamsData.teamName, teamId)
-                    .catch((error) => {
-                        console.log("Email sent with error: " + email)
-                        console.log(error);
-                    })
+                if (!existingInviteEmails.includes(teamsData.teamInvitations[i].email.toLowerCase())) {
+                    // existing emails DOES NOT include this email, send
+                    sendTeamInvitation(teamsData.teamInvitations[i].email, teamsData.teamInvitations[i].token, teamsData.teamName, teamId)
+                        .catch((error) => {
+                            console.log("Email sent with error: " + teamsData.teamInvitations[i].email)
+                            console.log(error);
+                        })
+                }
             }
         }
+
     },
 
     /**
      * Delete a specific team by ID, and its related board and task data
      * @param teamId - ID of team to delete
+     * @param username - ID of user who deleted the team
      */
-    "delete_team": function (teamId) {
+    "delete_team": function (teamId, username) {
 
         // remove all related boards and tasks first
         const boards = BoardCollection.find({teamId: teamId}).fetch();
@@ -92,7 +102,7 @@ Meteor.methods({
         // delete each board (the board delete will delete its tasks)
         for (let i = 0, len = boards.length; i < len; i++) {
             new Promise((resolve, reject) => {
-                Meteor.call('delete_board', boards[i]._id, (error, result) => {
+                Meteor.call('delete_board', boards[i]._id, username, (error, result) => {
                     if (error) {
                         reject(error);
                     } else {

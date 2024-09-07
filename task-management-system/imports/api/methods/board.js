@@ -1,12 +1,13 @@
 /**
  * File Description: Board database entity
- * File version: 1.4
+ * File version: 1.5
  * Contributors: Audrey, Nikki, Sam
  */
 import { Meteor } from 'meteor/meteor';
 import { BoardCollection } from '/imports/api/collections/board.js';
 import TaskCollection from "../collections/task";
 import "../methods/logEntry";
+import user from "../collections/user";
 
 // Helper function to promisify Meteor.call
 Meteor.callPromise = function (method, ...args) {
@@ -30,8 +31,10 @@ Meteor.methods({
      * @param deadline - deadline datetime as a string
      * @param desc - board description string
      * @param teamId - ID of team the board belongs to
+     * @param username - username of the creator
      */
-    "add_board": async function (name, code, deadline, desc, teamId) {
+    "add_board": async function (name, code, deadline, desc, teamId, username) {
+
         // Insert the new board into the collection
         const boardId = BoardCollection.insert({
             "boardName": name,
@@ -46,22 +49,28 @@ Meteor.methods({
             ],
         });
 
-        // Log the board creation action
-        try {
-            await Meteor.callPromise('logEntry.insert', `created board: ${name}`, teamId, boardId);
-            console.log("Board creation logged successfully");
-        } catch (error) {
-            console.error("Failed to log board creation:", error);
-            throw new Meteor.Error('log-insert-failed', 'Failed to log board creation');
+        if (Meteor.isServer) {
+
+            // Log the board creation action
+            try {
+                await Meteor.callPromise('logEntry.insert', `created board: ${name}`, username, teamId, boardId);
+                console.log("Board creation logged successfully");
+            } catch (error) {
+                console.error("Failed to log board creation:", error);
+                throw new Meteor.Error('log-insert-failed', 'Failed to log board creation');
+            }
         }
+
+        return boardId;
     },
 
     /**
      * Updates a specific board
      * @param boardId - ID of board to update
      * @param boardData - new data to update to
+     * @param username - username of the editor
      */
-    "update_board": async function (boardId, boardData) {
+    "update_board": async function (boardId, boardData, username) {
         // Retrieve the current board data
         const currentBoard = BoardCollection.findOne(boardId);
 
@@ -141,13 +150,15 @@ Meteor.methods({
                 }
             });
 
-            const logMessage = changes.join('; ');
-            try {
-                await Meteor.callPromise('logEntry.insert', `${logMessage}`, currentBoard.teamId, boardId);
-                console.log("Board update logged successfully");
-            } catch (error) {
-                console.error("Failed to log board update:", error);
-                throw new Meteor.Error('log-insert-failed', 'Failed to log board update');
+            if (Meteor.isServer) {
+                const logMessage = changes.join('; ');
+                try {
+                    await Meteor.callPromise('logEntry.insert', `${logMessage}`, username, currentBoard.teamId, boardId);
+                    console.log("Board update logged successfully");
+                } catch (error) {
+                    console.error("Failed to log board update:", error);
+                    throw new Meteor.Error('log-insert-failed', 'Failed to log board update');
+                }
             }
         }
     },
@@ -155,15 +166,16 @@ Meteor.methods({
     /**
      * Delete a specific board by ID, and its related task data
      * @param boardId - ID of board to delete
+     * @param username - username of user who deleted the board
      */
-    "delete_board": async function (boardId) {
+    "delete_board": async function (boardId, username) {
         // Retrieve all tasks associated with the board
         const tasks = TaskCollection.find({ boardId: boardId }).fetch();
 
         // Delete each task without logging
         for (let i = 0, len = tasks.length; i < len; i++) {
             try {
-                await Meteor.callPromise('delete_task', tasks[i]._id);
+                await Meteor.callPromise('delete_task', tasks[i]._id, username);
                 console.log(`Task ${tasks[i]._id} deleted successfully`);
             } catch (error) {
                 console.error(`Failed to delete task ${tasks[i]._id}:`, error);
@@ -171,19 +183,27 @@ Meteor.methods({
             }
         }
 
+        // check board exists
+        const board = BoardCollection.findOne(boardId);
+        if (!board) {
+            throw new Meteor.Error('board-delete-failed', `Board not found`);
+        }
+
         // get ID of the team which the board belongs to
-        const teamId = BoardCollection.findOne(boardId).teamId;
+        const teamId = board.teamId;
 
         // Delete the board itself
         BoardCollection.remove({ _id: boardId });
 
-        // Log the board deletion action
-        try {
-            await Meteor.callPromise('logEntry.insert', `deleted board with ID: ${boardId}`, teamId, boardId);
-            console.log("Board deletion logged successfully");
-        } catch (error) {
-            console.error("Failed to log board deletion:", error);
-            throw new Meteor.Error('log-insert-failed', 'Failed to log board deletion');
+        if (Meteor.isServer) {
+            // Log the board deletion action
+            try {
+                await Meteor.callPromise('logEntry.insert', `deleted board with ID: ${boardId}`, username, teamId, boardId);
+                console.log("Board deletion logged successfully");
+            } catch (error) {
+                console.error("Failed to log board deletion:", error);
+                throw new Meteor.Error('log-insert-failed', 'Failed to log board deletion');
+            }
         }
     }
 });

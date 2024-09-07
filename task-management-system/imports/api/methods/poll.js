@@ -1,6 +1,6 @@
 /**
  * File Description: Poll database entity
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Nikki
  */
 
@@ -23,12 +23,14 @@ Meteor.methods({
             }
         })
 
-        PollCollection.insert({
+        const pollId = PollCollection.insert({
             pollTitle: title,
             pollCreationDate: new Date().toISOString(),
             pollDeadlineDate: deadline,
             pollOptions: optionsFormatted,
             teamId: teamId
         })
+
+        return pollId;
     },
 })

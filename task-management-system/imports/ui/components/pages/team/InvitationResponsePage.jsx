@@ -2,7 +2,7 @@
  * File Description: Invitation response page
  * Updated Date: 25/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React from 'react';
@@ -236,7 +236,7 @@ export const InvitationResponsePage = () => {
 
                 // update database
                 new Promise((resolve, reject) => {
-                    Meteor.call('update_team', teamId, teamData.teamInvitations,
+                    Meteor.call('update_team', teamId, teamData.teamInvitations, true,
                         {
                             "teamName": teamData.teamName,
                             "teamLeader": teamData.teamLeader,
@@ -271,7 +271,7 @@ export const InvitationResponsePage = () => {
             const newInvitationList = teamData.teamInvitations.toSpliced(tokenIndex, 1);
 
             new Promise((resolve, reject) => {
-                Meteor.call('update_team', teamId, teamData.teamInvitations,
+                Meteor.call('update_team', teamId, teamData.teamInvitations, true,
                     {
                         "teamName": teamData.teamName,
                         "teamLeader": teamData.teamLeader,

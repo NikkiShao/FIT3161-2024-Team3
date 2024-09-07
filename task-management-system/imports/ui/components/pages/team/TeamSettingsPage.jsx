@@ -2,7 +2,7 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey, Nikki
- * Version: 2.0
+ * Version: 2.1
  */
 import React, {Fragment, useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
@@ -108,7 +108,7 @@ export const TeamSettingsPage = () => {
 
         if (!isError) {
             new Promise((resolve, reject) => {
-                Meteor.call('update_team', teamId, teamData.teamInvitations,
+                Meteor.call('update_team', teamId, teamData.teamInvitations, true,
                     {
                         teamName: teamName,
                         teamLeader: teamLeader,
@@ -180,7 +180,7 @@ export const TeamSettingsPage = () => {
         const membersWithoutUser = teamData.teamMembers.filter(m => m !== userInfo.email);
 
         new Promise((resolve, reject) => {
-            Meteor.call('update_team', teamId, teamData.teamInvitations,
+            Meteor.call('update_team', teamId, teamData.teamInvitations, true,
                 {
                     "teamName": teamData.teamName,
                     "teamLeader": needReassignLeader ? newLeader : teamLeader,
@@ -213,7 +213,7 @@ export const TeamSettingsPage = () => {
     // handler for deleting team
     const deleteTeam = () => {
         new Promise((resolve, reject) => {
-            Meteor.call('delete_team', teamId, (error, result) => {
+            Meteor.call('delete_team', teamId, userInfo.username, (error, result) => {
                 if (error) {
                     reject(error)
                 } else {

@@ -1,7 +1,7 @@
 /**
  * File Description: Account Settings Page
  * Contributors: Mark, Audrey, Nikki
- * Version: 1.3
+ * Version: 1.4
  */
 
 import React, {useState} from 'react';
@@ -89,6 +89,9 @@ function AccountSettings() {
             } else if (!alphanumericSpaceRegex.test(nameInput)) {
                 newError.name = "Name can only contain alphanumeric characters and spaces";
                 isError = true;
+            } else if (nameInput.length > 30) {
+                newError.name = "Name can not exceed 30 characters";
+                isError = true;
             }
             updatedFields.name = nameInput;
         }
@@ -148,7 +151,7 @@ function AccountSettings() {
                     const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? updatedFields.email : member)
 
                     new Promise((resolve, reject) => {
-                        Meteor.call('update_team', team._id, team.teamInvitations, {
+                        Meteor.call('update_team', team._id, team.teamInvitations, true, {
                                 teamName: team.teamName,
                                 teamLeader: updatedTeamLeader,
                                 teamMembers: updatedTeamMembers,

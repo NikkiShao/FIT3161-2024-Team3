@@ -2,7 +2,7 @@
  * File Description: Team creation modal component
  * Updated Date: 05/08/2024
  * Contributors: Mark, Nikki
- * Version: 2.1
+ * Version: 2.2
  */
 
 import React, {Fragment, useState} from 'react';
@@ -92,7 +92,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
             // Call the Meteor method to add a new team
             new Promise((resolve, reject) => {
 
-                Meteor.call('add_team', teamNameInput, members, teamLead,
+                Meteor.call('add_team', teamNameInput, members, teamLead, true,
                     (error, result) => {
                         if (error) {
                             reject(`Error: ${error.message}`);

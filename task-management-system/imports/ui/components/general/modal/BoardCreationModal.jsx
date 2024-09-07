@@ -2,7 +2,7 @@
  * File Description: Board creation modal component
  * Updated Date: 05/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React, {useState} from 'react';
@@ -13,11 +13,14 @@ import {XCircleIcon} from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
 import '../../general/modal/modal.css';
+import {getUserInfo} from "../../util";
 
 /**
  * The popup for adding a new board
  */
 export const BoardCreationModal = ({teamId, open, closeHandler}) => {
+
+    const userInfo = getUserInfo();
 
     // State variables for board creation form
     const [boardNameInput, setBoardNameInput] = useState('');
@@ -94,7 +97,13 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         if (!isError) {
             // Call the Meteor method to add a new board
             new Promise((resolve, reject) => {
-                Meteor.call('add_board', boardNameInput, boardCodeInput, deadlineDateObject.toISOString(), boardDescriptionInput, teamId,
+                Meteor.call('add_board',
+                    boardNameInput,
+                    boardCodeInput,
+                    deadlineDateObject.toISOString(),
+                    boardDescriptionInput,
+                    teamId,
+                    userInfo.username,
                     (error, result) => {
                         if (error) {
                             reject(`Error: ${error.message}`);

@@ -2,7 +2,7 @@
  * File Description: Board's settings page
  * Updated Date: 15/08/2024
  * Contributors: Audrey, Nikki
- * Version: 1.3
+ * Version: 1.4
  */
 
 import React, {Fragment, useState} from 'react';
@@ -29,6 +29,7 @@ import './board.css'
  */
 export const BoardSettings = () => {
 
+    const userInfo = getUserInfo();
     const navigate = useNavigate();
     const {boardId} = useParams();
     const {teamId} = useParams();
@@ -76,8 +77,6 @@ export const BoardSettings = () => {
     const boardData = useTracker(() => {
         return BoardCollection.findOne({_id: boardId});
     });
-
-    const userInfo = getUserInfo();
 
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
@@ -187,7 +186,9 @@ export const BoardSettings = () => {
                         boardDescription: boardDescriptionInput,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags
-                    }, (error, result) => {
+                    },
+                    userInfo.username,
+                    (error, result) => {
                         if (error) {
                             reject(error)
                         } else {
@@ -223,7 +224,7 @@ export const BoardSettings = () => {
 
     const deleteBoard = () => {
         new Promise((resolve, reject) => {
-            Meteor.call('delete_board', boardId, (error, result) => {
+            Meteor.call('delete_board', boardId, userInfo.username, (error, result) => {
                 if (error) {
                     reject(error);
                 } else {

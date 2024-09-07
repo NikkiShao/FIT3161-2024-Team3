@@ -1,38 +1,47 @@
+/**
+ * File Description: Team database entity
+ * File version: 1.1
+ * Contributors: Sam, Nikki
+ */
+
 import {Meteor} from 'meteor/meteor';
 import {check} from 'meteor/check';
 import LogEntryCollection from '../collections/logEntry';
-import {getUserInfoSync} from '/imports/ui/components/util';
+import UserCollection from "../collections/user";
 
 Meteor.methods({
-    'logEntry.insert'(logEntryAction, teamId, boardId, taskId = null) {
-        check(logEntryAction, String);
-        check(teamId, String);
-        check(boardId, String);
-        if (taskId !== null) {
-            check(taskId, String);
+    'logEntry.insert'(logEntryAction, username, teamId, boardId, taskId = null) {
+
+        if (Meteor.isServer){
+            check(logEntryAction, String);
+            check(username, String);
+            check(teamId, String);
+            check(boardId, String);
+
+            if (taskId !== null) {
+                check(taskId, String);
+            }
+
+            // Get user information using the synchronous function
+            const userInfo = UserCollection.findOne({username: username});
+
+            if (!userInfo) {
+                throw new Meteor.Error('user-info-missing', 'Could not retrieve user information');
+            }
+
+            const logEntryDatetime = new Date().toISOString();
+
+            const logId = LogEntryCollection.insert({
+                logEntryDatetime,
+                logEntryAction,
+                teamId,
+                boardId,
+                taskId,
+                username,
+            });
+
+            return logId;
         }
-
-        if (!this.userId) {
-            throw new Meteor.Error('Not authorised');
-        }
-
-        // Get user information using the synchronous function
-        const userInfo = getUserInfoSync();
-        if (!userInfo) {
-            throw new Meteor.Error('user-info-missing', 'Could not retrieve user information');
-        }
-
-        const username = userInfo.name;
-        const logEntryDatetime = new Date().toISOString();
-
-        LogEntryCollection.insert({
-            logEntryDatetime,
-            logEntryAction,
-            teamId,
-            boardId,
-            taskId,
-            username,
-        });
     },
 
     // Add other methods if needed
