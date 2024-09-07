@@ -28,6 +28,7 @@ Meteor.methods({
     'insert_task': async function (taskData, username) {
 
         check(taskData, {
+            _id: null,
             taskName: String,
             taskDesc: String,
             taskDeadlineDate: String,
@@ -38,7 +39,6 @@ Meteor.methods({
             tagNames: [String],
             contributions: [Object]
         });
-
         check(username, String)
 
         let taskId = TaskCollection.insert({
@@ -92,10 +92,10 @@ Meteor.methods({
      * @param {string} username - username of the editor
      */
     'update_task': async function (taskId, taskData, username) {
-        console.log(taskData)
 
         check(taskId, String)
         check(taskData, {
+            _id: String,
             taskName: String,
             taskDesc: String,
             taskDeadlineDate: String,

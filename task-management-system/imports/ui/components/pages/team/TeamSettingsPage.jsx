@@ -108,14 +108,14 @@ export const TeamSettingsPage = () => {
 
         if (!isError) {
             new Promise((resolve, reject) => {
-                Meteor.call('update_team', teamId, teamData.teamInvitations, true,
+                Meteor.call('update_team', teamId, teamData.teamInvitations,
                     {
                         teamName: teamName,
                         teamLeader: teamLeader,
                         teamMembers: teamMembers,
                         teamInvitations: teamInvitations,
 
-                    }, (error, result) => {
+                    }, true, (error, result) => {
                         if (error) {
                             reject(error)
                         } else {
@@ -180,14 +180,14 @@ export const TeamSettingsPage = () => {
         const membersWithoutUser = teamData.teamMembers.filter(m => m !== userInfo.email);
 
         new Promise((resolve, reject) => {
-            Meteor.call('update_team', teamId, teamData.teamInvitations, true,
+            Meteor.call('update_team', teamId, teamData.teamInvitations,
                 {
                     "teamName": teamData.teamName,
                     "teamLeader": needReassignLeader ? newLeader : teamLeader,
                     "teamMembers": membersWithoutUser,
                     "teamInvitations": teamData.teamInvitations,
 
-                }, (error, result) => {
+                }, true, (error, result) => {
                     if (error) {
                         reject(error)
                     } else {

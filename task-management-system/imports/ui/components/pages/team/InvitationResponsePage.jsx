@@ -236,14 +236,14 @@ export const InvitationResponsePage = () => {
 
                 // update database
                 new Promise((resolve, reject) => {
-                    Meteor.call('update_team', teamId, teamData.teamInvitations, true,
+                    Meteor.call('update_team', teamId, teamData.teamInvitations,
                         {
                             "teamName": teamData.teamName,
                             "teamLeader": teamData.teamLeader,
                             "teamMembers": newMemberList,
                             "teamInvitations": newInvitationList,
 
-                        }, (error, result) => {
+                        }, true, (error, result) => {
                             if (error) {
                                 reject(error)
 
@@ -271,14 +271,14 @@ export const InvitationResponsePage = () => {
             const newInvitationList = teamData.teamInvitations.toSpliced(tokenIndex, 1);
 
             new Promise((resolve, reject) => {
-                Meteor.call('update_team', teamId, teamData.teamInvitations, true,
+                Meteor.call('update_team', teamId, teamData.teamInvitations,
                     {
                         "teamName": teamData.teamName,
                         "teamLeader": teamData.teamLeader,
                         "teamMembers": teamData.teamMembers,
                         "teamInvitations": newInvitationList,
 
-                    }, (error, result) => {
+                    }, true, (error, result) => {
                         if (error) {
                             reject(error)
 

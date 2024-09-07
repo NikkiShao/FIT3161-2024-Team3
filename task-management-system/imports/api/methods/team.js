@@ -40,7 +40,7 @@ Meteor.methods({
         // send email here
         if (emailOn) {
             for (let i = 0, len = invitedEmailWithTokens.length; i < len; i++) {
-                sendTeamInvitation(invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, id)
+                sendTeamInvitation(invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, teamId)
                     .catch((error) => {
                         console.log("Email sent with error: " + invitedEmailWithTokens[i].email)
                         console.log(error);

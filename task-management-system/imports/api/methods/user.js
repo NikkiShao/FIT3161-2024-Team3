@@ -39,11 +39,12 @@ Meteor.methods({
 
         // get all users, check if current email already exists
         const allUsers = UserCollection.find().fetch();
-        const allUserEmails = allUsers.map(user => user.emails[0].address);
+        const allOtherUserEmails = allUsers.filter((user) => user._id !== userId).map(user => user.emails[0].address);
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
         if (email === '' || !emailRegex.test(email)) {
             throw new Meteor.Error('user-update-failed', 'Invalid email input');
-        } else if (allUserEmails.includes(email)) {
+        } else if (allOtherUserEmails.includes(email)) {
             throw new Meteor.Error('user-update-failed', 'Email address already exists');
         }
 

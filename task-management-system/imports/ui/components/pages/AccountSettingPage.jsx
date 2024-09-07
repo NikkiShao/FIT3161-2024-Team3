@@ -151,12 +151,12 @@ function AccountSettings() {
                     const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? updatedFields.email : member)
 
                     new Promise((resolve, reject) => {
-                        Meteor.call('update_team', team._id, team.teamInvitations, true, {
+                        Meteor.call('update_team', team._id, team.teamInvitations, {
                                 teamName: team.teamName,
                                 teamLeader: updatedTeamLeader,
                                 teamMembers: updatedTeamMembers,
                                 teamInvitations: team.teamInvitations
-                            }, (error, result) => {
+                            }, true, (error, result) => {
                                 if (error) {
                                     reject(error)
                                 } else {
@@ -186,7 +186,7 @@ function AccountSettings() {
                 // email not updated, can directly update user info
                 updateUserPromise.catch(() => {
                     setUpdateSuccess(false)
-                    setErrorMessage(`Failed to update user information, please try again.`);
+                    setErrorMessage(`Failed to update user information, please try again`);
                 })
             }
         }
