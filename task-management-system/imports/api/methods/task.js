@@ -189,8 +189,7 @@ Meteor.methods({
                 }
             });
 
-            logAction = logChanges.join(';');
-        }
+            logAction = logChanges.join('; ');
 
         if (Meteor.isServer) {
             // get ID of the team which the task belongs to
