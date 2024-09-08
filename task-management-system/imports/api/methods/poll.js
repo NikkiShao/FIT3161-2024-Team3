@@ -1,10 +1,12 @@
 /**
  * File Description: Poll database entity
- * File version: 1.1
+ * File version: 1.2
  * Contributors: Nikki
  */
 
 import PollCollection from "../collections/poll";
+import {Meteor} from "meteor/meteor";
+import BoardCollection from "../collections/board";
 
 Meteor.methods({
     /**
@@ -32,5 +34,21 @@ Meteor.methods({
         })
 
         return pollId;
+    },
+
+    /**
+     * Deletes the poll.
+     *
+     * @param pollId - ID of poll to delete
+     */
+    "delete_poll": async function (pollId) {
+        const poll = PollCollection.findOne(pollId);
+        if (!poll) {
+            throw new Meteor.Error('poll-delete-failed', 'Poll not found');
+        }
+
+        // delete the poll
+        PollCollection.remove({_id: pollId});
+
     },
 })
