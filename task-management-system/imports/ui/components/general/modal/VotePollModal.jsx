@@ -26,15 +26,15 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
             const updatedPollData = {
                 ...pollData,
                 options: pollData.options.map(option =>
-                    option.voterIds.includes(userName)
+                    option.voterUsernames.includes(userName)
                         ? {
                               ...option,
-                              voterIds: option.voterIds.filter(voter => voter !== userName)
+                              voterUsernames: option.voterUsernames.filter(voter => voter !== userName)
                           }
                         : option
                 ).map(option =>
                     option.optionText === selectedOption
-                        ? { ...option, voterIds: [...option.voterIds, userName] }
+                        ? { ...option, voterUsernames: [...option.voterUsernames, userName] }
                         : option
                 )
             };
@@ -73,7 +73,7 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
     // Function to find the option that the user voted for
     const getUserVotedOption = (pollData, userName) => {
         for (let option of pollData.options) {
-            if (option.voterIds.includes(userName)) {
+            if (option.voterUsernames.includes(userName)) {
                 return option.optionText;
             }
         }
