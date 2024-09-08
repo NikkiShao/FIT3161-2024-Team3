@@ -2,7 +2,7 @@
  * File Description: Invitation response page
  * Updated Date: 25/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React from 'react';
@@ -209,6 +209,7 @@ export const InvitationResponsePage = () => {
                 <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
                     <h1>Please login</h1>
                     <span>You must login before you can accept a team invitation.</span>
+                    <span>If you do not have an account you will have to register first.</span>
                     <br/>
                     <Button className={"btn-brown"}
                             onClick={() => {
@@ -243,7 +244,7 @@ export const InvitationResponsePage = () => {
                             "teamMembers": newMemberList,
                             "teamInvitations": newInvitationList,
 
-                        }, (error, result) => {
+                        }, true, (error, result) => {
                             if (error) {
                                 reject(error)
 
@@ -278,7 +279,7 @@ export const InvitationResponsePage = () => {
                         "teamMembers": teamData.teamMembers,
                         "teamInvitations": newInvitationList,
 
-                    }, (error, result) => {
+                    }, true, (error, result) => {
                         if (error) {
                             reject(error)
 

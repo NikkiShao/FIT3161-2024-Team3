@@ -1,7 +1,7 @@
 /**
  * File Description: Account Settings Page
  * Contributors: Mark, Audrey, Nikki
- * Version: 1.3
+ * Version: 1.4
  */
 
 import React, {useState} from 'react';
@@ -89,6 +89,9 @@ function AccountSettings() {
             } else if (!alphanumericSpaceRegex.test(nameInput)) {
                 newError.name = "Name can only contain alphanumeric characters and spaces";
                 isError = true;
+            } else if (nameInput.length > 30) {
+                newError.name = "Name can not exceed 30 characters";
+                isError = true;
             }
             updatedFields.name = nameInput;
         }
@@ -153,7 +156,7 @@ function AccountSettings() {
                                 teamLeader: updatedTeamLeader,
                                 teamMembers: updatedTeamMembers,
                                 teamInvitations: team.teamInvitations
-                            }, (error, result) => {
+                            }, true, (error, result) => {
                                 if (error) {
                                     reject(error)
                                 } else {
@@ -183,7 +186,7 @@ function AccountSettings() {
                 // email not updated, can directly update user info
                 updateUserPromise.catch(() => {
                     setUpdateSuccess(false)
-                    setErrorMessage(`Failed to update user information, please try again.`);
+                    setErrorMessage(`Failed to update user information, please try again`);
                 })
             }
         }

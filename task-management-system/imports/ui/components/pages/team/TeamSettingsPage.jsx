@@ -2,7 +2,7 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey, Nikki
- * Version: 2.0
+ * Version: 2.2
  */
 import React, {Fragment, useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
@@ -115,7 +115,7 @@ export const TeamSettingsPage = () => {
                         teamMembers: teamMembers,
                         teamInvitations: teamInvitations,
 
-                    }, (error, result) => {
+                    }, true, (error, result) => {
                         if (error) {
                             reject(error)
                         } else {
@@ -187,7 +187,7 @@ export const TeamSettingsPage = () => {
                     "teamMembers": membersWithoutUser,
                     "teamInvitations": teamData.teamInvitations,
 
-                }, (error, result) => {
+                }, true, (error, result) => {
                     if (error) {
                         reject(error)
                     } else {
@@ -213,7 +213,7 @@ export const TeamSettingsPage = () => {
     // handler for deleting team
     const deleteTeam = () => {
         new Promise((resolve, reject) => {
-            Meteor.call('delete_team', teamId, (error, result) => {
+            Meteor.call('delete_team', teamId, userInfo.username, (error, result) => {
                 if (error) {
                     reject(error)
                 } else {
@@ -248,6 +248,13 @@ export const TeamSettingsPage = () => {
 
         const teamMembersData = usersData.filter(user => teamMembers.includes(user.emails[0].address));
         const leaderName = teamMembersData.length ? teamMembersData.filter(m => m.emails[0].address === teamData.teamLeader)[0].profile.name : "";
+
+        // set default new leader option
+        const firstMember = teamMembersData.filter(user => user.emails[0].address !== userInfo.email);
+        // check that new leader option is not set AND there is at least 1 other member
+        if (newLeader === "" && firstMember.length > 0) {
+            setNewLeader(firstMember[0].emails[0].address);
+        }
 
         return (
             <>

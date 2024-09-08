@@ -25,7 +25,7 @@ import '/imports/api/collections/logEntry.js';
 import '/imports/api/methods/logEntry.js';
 import '/imports/api/publications/logEntry.js';
 
-import {initialiseMailer} from "./mailer";
+import {initialiseMailer} from "../imports/api/mailer";
 import {autoSendNotification} from "./notification";
 
 

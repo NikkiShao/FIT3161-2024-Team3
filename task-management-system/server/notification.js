@@ -10,7 +10,7 @@ import TeamCollection from "../imports/api/collections/team";
 import BoardCollection from "../imports/api/collections/board";
 import TaskCollection from "../imports/api/collections/task";
 import {isUrgentOverdue} from "../imports/ui/components/util";
-import {sendReminder} from "./mailer";
+import {sendReminder} from "../imports/api/mailer";
 
 
 /**

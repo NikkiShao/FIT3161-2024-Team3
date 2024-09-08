@@ -2,7 +2,7 @@
  * File Description: Task Card component
  * Updated Date: 14/08/2024
  * Contributors: Nikki, Samuel
- * Version: 1.4
+ * Version: 1.5
  */
 
 import React from "react";
@@ -13,7 +13,7 @@ import Card from "./Card";
 import TaskTag from "./TaskTag";
 import TaskPin from './TaskPin';
 import './card.css';
-import {isUrgentOverdue} from "../../util";
+import {getUserInfo, isUrgentOverdue} from "../../util";
 
 /**
  * Task card used to display brief details on any Task
@@ -45,6 +45,7 @@ const TaskCard = ({
                   }) => {
 
     const navigate = useNavigate();
+    const userInfo = getUserInfo();
 
     // put each tag/colour into key value pairs
     let boardTagKey = {}
@@ -56,7 +57,7 @@ const TaskCard = ({
 
     // handler function of clicking pin/unpin
     const setIsPinned = (newPinState) => {
-        Meteor.call("set_is_pinned", String(taskId), newPinState);
+        Meteor.call("set_is_pinned", String(taskId), newPinState, userInfo.username);
     }
 
     // check if more than 4 tags, if yes only display 4 days and truncate with ... tag
