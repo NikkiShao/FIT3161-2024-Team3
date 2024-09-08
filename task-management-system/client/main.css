@@ -196,11 +196,19 @@ body .table {
 }
 
 .clickable {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .non-clickable {
-    cursor: default;
+    cursor: default !important;
+}
+
+.more-info-mouse {
+    cursor: help !important;
+}
+
+.full-width {
+    width: 100%;
 }
 
 .button-group-col {

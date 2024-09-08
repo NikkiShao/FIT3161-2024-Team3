@@ -36,7 +36,7 @@ export const UnvotedPolls = () =>  {
         const deadline = new Date(poll.pollDeadlineDate);
         const today = new Date();
         const daysLeft = Math.floor((deadline - today) / (24 * 60 * 60 * 1000));
-        const unvotedPolls = poll.pollOptions.every(option => !option.voterIds.includes(userInfo.id));
+        const unvotedPolls = poll.pollOptions.every(option => !option.voterUsernames.includes(userInfo.username));
         return unvotedPolls && (daysLeft >= 0);
     });
 
