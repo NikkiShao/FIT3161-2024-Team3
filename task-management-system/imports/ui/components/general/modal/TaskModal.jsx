@@ -1,6 +1,6 @@
 /**
  * File Description: Task Modal component for adding/Viewing tasks
- * File version: 1.3
+ * File version: 1.4
  * Contributors: Sam, Nikki
  */
 
@@ -16,7 +16,7 @@ import TaskPin from "../cards/TaskPin";
 import TaskTag from "../cards/TaskTag";
 import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
-import {isUrgentOverdue} from "../../util";
+import {getUserInfo, isUrgentOverdue} from "../../util";
 
 /**
  * Task modal to view/edit or create tasks
@@ -31,6 +31,8 @@ import {isUrgentOverdue} from "../../util";
  * @returns {Element} - task modal JSX element
  */
 const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, membersData}) => {
+    const userInfo = getUserInfo();
+
     // State variables to manage the form inputs
     const [modalTaskId, setModalTaskId] = useState(null);
     const [title, setTitle] = useState("");
@@ -152,7 +154,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             if (taskId) {
                 // edit mode
                 new Promise((resolve, reject) => {
-                    Meteor.call('insert_edit_task', newTask, false,
+                    Meteor.call('update_task', taskId, newTask, userInfo.username,
                         (error, result) => {
                             if (error) {
                                 reject(`Error: ${error.message}`);
@@ -171,7 +173,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             } else {
                 // add mode
                 new Promise((resolve, reject) => {
-                    Meteor.call('insert_edit_task', newTask, true,
+                    Meteor.call('insert_task', newTask, userInfo.username,
                         (error, result) => {
                             if (error) {
                                 reject(`Error: ${error.message}`);
@@ -258,7 +260,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
     // handler for deleting task
     const handleDeleteTask = () => {
         new Promise((resolve, reject) => {
-            Meteor.call('delete_task', taskId,
+            Meteor.call('delete_task', taskId, userInfo.username,
                 (error, result) => {
                     if (error) {
                         reject(`Error: ${error.message}`);

@@ -1,4 +1,9 @@
 import assert from "assert";
+import './task.tests.js';
+import './team.tests.js';
+import './board.tests.js';
+// import './user.tests.js';
+
 
 describe("task-management-system", function () {
   it("package.json has correct name", async function () {
