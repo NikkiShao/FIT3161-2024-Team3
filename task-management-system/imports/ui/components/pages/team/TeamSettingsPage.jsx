@@ -250,10 +250,10 @@ export const TeamSettingsPage = () => {
         const leaderName = teamMembersData.length ? teamMembersData.filter(m => m.emails[0].address === teamData.teamLeader)[0].profile.name : "";
 
         // set default new leader option
-        const firstMember = teamMembersData.filter(user => user.emails[0].address !== userInfo.email)[0];
+        const firstMember = teamMembersData.filter(user => user.emails[0].address !== userInfo.email);
         // check that new leader option is not set AND there is at least 1 other member
-        if (newLeader === "" && firstMember !== "") {
-            setNewLeader(firstMember.emails[0].address)
+        if (newLeader === "" && firstMember.length > 0) {
+            setNewLeader(firstMember[0].emails[0].address);
         }
 
         return (
