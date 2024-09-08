@@ -2,7 +2,7 @@
  * File Description: Poll Result Modal
  * Updated Date: 07/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.3
+ * Version: 1.4
  */
 
 import React from 'react';
@@ -10,7 +10,7 @@ import {Modal} from 'react-responsive-modal';
 import {CheckIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import "../../../../../client/main.css";
-import "./PollResult.css";
+import "./polls.css";
 import HoverTip from "../hoverTip/HoverTip";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import {useTracker} from "meteor/react-meteor-data";
@@ -104,7 +104,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                 </div>
 
                 {/* area for displaying answers */}
-                <div className="poll-res__main-div">
+                <div className="poll__main-div">
                     {poll.answers.map((answer, i) => {
                         const percentage = pollCount
                             ? Math.round((poll.answersWeight[i] * 100) / pollCount)
@@ -117,8 +117,8 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
 
                         return (
                             <div key={i} className={"full-width"}>
-                                <div className='poll-res__each-option'>
-                                    <div className="option">
+                                <div className='each-option'>
+                                    <div className="poll__option results">
                                         {/* Only show HoverTip if the answer is truncated */}
                                         {answer.length > 25 ?
                                             (

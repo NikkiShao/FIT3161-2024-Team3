@@ -1,7 +1,7 @@
 /**
  * File Description: Poll database entity
- * File version: 1.2
- * Contributors: Nikki
+ * File version: 1.3
+ * Contributors: Nikki, Mark
  */
 
 import PollCollection from "../collections/poll";
@@ -51,11 +51,11 @@ Meteor.methods({
         PollCollection.remove({_id: pollId});
 
     },
-})
 
     /**
      * Updates an entire poll with new data
      *
+     * @param pollId - ID of poll to update
      * @param updatedPollData - the updated poll data
      */
     "update_poll": function (pollId, updatedPollData) {

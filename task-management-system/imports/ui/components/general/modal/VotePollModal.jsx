@@ -1,13 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Modal } from 'react-responsive-modal';
+/**
+ * File Description: Poll Voting Modal
+ * Updated Date: 07/09/2024
+ * Contributors: Mark, Nikki
+ * Version: 1.2
+ */
+
+import React, {useCallback, useEffect, useState} from 'react';
+import {Modal} from 'react-responsive-modal';
+import classNames from "classnames";
+import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
+import {XCircleIcon} from "@heroicons/react/24/outline";
+import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
-import { XCircleIcon } from "@heroicons/react/24/outline";
-import classNames from "classnames";
-import "./VotePollModal.css";
+import "./polls.css";
 
-const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
+const VotePollModal = ({open, closeHandler, pollData, userName}) => {
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
+
+    const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
     const [hasVoted, setHasVoted] = useState(false); // State to show voting message
     const [errorMessage, setErrorMessage] = useState(""); // State to show error message
@@ -28,13 +39,13 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                 options: pollData.options.map(option =>
                     option.voterUsernames.includes(userName)
                         ? {
-                              ...option,
-                              voterUsernames: option.voterUsernames.filter(voter => voter !== userName)
-                          }
+                            ...option,
+                            voterUsernames: option.voterUsernames.filter(voter => voter !== userName)
+                        }
                         : option
                 ).map(option =>
                     option.optionText === selectedOption
-                        ? { ...option, voterUsernames: [...option.voterUsernames, userName] }
+                        ? {...option, voterUsernames: [...option.voterUsernames, userName]}
                         : option
                 )
             };
@@ -61,6 +72,10 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
         }
     }, [selectedOption, pollData, userName, closeHandler, pollId, hasVoted]);
 
+    useEffect(() => {
+        setPastOption(getUserVotedOption(pollData, userName));
+    }, []);
+
     // Check if the user has already voted and set the state accordingly
     useEffect(() => {
         const votedOption = getUserVotedOption(pollData, userName);
@@ -86,50 +101,59 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
         setErrorMessage(""); // Clear any error messages when an option is selected
     }, []);
 
+    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
+                                                 width={20} height={20}/>;
+
     return (
         <Modal
             closeIcon={closeIcon}
-            classNames={{ modal: classNames('modal-base', '') }}
+            classNames={{modal: classNames('modal-base', '')}}
             open={open}
             onClose={closeHandler}
             center>
             <div className={"modal-div-center"}>
-                <h1 className={"text-center"}>{pollData.title}</h1>
-                <form onSubmit={handleVote}>
-                    <div className={"poll-options"}>
-                        {pollData.options.map((option, index) => (
-                            <div key={index} className={"poll-option"}>
-                                <input
-                                    type={"radio"}
-                                    id={option.optionText}
-                                    name={"poll-option"}
-                                    value={option.optionText}
-                                    checked={selectedOption === option.optionText}
-                                    onChange={handleOptionChange}
-                                    aria-label={`Vote for ${option.optionText}`}
-                                />
-                                <label htmlFor={option.optionText}>{option.optionText}</label>
-                            </div>
-                        ))}
-                    </div>
+
+                {/* poll title */}
+                <div className={"header-space-centered"}>
+                    <div style={{width: "25px", visibility: "hidden"}}></div>
+                    <h1 className={"text-center"}> {pollData.title}</h1>
+                    <HoverTip icon={questionIcon}
+                              outerText={""}
+                              toolTipText={"You may change your vote anytime before the poll is closed."}
+                              style={{marginBottom: "10px"}}
+                    />
+                </div>
+
+
+                {/* area for displaying options */}
+                <form onSubmit={handleVote} className={"poll__main-div"}>
+
+                    {pollData.options.map((option, index) => (
+                        <div key={index} className={"poll__option voting"} >
+                            <input
+                                type={"radio"}
+                                id={option.optionText}
+                                name={"poll-option"}
+                                value={option.optionText}
+                                checked={selectedOption === option.optionText}
+                                onChange={handleOptionChange}
+                                aria-label={`Vote for ${option.optionText}`}
+                            />
+                            <label htmlFor={option.optionText} className={"main-text clickable"}>{option.optionText}</label>
+                        </div>
+                    ))}
                 </form>
 
                 {/* Show success message if the user has already voted */}
                 {hasVoted && (
-                    <p className="success-message">
-                        You have already voted for "{selectedOption}". You can change your vote.
-                    </p>
-                )}
+                    <span className="text-green small-text">You have already voted for "{pastOption}".
+                        You can change your vote</span>)}
 
                 {/* Show error messages */}
-                {errorMessage && (
-                    <p className="error-message">
-                        {errorMessage}
-                    </p>
-                )}
-                
+                {errorMessage && (<span className="text-red small-text">{errorMessage}</span>)}
+
                 {/* Show loading message when submitting */}
-                {isSubmitting && <p className="loading-message">Submitting your vote...</p>}
+                {isSubmitting && <span className="text-grey small-text">Submitting your vote...</span>}
 
                 <Button
                     type={"submit"}
