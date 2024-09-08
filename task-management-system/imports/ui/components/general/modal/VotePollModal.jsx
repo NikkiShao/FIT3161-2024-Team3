@@ -1,9 +1,3 @@
-/**
- * File Description: Voting in the ongoing polls
- * File version: 1.0
- * Contributors: Mark
- */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Modal } from 'react-responsive-modal';
 import Button from "../buttons/Button";
@@ -27,13 +21,18 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
 
         if (!selectedOption) {
             setErrorMessage("Please select an option before voting."); // Set the error message
-        } else if (hasVoted) {
-            console.log("You have already voted.");
         } else {
             setIsSubmitting(true); // Disable the button while submitting
             const updatedPollData = {
                 ...pollData,
                 options: pollData.options.map(option =>
+                    option.voterIds.includes(userName)
+                        ? {
+                              ...option,
+                              voterIds: option.voterIds.filter(voter => voter !== userName)
+                          }
+                        : option
+                ).map(option =>
                     option.optionText === selectedOption
                         ? { ...option, voterIds: [...option.voterIds, userName] }
                         : option
@@ -46,9 +45,6 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                     switch (error.reason) {
                         case 'Poll not found':
                             setErrorMessage("The poll you are trying to vote on does not exist.");
-                            break;
-                        case 'User has already voted':
-                            setErrorMessage("You have already voted.");
                             break;
                         default:
                             setErrorMessage("An unexpected error occurred.");
@@ -63,7 +59,7 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                 }
             });
         }
-    }, [selectedOption, hasVoted, pollData, userName, closeHandler, pollId]);
+    }, [selectedOption, pollData, userName, closeHandler, pollId, hasVoted]);
 
     // Check if the user has already voted and set the state accordingly
     useEffect(() => {
@@ -110,7 +106,6 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                                     value={option.optionText}
                                     checked={selectedOption === option.optionText}
                                     onChange={handleOptionChange}
-                                    disabled={hasVoted} // Disable the options if the user has already voted
                                     aria-label={`Vote for ${option.optionText}`}
                                 />
                                 <label htmlFor={option.optionText}>{option.optionText}</label>
@@ -119,12 +114,14 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                     </div>
                 </form>
 
-                {/* Show success or error messages */}
+                {/* Show success message if the user has already voted */}
                 {hasVoted && (
                     <p className="success-message">
-                        You have already voted for "{selectedOption}".
+                        You have already voted for "{selectedOption}". You can change your vote.
                     </p>
                 )}
+
+                {/* Show error messages */}
                 {errorMessage && (
                     <p className="error-message">
                         {errorMessage}
@@ -138,9 +135,9 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                     type={"submit"}
                     className="btn-brown btn-submit btn-base"
                     onClick={handleVote}
-                    disabled={hasVoted || isSubmitting} // Disable the button if the user has already voted or is submitting
+                    disabled={isSubmitting} // Disable the button while submitting
                 >
-                    {hasVoted ? "Voted" : isSubmitting ? "Submitting..." : "Vote"} {/* Change the button text based on voting status */}
+                    {isSubmitting ? "Submitting..." : "Vote"} {/* Change the button text based on submitting status */}
                 </Button>
             </div>
         </Modal>
