@@ -19,7 +19,7 @@ Meteor.methods({
         const optionsFormatted = options.map((option) => {
             return {
                 optionText: option,
-                voterIds: []
+                voterUsernames: []
             }
         })
 

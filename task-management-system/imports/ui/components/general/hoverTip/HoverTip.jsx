@@ -2,7 +2,7 @@
  * File Description: Hover tip component
  * Updated Date: 20/07/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React from "react";
@@ -19,19 +19,22 @@ import "./hoverTip.css"
  * @param toolTipText - the text to display on hover
  * @param divClassName - extra class names to give to the component's external div
  * @param textClassname - extra class names to give to the component's text
+ * @param isBlue - if board is blue or grey
  * @param props - other properties
  */
-const HoverTip = ({icon, outerText, toolTipText, divClassName, textClassname, ...props}) => {
+const HoverTip = ({icon, outerText, toolTipText, divClassName, textClassname, isBlue=true, ...props}) => {
     const hoverTipClasses = classNames("hover-tip-base main-text", divClassName);
     const textClasses = classNames("main-text", textClassname);
 
     return (
         <div className={hoverTipClasses} {...props}>
-            <span style={{marginRight:"7px"}} className={"main-text text-grey"}>{outerText}</span>
+            {outerText ?
+                <span style={{marginRight: "7px"}} className={"main-text text-grey"}>{outerText}</span> : null
+            }
 
             <Tippy render={attrs => (
                 <div
-                    className="tip-text-box"
+                    className={classNames("tip-text-box", isBlue ? "tip-blue" : "tip-grey")}
                     tabIndex="-1" {...attrs}>
                     <span className={textClasses}>{toolTipText}</span>
                 </div>

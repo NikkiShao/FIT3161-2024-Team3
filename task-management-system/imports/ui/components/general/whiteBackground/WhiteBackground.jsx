@@ -81,7 +81,6 @@ export const WhiteBackground = ({children, className, pageLayout, pageHelpText, 
                               outerText={"Help"}
                               toolTipText={pageHelpText}
                               divClassName={"page-help-tip"}
-                              textClassname
                     /> : null
                 }
                 {children}

@@ -55,7 +55,7 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName=""}) =
             let highestVotedOptions = [];
 
             options.forEach(option => {
-                const voterCount = option.voterIds.length;
+                const voterCount = option.voterUsernames.length;
 
                 if (voterCount > maxVotes) {
                     maxVotes = voterCount;
@@ -78,7 +78,7 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName=""}) =
 
     let votedForAlready = false;
     for (let i = 0; i < options.length; i++) {
-        if (options[i].voterIds.includes(userInfo.id)) {
+        if (options[i].voterUsernames.includes(userInfo.username)) {
             votedForAlready = true;
             break;
         }
