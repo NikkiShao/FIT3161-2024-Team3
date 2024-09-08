@@ -7,8 +7,8 @@
 import {Meteor} from "meteor/meteor";
 import {Accounts} from "meteor/accounts-base";
 import {resetDatabase} from 'meteor/xolvio:cleaner';
-import "../imports/api/methods/team";
 import TeamCollection from "../imports/api/collections/team";
+import "../imports/api/methods/team";
 
 const assert = require('assert');
 
@@ -526,8 +526,8 @@ if (Meteor.isClient) {
             Meteor.call('delete_team', id, testUser1.username);
 
             // check deleted team is DELETED
-            const deletedBooking = TeamCollection.findOne(id);
-            assert.strictEqual(deletedBooking, undefined);
+            const deletedTeam = TeamCollection.findOne(id);
+            assert.strictEqual(deletedTeam, undefined);
 
         });
     });

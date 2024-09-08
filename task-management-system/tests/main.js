@@ -1,8 +1,9 @@
 import assert from "assert";
+
+import './user.tests.js';
+import './board.tests.js';
 import './task.tests.js';
 import './team.tests.js';
-import './board.tests.js';
-// import './user.tests.js';
 
 
 describe("task-management-system", function () {

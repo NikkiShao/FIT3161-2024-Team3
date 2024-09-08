@@ -83,6 +83,7 @@ if (Meteor.isClient) {
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = null;
 
             // Wrap the Meteor.call in a Promise
             return new Promise((resolve, reject) => {
@@ -113,6 +114,7 @@ if (Meteor.isClient) {
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
 
             // Wrap the Meteor.call in a Promise
             return new Promise((resolve, reject) => {
@@ -149,12 +151,14 @@ if (Meteor.isClient) {
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
             const editedTask = {
+                _id: "TestId",
                 taskName: "test task new",
                 taskDesc: "test description new",
                 taskDeadlineDate: "2024-10-06T17:55:00.000Z",

@@ -1,19 +1,16 @@
 /**
  * File Description: Team database entity
- * File version: 1.4
+ * File version: 1.5
  * Contributors: Audrey, Nikki
  */
 
 import {Meteor} from 'meteor/meteor'
 import {TeamCollection} from '/imports/api/collections/team.js';
-// import {sendTeamInvitation} from "../mailer";
 import {generateInvitationToken} from "../../ui/components/util";
 import BoardCollection from "../collections/board";
-import BaseUrlPath from "../../ui/enums/BaseUrlPath";
 import PollCollection from "../collections/poll";
 import { check } from "meteor/check";
 
-const sendTeamInvitation = () => {};
 
 Meteor.methods({
     /**
@@ -69,14 +66,24 @@ Meteor.methods({
         // send email here
         if (emailOn) {
             for (let i = 0, len = invitedEmailWithTokens.length; i < len; i++) {
-                sendTeamInvitation(invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, teamId)
-                    .catch((error) => {
-                        console.log("Email sent with error: " + invitedEmailWithTokens[i].email)
-                        console.log(error);
-                    })
+
+                new Promise((resolve, reject) => {
+                    Meteor.callAsync("send_team_invitation", invitedEmailWithTokens[i].email, invitedEmailWithTokens[i].token, name, teamId,
+                        (error, result) => {
+                            if (error) {
+                                reject(error)
+
+                            } else {
+                                resolve(result)
+                            }
+                        })
+
+                }).catch((error) => {
+                    console.log("Email sent with error: " + invitedEmailWithTokens[i].email)
+                    console.log(error);
+                })
             }
         }
-
         return teamId;
     },
 
@@ -152,11 +159,22 @@ Meteor.methods({
 
                 if (!existingInviteEmails.includes(teamsData.teamInvitations[i].email.toLowerCase())) {
                     // existing emails DOES NOT include this email, send
-                    sendTeamInvitation(teamsData.teamInvitations[i].email, teamsData.teamInvitations[i].token, teamsData.teamName, teamId)
-                        .catch((error) => {
-                            console.log("Email sent with error: " + teamsData.teamInvitations[i].email)
-                            console.log(error);
-                        })
+                    new Promise((resolve, reject) => {
+                        Meteor.callAsync("send_team_invitation", teamsData.teamInvitations[i].email, teamsData.teamInvitations[i].token, teamsData.teamName, teamId,
+                            (error, result) => {
+                                if (error) {
+                                    reject(error)
+
+                                } else {
+                                    resolve(result)
+                                }
+                            })
+
+                    }).catch((error) => {
+                        console.log("Email sent with error: " + teamsData.teamInvitations[i].email)
+                        console.log(error);
+                    })
+
                 }
             }
         }

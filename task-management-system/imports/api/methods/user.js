@@ -1,6 +1,6 @@
 /**
  * File Description: User database entity
- * File version: 2.2
+ * File version: 2.3
  * Contributors: Nikki, Mark
  */
 
@@ -8,10 +8,11 @@ import {Meteor} from 'meteor/meteor'
 import {check} from 'meteor/check'
 import {Accounts} from "meteor/accounts-base";
 import UserCollection from "../collections/user";
+import user from "../collections/user";
 
 Meteor.methods({
     /**
-     * @param {string} userId - id of the user
+     * @param {string} userId - id of the user. This is a serverside function only.
      */
     "send_verify_email": function (userId) {
         Accounts.sendVerificationEmail(userId);
@@ -29,7 +30,6 @@ Meteor.methods({
         check(name, String);
         check(email, String);
         check(notification, Boolean);
-        console.log(userId, name, email, notification);
 
         // input validations
         const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
@@ -44,6 +44,7 @@ Meteor.methods({
 
         if (email === '' || !emailRegex.test(email)) {
             throw new Meteor.Error('user-update-failed', 'Invalid email input');
+
         } else if (allOtherUserEmails.includes(email)) {
             throw new Meteor.Error('user-update-failed', 'Email address already exists');
         }
@@ -67,27 +68,5 @@ Meteor.methods({
         check(userId, String);
         Meteor.users.remove(userId);
     },
-
-    /**
-     * Checks if a user has joined any team by id
-     * @param {string} userId - id of the user
-     * @returns {boolean} - true if user has joined any team, false otherwise
-     */
-    "check_if_join_any_team": function (userId) {
-        check(userId, String);
-
-        // get infomation about if user has joined any team
-        const user = Meteor.users.findOne(
-            {_id: userId},
-            {fields: {"profile.teamIds": 1}}
-        );
-
-        // return true if user has joined any team
-        if (user.profile && Array.isArray(user.profile.teamIds)) {
-            return user.profile.teamIds.length > 0;
-        }
-
-        return false;
-    }
 
 })

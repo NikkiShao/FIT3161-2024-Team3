@@ -1,13 +1,12 @@
 /**
  * File Description: Board database entity
- * File version: 1.5
+ * File version: 1.6
  * Contributors: Audrey, Nikki, Sam
  */
 import { Meteor } from 'meteor/meteor';
 import { BoardCollection } from '/imports/api/collections/board.js';
 import TaskCollection from "../collections/task";
 import "../methods/logEntry";
-import user from "../collections/user";
 
 // Helper function to promisify Meteor.call
 Meteor.callPromise = function (method, ...args) {
@@ -169,6 +168,13 @@ Meteor.methods({
      * @param username - username of user who deleted the board
      */
     "delete_board": async function (boardId, username) {
+        // check board exists
+        const board = BoardCollection.findOne(boardId);
+        if (!board) {
+
+            throw new Meteor.Error('board-delete-failed', `Board not found`);
+        }
+
         // Retrieve all tasks associated with the board
         const tasks = TaskCollection.find({ boardId: boardId }).fetch();
 
@@ -183,11 +189,6 @@ Meteor.methods({
             }
         }
 
-        // check board exists
-        const board = BoardCollection.findOne(boardId);
-        if (!board) {
-            throw new Meteor.Error('board-delete-failed', `Board not found`);
-        }
 
         // get ID of the team which the board belongs to
         const teamId = board.teamId;
