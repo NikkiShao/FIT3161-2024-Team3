@@ -33,7 +33,6 @@ export const TeamLobbyPage = () => {
 
     // Grab user info from server
     const userInfo = getUserInfo();
-    const userName = userInfo.username;
 
     // grab the team ID from the URL
     const {teamId} = useParams();  
@@ -141,9 +140,8 @@ export const TeamLobbyPage = () => {
                         startTime={poll.pollCreationDate}
                         closeTime={poll.pollDeadlineDate}
                         options={poll.pollOptions}
-                        userName={userName}
-                        >
-                    </PollCard>
+                        teamName={teamData.teamName}
+                    />
                 )
             )
             const helpText = "This page displays a list of all the task boards and polls for this team. You can " +

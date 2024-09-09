@@ -64,6 +64,7 @@ export const UnvotedPolls = () =>  {
                         {pollsToDo.map((poll)=>(
                             <PollCard
                                 key={poll._id}
+                                pollId={poll._id}
                                 title={poll.pollTitle}
                                 startTime={poll.pollCreationDate}
                                 closeTime={poll.pollDeadlineDate}

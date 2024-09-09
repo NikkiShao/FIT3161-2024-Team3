@@ -2,7 +2,7 @@
  * File Description: Poll Result Modal
  * Updated Date: 07/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.4
+ * Version: 1.5
  */
 
 import React from 'react';
@@ -15,6 +15,7 @@ import HoverTip from "../hoverTip/HoverTip";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import {useTracker} from "meteor/react-meteor-data";
 import UserCollection from "../../../../api/collections/user";
+import {getUserInfo} from "../../util";
 
 /**
  * The modal for displaying poll results in a closed poll
@@ -23,20 +24,22 @@ import UserCollection from "../../../../api/collections/user";
  * @param {object} pollData - Data for the poll, including title and options with their respective votes.
  */
 const PollResultModal = ({open, closeHandler, pollData}) => {
-    
+    const userInfo = getUserInfo();
+
     const getUserByUsername = (username) => {
+        // todo: i dont think you can call hooks like this inside, you need to do it outside most level
         return useTracker(() => {
             // Subscribe to the specific user data based on the username
             const subscription = Meteor.subscribe('specific_username_user', username);
-            
+
             // Check if the subscription is ready
             if (!subscription.ready()) {
                 return {user: null, isLoading: true};
             }
-    
+
             // Fetch the user data from the collection
             const user = UserCollection.findOne({username: username});
-    
+
             return {user, isLoading: false};
         }, [username]);
     };
@@ -110,11 +113,6 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                             ? Math.round((poll.answersWeight[i] * 100) / pollCount)
                             : 0;
 
-                        // Determine if the answer exceeds 30 characters, truncate if necessary
-                        const truncatedAnswer = answer.length > 25
-                            ? answer.substring(0, 25) + '...'
-                            : answer;
-
                         return (
                             <div key={i} className={"full-width"}>
                                 <div className='each-option'>
@@ -123,8 +121,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                                         {answer.length > 25 ?
                                             (
                                                 <HoverTip
-                                                    icon={<span
-                                                        className='one-line'>{truncatedAnswer}</span>}  // Display truncated text
+                                                    icon={<span className='one-line'>{answer}</span>}  // Display truncated text
                                                     outerText={""}  // No outer text
                                                     toolTipText={answer}  // Show full answer on hover
                                                     divClassName={"more-info-mouse"}  // Custom class name
@@ -133,7 +130,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                                             ) : (
                                                 <span className='one-line main-text'>{answer}</span>  // Display the full answer if not truncated
                                             )}
-                                        <span className={"text-grey non-clickable"}>{percentage}%</span>
+                                        <span className={"text-grey non-clickable"} style={{minWidth: "40px"}}>{percentage}%</span>
                                         {/* the below is the background grey that fills depending on the voting % */}
                                         <span
                                             className="percentage-bar"

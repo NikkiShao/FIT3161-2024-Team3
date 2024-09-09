@@ -28,10 +28,10 @@ import BaseUrlPath from "../../../enums/BaseUrlPath";
  * @param {string} startTime - The start time of the poll.
  * @param {string} closeTime - The close time of the poll.
  * @param {array} options - The options of the poll.
- * @param {string} userName - The user name of the current user.
  * @param {string} teamName - The team name of the team the poll belongs to. Optional, only used when on dashboard.
  */
-const PollCard = ({pollId, title, startTime, closeTime, options, userName, teamName=""}) => {
+const PollCard = ({pollId, title, startTime, closeTime, options, teamName}) => {
+
     const userInfo = getUserInfo();
     const isOnDashboard = useLocation().pathname.split('/')[1] === BaseUrlPath.DASHBOARD;
 
@@ -180,7 +180,6 @@ const PollCard = ({pollId, title, startTime, closeTime, options, userName, teamN
                 open={isVoteModalOpen}
                 closeHandler={closeVoteModal}
                 pollData={{pollId, title, options}}
-                userName={userName}
             />
         </Card>
     );

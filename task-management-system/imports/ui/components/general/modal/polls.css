@@ -66,6 +66,7 @@
 
 .results {
   justify-content: space-between;
+  column-gap: 20px;
 }
 
 .percentage-bar {

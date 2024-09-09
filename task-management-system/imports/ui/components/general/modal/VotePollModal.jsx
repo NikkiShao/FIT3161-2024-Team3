@@ -14,9 +14,19 @@ import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
+import {getUserInfo} from "../../util";
 
-const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
+/**
+ * Modal for voting in a poll
+ *
+ * @param open - if modal is opened
+ * @param closeHandler - handler to call to close it
+ * @param pollData - data of the poll to vote in
+ */
+const VotePollModal = ({ open, closeHandler, pollData }) => {
+    const username = getUserInfo().username;
+
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
 
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
@@ -37,15 +47,15 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
             const updatedPollData = {
                 ...pollData,
                 options: pollData.options.map(option =>
-                    option.voterUsernames.includes(userName)
+                    option.voterUsernames.includes(username)
                         ? {
                             ...option,
-                            voterUsernames: option.voterUsernames.filter(voter => voter !== userName)
+                            voterUsernames: option.voterUsernames.filter(voter => voter !== username)
                         }
                         : option
                 ).map(option =>
                     option.optionText === selectedOption
-                        ? { ...option, voterUsernames: [...option.voterUsernames, userName] }
+                        ? {...option, voterUsernames: [...option.voterUsernames, username]}
                         : option
                 )
             };
@@ -67,14 +77,14 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                     setErrorMessage(""); // Clear any previous error messages
                     setIsSubmitting(false); // Enable the button after success
                     closeHandler(); // Optionally close modal after voting
-                    setPastOption(getUserVotedOption(pollData, userName));
+                    setPastOption(getUserVotedOption(pollData, username));
                 }
             });
         }
-    }, [selectedOption, pollData, userName, closeHandler, pollId, hasVoted]);
+    }, [selectedOption, pollData, username, closeHandler, pollId, hasVoted]);
 
     useEffect(() => {
-        const votedOption = getUserVotedOption(pollData, userName);
+        const votedOption = getUserVotedOption(pollData, username);
         if (votedOption) {
             setHasVoted(true);
             setSelectedOption(votedOption);
@@ -83,12 +93,12 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
             setSelectedOption("");
         }
         setPastOption(votedOption);
-    }, [pollData, userName]);
+    }, [pollData, username]);
 
     // Function to find the option that the user voted for
-    const getUserVotedOption = (pollData, userName) => {
+    const getUserVotedOption = (pollData, username) => {
         for (let option of pollData.options) {
-            if (option.voterUsernames.includes(userName)) {
+            if (option.voterUsernames.includes(username)) {
                 return option.optionText;
             }
         }
@@ -102,12 +112,12 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
     }, []);
 
     const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
-        width={20} height={20} />;
+                                                 width={20} height={20}/>;
 
     return (
         <Modal
             closeIcon={closeIcon}
-            classNames={{ modal: classNames('modal-base', '') }}
+            classNames={{modal: classNames('modal-base', '')}}
             open={open}
             onClose={closeHandler}
             center>
@@ -115,12 +125,12 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
 
                 {/* poll title */}
                 <div className={"header-space-centered"}>
-                    <div style={{ width: "25px", visibility: "hidden" }}></div>
+                    <div style={{width: "25px", visibility: "hidden"}}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
                     <HoverTip icon={questionIcon}
-                        outerText={""}
-                        toolTipText={"You may change your vote anytime before the poll is closed."}
-                        style={{ marginBottom: "10px" }}
+                              outerText={""}
+                              toolTipText={"You may change your vote anytime before the poll is closed."}
+                              style={{marginBottom: "10px"}}
                     />
                 </div>
 
@@ -130,9 +140,6 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
 
                     {pollData.options.map((option, index) => {
                         const isLongOption = option.optionText.length > 25;
-                        const truncatedOptionText = isLongOption
-                            ? option.optionText.substring(0, 25) + '...'
-                            : option.optionText;  
 
                         return (
                             <label key={index} className={"poll__option voting clickable"} htmlFor={option.optionText}>
@@ -148,9 +155,9 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                                 {/* Display hoverTip if the option text is too long */}
                                 {isLongOption ? (
                                     <HoverTip
-                                        icon={<span className={"main-text one-line"}>{truncatedOptionText}</span>}
-                                        toolTipText={option.optionText}  
-                                        divClassName={"more-info-mouse"} 
+                                        icon={<span className={"main-text one-line"}>{option.optionText}</span>}
+                                        toolTipText={option.optionText}
+                                        divClassName={"more-info-mouse"}
                                         isBlue={false}
                                     />
                                 ) : (
@@ -159,19 +166,15 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                             </label>
                         );
                     })}
-
                 </form>
 
                 {/* Show success message if the user has already voted */}
                 {hasVoted && (
-                    <span className="text-green small-text">You have already voted for "{pastOption}".
+                    <span className="small-text">You have already voted for "{pastOption}".
                         You can change your vote</span>)}
 
                 {/* Show error messages */}
                 {errorMessage && (<span className="text-red small-text">{errorMessage}</span>)}
-
-                {/* Show loading message when submitting */}
-                {isSubmitting && <span className="text-grey small-text">Submitting your vote...</span>}
 
                 <Button
                     type={"submit"}

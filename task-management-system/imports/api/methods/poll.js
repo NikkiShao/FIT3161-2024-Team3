@@ -59,7 +59,7 @@ Meteor.methods({
      * @param updatedPollData - the updated poll data
      */
     "update_poll": function (pollId, updatedPollData) {
-        const poll = PollCollection.findOne({ _id: updatedPollData.pollId });
+        const poll = PollCollection.findOne({ _id: pollId });
         console.log("Poll: ", poll);
         if (!poll) {
             throw new Meteor.Error("Poll not found");

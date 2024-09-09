@@ -28,7 +28,6 @@ import BoardSettings from "./components/pages/board/BoardSettings";
 import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
 import BoardLogsMenu from "./components/pages/board/BoardLogsMenu";
 import BoardLog from "./components/pages/board/BoardLog";
-import Preview from './components/pages/Preview';
 
 
 /**
@@ -104,12 +103,6 @@ export const App = () => (
                     <Route path={'/' + BaseUrlPath.TEAMS + '/:teamId'} element={
                         <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
                             <TeamLobbyPage/>
-                        </ProtectedRoute>
-                    }/>
-
-                    <Route path={'/' + BaseUrlPath.PREVIEW} element={
-                        <ProtectedRoute accessReq={RoutingAccess.SIGNED_IN_ONLY}>
-                            <Preview/>
                         </ProtectedRoute>
                     }/>
 
