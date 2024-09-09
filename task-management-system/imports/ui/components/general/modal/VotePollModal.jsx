@@ -1,8 +1,8 @@
 /**
  * File Description: Poll Voting Modal
- * Updated Date: 07/09/2024
+ * Updated Date: 09/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.2
+ * Version: 1.5
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
@@ -128,20 +128,38 @@ const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
                 {/* area for displaying options */}
                 <form onSubmit={handleVote} className={"poll__main-div"}>
 
-                    {pollData.options.map((option, index) => (
-                        <label key={index} className={"poll__option voting clickable"} htmlFor={option.optionText} >
-                            <input
-                                type={"radio"}
-                                id={option.optionText}
-                                name={"poll-option"}
-                                value={option.optionText}
-                                checked={selectedOption === option.optionText}
-                                onChange={handleOptionChange}
-                                aria-label={`Vote for ${option.optionText}`}
-                            />
-                            <span className={"main-text"}>{option.optionText}</span>
-                        </label>
-                    ))}
+                    {pollData.options.map((option, index) => {
+                        const isLongOption = option.optionText.length > 25;
+                        const truncatedOptionText = isLongOption
+                            ? option.optionText.substring(0, 25) + '...'
+                            : option.optionText;  
+
+                        return (
+                            <label key={index} className={"poll__option voting clickable"} htmlFor={option.optionText}>
+                                <input
+                                    type={"radio"}
+                                    id={option.optionText}
+                                    name={"poll-option"}
+                                    value={option.optionText}
+                                    checked={selectedOption === option.optionText}
+                                    onChange={handleOptionChange}
+                                    aria-label={`Vote for ${option.optionText}`}
+                                />
+                                {/* Display hoverTip if the option text is too long */}
+                                {isLongOption ? (
+                                    <HoverTip
+                                        icon={<span className={"main-text one-line"}>{truncatedOptionText}</span>}
+                                        toolTipText={option.optionText}  
+                                        divClassName={"more-info-mouse"} 
+                                        isBlue={false}
+                                    />
+                                ) : (
+                                    <span className={"main-text"}>{option.optionText}</span>
+                                )}
+                            </label>
+                        );
+                    })}
+
                 </form>
 
                 {/* Show success message if the user has already voted */}
