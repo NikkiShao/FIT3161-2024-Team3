@@ -5,18 +5,18 @@
  * Version: 1.2
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
-import {Modal} from 'react-responsive-modal';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Modal } from 'react-responsive-modal';
 import classNames from "classnames";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
-import {XCircleIcon} from "@heroicons/react/24/outline";
+import { XCircleIcon } from "@heroicons/react/24/outline";
 import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
 
-const VotePollModal = ({open, closeHandler, pollData, userName}) => {
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
+const VotePollModal = ({ open, closeHandler, pollData, userName }) => {
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
 
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
@@ -45,7 +45,7 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
                         : option
                 ).map(option =>
                     option.optionText === selectedOption
-                        ? {...option, voterUsernames: [...option.voterUsernames, userName]}
+                        ? { ...option, voterUsernames: [...option.voterUsernames, userName] }
                         : option
                 )
             };
@@ -62,12 +62,12 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
                     }
                     setIsSubmitting(false); // Enable the button after failure
                 } else {
-                    console.log("Poll successfully updated.");
+                    // console.log("Poll successfully updated.");
                     setHasVoted(true); // Mark as voted after successful vote
                     setErrorMessage(""); // Clear any previous error messages
                     setIsSubmitting(false); // Enable the button after success
                     closeHandler(); // Optionally close modal after voting
-                    setPastOption(getUserVotedOption(pollData, userName)); 
+                    setPastOption(getUserVotedOption(pollData, userName));
                 }
             });
         }
@@ -76,11 +76,11 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
     useEffect(() => {
         const votedOption = getUserVotedOption(pollData, userName);
         if (votedOption) {
-            setHasVoted(true); 
-            setSelectedOption(votedOption); 
+            setHasVoted(true);
+            setSelectedOption(votedOption);
         } else {
             setHasVoted(false);
-            setSelectedOption(""); 
+            setSelectedOption("");
         }
         setPastOption(votedOption);
     }, [pollData, userName]);
@@ -102,12 +102,12 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
     }, []);
 
     const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
-                                                 width={20} height={20}/>;
+        width={20} height={20} />;
 
     return (
         <Modal
             closeIcon={closeIcon}
-            classNames={{modal: classNames('modal-base', '')}}
+            classNames={{ modal: classNames('modal-base', '') }}
             open={open}
             onClose={closeHandler}
             center>
@@ -115,12 +115,12 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
 
                 {/* poll title */}
                 <div className={"header-space-centered"}>
-                    <div style={{width: "25px", visibility: "hidden"}}></div>
+                    <div style={{ width: "25px", visibility: "hidden" }}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
                     <HoverTip icon={questionIcon}
-                              outerText={""}
-                              toolTipText={"You may change your vote anytime before the poll is closed."}
-                              style={{marginBottom: "10px"}}
+                        outerText={""}
+                        toolTipText={"You may change your vote anytime before the poll is closed."}
+                        style={{ marginBottom: "10px" }}
                     />
                 </div>
 
@@ -129,7 +129,7 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
                 <form onSubmit={handleVote} className={"poll__main-div"}>
 
                     {pollData.options.map((option, index) => (
-                        <div key={index} className={"poll__option voting"} >
+                        <label key={index} className={"poll__option voting clickable"} htmlFor={option.optionText} >
                             <input
                                 type={"radio"}
                                 id={option.optionText}
@@ -139,8 +139,8 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
                                 onChange={handleOptionChange}
                                 aria-label={`Vote for ${option.optionText}`}
                             />
-                            <label htmlFor={option.optionText} className={"main-text clickable"}>{option.optionText}</label>
-                        </div>
+                            <span className={"main-text"}>{option.optionText}</span>
+                        </label>
                     ))}
                 </form>
 
