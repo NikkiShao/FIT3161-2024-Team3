@@ -6,11 +6,14 @@
 
 import {Meteor} from 'meteor/meteor'
 import {TeamCollection} from '/imports/api/collections/team.js';
-import {sendTeamInvitation} from "../mailer";
+// import {sendTeamInvitation} from "../mailer";
 import {generateInvitationToken} from "../../ui/components/util";
 import BoardCollection from "../collections/board";
 import BaseUrlPath from "../../ui/enums/BaseUrlPath";
 import PollCollection from "../collections/poll";
+import { check } from "meteor/check";
+
+const sendTeamInvitation = () => {};
 
 Meteor.methods({
     /**
@@ -22,6 +25,31 @@ Meteor.methods({
      * @param emailOn - true to email, false to not send email
      */
     "add_team": function (name, members, leader, emailOn) {
+
+        //check input types
+        check(name,String);
+        check(members,[String]);
+        check(leader,String);
+        check(emailOn, Boolean);
+
+        // input validations for name
+        if (name === '' || name.length > 20) {
+            throw new Meteor.Error('add-team-failed', 'Invalid name input');
+        }
+
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+        //validate email input for team members attribute
+        const memberArray = new Array()
+        for(let i=0; i<members.length; i++){
+            const email = members[i];
+            if(!emailRegex.test(email)){
+                throw new Meteor.Error('add-team-failed', 'Invalid email input');
+            } else if(memberArray.includes(email)){
+                throw new Meteor.Error('add-team-failed', 'Duplicate email input');
+            }
+            memberArray.push(email);
+        }
 
         const invitedEmailWithTokens = members.map(
             (member) => {
@@ -61,6 +89,51 @@ Meteor.methods({
      * @param emailOn - true to email, false to not send email
      */
     "update_team": function (teamId, existingInvites, teamsData, emailOn) {
+        //check input types
+        check(teamId, String);
+        check(existingInvites, [{
+            email: String,
+            token: String,
+        }]);
+        check(teamsData, {
+            teamName: String,
+            teamLeader: String,
+            teamMembers: [String],
+            teamInvitations: [{
+                email: String,
+                token: String,
+            }]
+        });
+        check(emailOn, Boolean);
+
+        //validate name input
+        if (teamsData.teamName === ''|| teamsData.teamName.length > 20) {
+            throw new Meteor.Error('update-team-failed', 'Invalid team name input');
+        }
+
+        //validate email input for team members
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        const teamMembersArray = new Array()
+        for(let i=0; i<teamsData.teamMembers.length; i++){
+            const email = teamsData.teamMembers[i];
+            if(!emailRegex.test(email)){
+                throw new Meteor.Error('update-team-failed', 'Invalid email input');
+            } else if(teamMembersArray.includes(email)){
+                throw new Meteor.Error('update-team-failed', 'Duplicate email input');
+            }
+            teamMembersArray.push(email);
+        }
+        //validate email for invitations
+        const invitationArray = new Array()
+        for(let i=0; i<teamsData.teamInvitations.length; i++){
+            const invite = teamsData.teamInvitations[i];
+            if(!emailRegex.test(invite.email)){
+                throw new Meteor.Error('update-team-failed', 'Invalid email input');
+            } else if(invitationArray.includes(invite.email)){
+                throw new Meteor.Error('update-team-failed', 'Duplicate email input');
+            }
+            invitationArray.push(invite.email);
+        }
 
         TeamCollection.update(teamId, {
             $set:
