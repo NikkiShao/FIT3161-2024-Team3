@@ -67,22 +67,22 @@ const VotePollModal = ({open, closeHandler, pollData, userName}) => {
                     setErrorMessage(""); // Clear any previous error messages
                     setIsSubmitting(false); // Enable the button after success
                     closeHandler(); // Optionally close modal after voting
+                    setPastOption(getUserVotedOption(pollData, userName)); 
                 }
             });
         }
     }, [selectedOption, pollData, userName, closeHandler, pollId, hasVoted]);
 
     useEffect(() => {
-        setPastOption(getUserVotedOption(pollData, userName));
-    }, []);
-
-    // Check if the user has already voted and set the state accordingly
-    useEffect(() => {
         const votedOption = getUserVotedOption(pollData, userName);
         if (votedOption) {
-            setHasVoted(true); // Mark as voted
-            setSelectedOption(votedOption); // Set the selected option to the user's vote
+            setHasVoted(true); 
+            setSelectedOption(votedOption); 
+        } else {
+            setHasVoted(false);
+            setSelectedOption(""); 
         }
+        setPastOption(votedOption);
     }, [pollData, userName]);
 
     // Function to find the option that the user voted for
