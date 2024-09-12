@@ -95,7 +95,6 @@ const PinnedTasks = ({ userInfo }) => {
                             tagNames={task.tagNames}
                             boardId={task.boardId}
                             boardTags={boardTags[task.boardId]}
-                            onDashboard={true}
                             onPinChange={handlePinChange}
                             onClick={() => {
                                 const teamId = boardToTeamMap[task.boardId];

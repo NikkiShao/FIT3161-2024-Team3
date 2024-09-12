@@ -1,12 +1,13 @@
 /**
  * File Description: Mailer for emailing
- * File version: 1.1
+ * File version: 1.2
  * Contributors: Nikki
  */
 
 import nodemailer from "nodemailer";
 import {emailPass, emailUser} from "./secrets";
-import {isUrgentOverdue, timeLeft} from "../ui/components/util"; // file in the same folder containing creds for mail server
+import {isUrgentOverdue, timeLeft} from "../ui/components/util";
+import {Meteor} from "meteor/meteor"; // file in the same folder containing creds for mail server
 
 
 let transporter;
@@ -40,22 +41,24 @@ export function initialiseMailer() {
     });
 }
 
-/**
- *
- * @returns {Promise<void>}
- * @param email - email address to send email to
- * @param token - token for invitation
- * @param teamName - name of team to be invited to
- * @param teamId - ID of the team to be invited to
- */
-export async function sendTeamInvitation(email, token, teamName, teamId) {
-    console.log("i sending to " + email)
+Meteor.methods({
 
-    const info = await transporter.sendMail({
-        from: '"Task Management System"<invitation@tms.com>', // sender address
-        to: email, // list of receivers
-        subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
-        html: `
+    /**
+     *
+     * @returns {Promise<void>}
+     * @param email - email address to send email to
+     * @param token - token for invitation
+     * @param teamName - name of team to be invited to
+     * @param teamId - ID of the team to be invited to
+     */
+    "send_team_invitation" : async function (email, token, teamName, teamId) {
+        console.log("i sending to " + email)
+
+        const info = await transporter.sendMail({
+            from: '"Task Management System"<invitation@tms.com>', // sender address
+            to: email, // list of receivers
+            subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
+            html: `
             <html lang="en">
                 <head>
                     <style>
@@ -101,9 +104,12 @@ export async function sendTeamInvitation(email, token, teamName, teamId) {
                         </div>
                 </body>
             </html>`, // html body
-    });
-    console.log("i sent!")
-}
+        });
+        console.log("i sent!")
+    }
+
+
+})
 
 /**
  * Sends out a reminder email to a specific user based on given information

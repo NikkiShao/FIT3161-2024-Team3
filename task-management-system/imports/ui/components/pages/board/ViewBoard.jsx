@@ -144,7 +144,6 @@ const ViewBoardPage = () => {
                                             tagNames={task.tagNames}
                                             boardId={boardId}
                                             boardTags={boardData.boardTags}
-                                            onDashboard={false}
                                             onClick={(e) => onOpenModal(e, task._id)}
                                         />
                                     ))}

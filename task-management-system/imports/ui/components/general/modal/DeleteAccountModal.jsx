@@ -47,11 +47,6 @@ const DeleteAccountModal = ({open, closeHandler}) => {
     }, [teamsData]);
 
     const handleClick = () => {
-        Meteor.call(
-            "check_if_join_any_team", userData.id, (result) => {
-                setIsJoined(result);
-            }
-        )
 
         // usr is allowed to delete account if they are not joined to any team
         if (isJoined) {

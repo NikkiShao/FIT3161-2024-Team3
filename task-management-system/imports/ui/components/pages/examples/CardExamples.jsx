@@ -32,7 +32,6 @@ const CardExamples = () => {
                 tagNames={["nom", "nom", "nom","nom"]}
                 boardId={"AAA"}
                 boardTags={[{tagName:"nom", tagColour:"#ffd9d9"}]}
-                onDashboard={true}
             />
 
             <span>
@@ -47,7 +46,6 @@ const CardExamples = () => {
                 tagNames={[]}
                 boardId={"AAA"}
                 boardTags={[]}
-                onDashboard={false}
             />
             <TaskCard
                 taskId={"1"}
@@ -58,7 +56,6 @@ const CardExamples = () => {
                 tagNames={[]}
                 boardId={"AAA"}
                 boardTags={[]}
-                onDashboard={false}
             />
         </div>
     );
