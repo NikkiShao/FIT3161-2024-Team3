@@ -26,6 +26,4 @@ xolvio:cleaner
 peerlibrary:assert
 meteortesting:mocha
 email
-practicalmeteor:chai
 insecure@1.0.7
-hwillson:stub-collections

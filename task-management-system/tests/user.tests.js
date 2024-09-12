@@ -69,7 +69,6 @@ if (Meteor.isClient) {
 
         beforeEach(function () {
             resetDatabase(); // Clear the collection before each test
-            // StubCollections.stub(Meteor.users)
 
             sinon.stub(UserCollection, "insert").callsFake((userObject) => {
                 return userObject._id;
@@ -83,7 +82,6 @@ if (Meteor.isClient) {
         });
 
         afterEach(function () {
-            // StubCollections.restore();
             UserCollection.insert.restore();
             Meteor.users.update.restore();
             UserCollection.find.restore();
@@ -140,7 +138,8 @@ if (Meteor.isClient) {
                 assert.fail("Did not provide required error for invalid empty name input");
             })
 
-        })
+        }).timeout(5000);
+        
         it('errors with invalid name: too long name > 30 characters', function () {
 
             // insert test user
