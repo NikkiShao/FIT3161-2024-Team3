@@ -14,7 +14,7 @@ import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 
 /**
  * Modal for voting in a poll
@@ -26,7 +26,7 @@ import {getUserInfo} from "../../util";
 const VotePollModal = ({ open, closeHandler, pollData }) => {
     const username = getUserInfo().username;
 
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
 
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
@@ -55,7 +55,7 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
                         : option
                 ).map(option =>
                     option.optionText === selectedOption
-                        ? {...option, voterUsernames: [...option.voterUsernames, username]}
+                        ? { ...option, voterUsernames: [...option.voterUsernames, username] }
                         : option
                 )
             };
@@ -112,12 +112,12 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
     }, []);
 
     const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
-                                                 width={20} height={20}/>;
+        width={20} height={20} />;
 
     return (
         <Modal
             closeIcon={closeIcon}
-            classNames={{modal: classNames('modal-base', '')}}
+            classNames={{ modal: classNames('modal-base', '') }}
             open={open}
             onClose={closeHandler}
             center>
@@ -125,12 +125,12 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
 
                 {/* poll title */}
                 <div className={"header-space-centered"}>
-                    <div style={{width: "25px", visibility: "hidden"}}></div>
+                    <div style={{ width: "25px", visibility: "hidden" }}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
                     <HoverTip icon={questionIcon}
-                              outerText={""}
-                              toolTipText={"You may change your vote anytime before the poll is closed."}
-                              style={{marginBottom: "10px"}}
+                        outerText={""}
+                        toolTipText={"You may change your vote anytime before the poll is closed."}
+                        style={{ marginBottom: "10px" }}
                     />
                 </div>
 
@@ -170,8 +170,18 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
 
                 {/* Show success message if the user has already voted */}
                 {hasVoted && (
-                    <span className="text-green small-text">You have already voted for "{pastOption}".
-                        You can change your vote</span>)}
+                    <span className="text-green small-text">
+                        You have already voted for
+                        {pastOption.length > 25 ? (
+                            <span title={pastOption}>
+                                "{pastOption.slice(0, 25)}..." 
+                            </span>
+                        ) : (
+                            <span>"{pastOption}"</span>
+                        )}
+                        . You can change your vote.
+                    </span>
+                )}
 
                 {/* Show error messages */}
                 {errorMessage && (<span className="text-red small-text">{errorMessage}</span>)}
