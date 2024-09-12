@@ -26,27 +26,25 @@ import {getUserInfo} from "../../util";
 const PollResultModal = ({open, closeHandler, pollData}) => {
     const userInfo = getUserInfo();
 
-    const getUserByUsername = (username) => {
-        // todo: i dont think you can call hooks like this inside, you need to do it outside most level
-        return useTracker(() => {
-            // Subscribe to the specific user data based on the username
-            const subscription = Meteor.subscribe('specific_username_user', username);
+    // Use useTracker hook to get all the user data
+    const {users, isLoading} = useTracker(() => {
+        const usernames = pollData.options.flatMap(option => option.voterUsernames);
+        
+        const subscription = Meteor.subscribe('specific_username_user', usernames);
+        
+        if (!subscription.ready()) {
+            return {users: [], isLoading: true};
+        }
 
-            // Check if the subscription is ready
-            if (!subscription.ready()) {
-                return {user: null, isLoading: true};
-            }
+        const users = UserCollection.find({username: {$in: usernames}}).fetch();
+        
+        return {users, isLoading: false};
+    }, [pollData]);
 
-            // Fetch the user data from the collection
-            const user = UserCollection.findOne({username: username});
-
-            return {user, isLoading: false};
-        }, [username]);
-    };
-
+    
     const getNamesByUsernames = (usernames) => {
         return usernames.map(username => {
-            const { user } = getUserByUsername(username); 
+            const user = users.find(u => u.username === username);
             return user && user.profile && user.profile.name ? user.profile.name : "Unknown";
         });
     };
@@ -109,7 +107,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                 {/* area for displaying answers */}
                 <div className="poll__main-div">
                     {poll.answers.map((answer, i) => {
-                        const percentage = pollCount
+                        const percentage = pollCount > 0
                             ? Math.round((poll.answersWeight[i] * 100) / pollCount)
                             : 0;
 
@@ -147,7 +145,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
 
                                 <div className="voters">
                                     {poll.voters[i].map((voter, j) => (
-                                        <span key={voter} className="text-grey small-text non-clickable">
+                                        <span key={voter + j} className="text-grey small-text non-clickable">
                                             {voter}
                                             {j < poll.voters[i].length - 1 ? ', ' : ''}
                                         </span>

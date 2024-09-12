@@ -170,7 +170,7 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
 
                 {/* Show success message if the user has already voted */}
                 {hasVoted && (
-                    <span className="small-text">You have already voted for "{pastOption}".
+                    <span className="text-green small-text">You have already voted for "{pastOption}".
                         You can change your vote</span>)}
 
                 {/* Show error messages */}
