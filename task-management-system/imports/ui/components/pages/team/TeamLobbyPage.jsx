@@ -1,8 +1,8 @@
 /**
  * File Description: Team lobby page
- * Updated Date: 18/08/2024
+ * Updated Date: 06/09/2024
  * Contributors: Nikki, Mark
- * Version: 2.0
+ * Version: 3.0
  */
 
 import React, {useState} from 'react';
@@ -135,11 +135,13 @@ export const TeamLobbyPage = () => {
             const displayedPollCards = filteredPolls.map((poll) => (
                     <PollCard
                         key={poll._id}
+                        pollId={poll._id}
                         title={poll.pollTitle}
                         startTime={poll.pollCreationDate}
                         closeTime={poll.pollDeadlineDate}
-                        options={poll.pollOptions}>
-                    </PollCard>
+                        options={poll.pollOptions}
+                        teamName={teamData.teamName}
+                    />
                 )
             )
             const helpText = "This page displays a list of all the task boards and polls for this team. You can " +

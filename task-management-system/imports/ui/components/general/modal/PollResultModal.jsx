@@ -2,7 +2,7 @@
  * File Description: Poll Result Modal
  * Updated Date: 07/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.3
+ * Version: 1.5
  */
 
 import React from 'react';
@@ -10,11 +10,12 @@ import {Modal} from 'react-responsive-modal';
 import {CheckIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import "../../../../../client/main.css";
-import "./PollResult.css";
+import "./polls.css";
 import HoverTip from "../hoverTip/HoverTip";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import {useTracker} from "meteor/react-meteor-data";
 import UserCollection from "../../../../api/collections/user";
+import {getUserInfo} from "../../util";
 
 /**
  * The modal for displaying poll results in a closed poll
@@ -23,27 +24,27 @@ import UserCollection from "../../../../api/collections/user";
  * @param {object} pollData - Data for the poll, including title and options with their respective votes.
  */
 const PollResultModal = ({open, closeHandler, pollData}) => {
-    
-    const getUserByUsername = (username) => {
-        return useTracker(() => {
-            // Subscribe to the specific user data based on the username
-            const subscription = Meteor.subscribe('specific_username_user', username);
-            
-            // Check if the subscription is ready
-            if (!subscription.ready()) {
-                return {user: null, isLoading: true};
-            }
-    
-            // Fetch the user data from the collection
-            const user = UserCollection.findOne({username: username});
-    
-            return {user, isLoading: false};
-        }, [username]);
-    };
+    const userInfo = getUserInfo();
 
+    // Use useTracker hook to get all the user data
+    const {users, isLoading} = useTracker(() => {
+        const usernames = pollData.options.flatMap(option => option.voterUsernames);
+        
+        const subscription = Meteor.subscribe('specific_username_user', usernames);
+        
+        if (!subscription.ready()) {
+            return {users: [], isLoading: true};
+        }
+
+        const users = UserCollection.find({username: {$in: usernames}}).fetch();
+        
+        return {users, isLoading: false};
+    }, [pollData]);
+
+    
     const getNamesByUsernames = (usernames) => {
         return usernames.map(username => {
-            const { user } = getUserByUsername(username); 
+            const user = users.find(u => u.username === username);
             return user && user.profile && user.profile.name ? user.profile.name : "Unknown";
         });
     };
@@ -104,27 +105,21 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                 </div>
 
                 {/* area for displaying answers */}
-                <div className="poll-res__main-div">
+                <div className="poll__main-div">
                     {poll.answers.map((answer, i) => {
-                        const percentage = pollCount
+                        const percentage = pollCount > 0
                             ? Math.round((poll.answersWeight[i] * 100) / pollCount)
                             : 0;
 
-                        // Determine if the answer exceeds 30 characters, truncate if necessary
-                        const truncatedAnswer = answer.length > 25
-                            ? answer.substring(0, 25) + '...'
-                            : answer;
-
                         return (
                             <div key={i} className={"full-width"}>
-                                <div className='poll-res__each-option'>
-                                    <div className="option">
+                                <div className='each-option'>
+                                    <div className="poll__option results">
                                         {/* Only show HoverTip if the answer is truncated */}
                                         {answer.length > 25 ?
                                             (
                                                 <HoverTip
-                                                    icon={<span
-                                                        className='one-line'>{truncatedAnswer}</span>}  // Display truncated text
+                                                    icon={<span className='one-line'>{answer}</span>}  // Display truncated text
                                                     outerText={""}  // No outer text
                                                     toolTipText={answer}  // Show full answer on hover
                                                     divClassName={"more-info-mouse"}  // Custom class name
@@ -133,7 +128,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                                             ) : (
                                                 <span className='one-line main-text'>{answer}</span>  // Display the full answer if not truncated
                                             )}
-                                        <span className={"text-grey non-clickable"}>{percentage}%</span>
+                                        <span className={"text-grey non-clickable"} style={{minWidth: "40px"}}>{percentage}%</span>
                                         {/* the below is the background grey that fills depending on the voting % */}
                                         <span
                                             className="percentage-bar"
@@ -150,7 +145,7 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
 
                                 <div className="voters">
                                     {poll.voters[i].map((voter, j) => (
-                                        <span key={voter} className="text-grey small-text non-clickable">
+                                        <span key={voter + j} className="text-grey small-text non-clickable">
                                             {voter}
                                             {j < poll.voters[i].length - 1 ? ', ' : ''}
                                         </span>

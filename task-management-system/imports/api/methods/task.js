@@ -1,6 +1,6 @@
 /**
  * File Description: Task database entity
- * File version: 1.6
+ * File version: 1.7
  * Contributors: Nikki, Sam
  */
 
@@ -156,24 +156,24 @@ Meteor.methods({
                 if (contribution.percent !== newContribution.percent) {
                     // Get username based on email
                     const user = Meteor.users.findOne({"emails.address": contribution.email});
-                    const userName = user ? user.profile.name : contribution.email;
+                    const username = user ? user.profile.name : contribution.email;
 
-                    contributionChanges.push(`${userName} contribution changed from ${contribution.percent}% to ${newContribution.percent}%`);
+                    contributionChanges.push(`${username} contribution changed from ${contribution.percent}% to ${newContribution.percent}%`);
                 }
             } else {
                 const user = Meteor.users.findOne({"emails.address": contribution.email});
-                const userName = user ? user.profile.name : contribution.email;
+                const username = user ? user.profile.name : contribution.email;
 
-                contributionChanges.push(`removed contribution of ${userName}`);
+                contributionChanges.push(`removed contribution of ${username}`);
             }
         });
 
         // Check for any new contributions added
         taskData.contributions.slice(currentTask.contributions.length).forEach((contribution, index) => {
             const user = Meteor.users.findOne({"emails.address": contribution.email});
-            const userName = user ? user.profile.name : contribution.email;
+            const username = user ? user.profile.name : contribution.email;
 
-            contributionChanges.push(`added contribution of ${userName}: ${contribution.percent}%`);
+            contributionChanges.push(`added contribution of ${username}: ${contribution.percent}%`);
         });
 
         if (contributionChanges.length > 0) {
