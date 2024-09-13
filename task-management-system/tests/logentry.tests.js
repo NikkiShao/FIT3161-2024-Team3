@@ -1,6 +1,6 @@
 /**
  * File Description: Log Entry testing
- * File version: 1.1
+ * File version: 1.2
  * Contributors: Sam
  */
 
@@ -8,6 +8,9 @@ import { Meteor } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import LogEntryCollection from "../imports/api/collections/logEntry";
+import TeamCollection from "../imports/api/collections/team";
+import BoardCollection from "../imports/api/collections/board";
+import TaskCollection from "../imports/api/collections/task";
 import "../imports/api/methods/logEntry";
 
 const assert = require('assert');
@@ -30,10 +33,44 @@ if (Meteor.isClient) {
 
         const validLogEntry = {
             logEntryAction: "Task completed",
-            username: testUser.username,
+            username: "testUser",
             teamId: "team123",
             boardId: "board123",
             taskId: "task123"
+        };
+
+        const testTeam = {
+            _id: "team123",
+            teamName: "testTeam",
+            teamMembers: ["test@test.com"],
+            teamLeader: "test@test.com",
+            teamInvitations: []
+        };
+
+        const testBoard = {
+            _id: "board123",
+            boardName: "testBoard",
+            boardCode: "ABC123",
+            boardDeadline: "2024-12-31T23:59:59.000Z",
+            boardDescription: "Test Board Description",
+            teamId: "team123",
+            boardTags: [],
+            boardStatuses: [
+                { statusName: "To Do", statusOrder: 1 },
+                { statusName: "Done", statusOrder: 2 }
+            ]
+        };
+
+        const testTask = {
+            _id: "task123",
+            taskName: "testTask",
+            taskDesc: "Test Task Description",
+            taskDeadlineDate: "2024-12-31T23:59:59.000Z",
+            taskIsPinned: false,
+            boardId: "board123",
+            statusName: "To Do",
+            tagNames: [],
+            contributions: []
         };
 
         beforeEach(function () {
@@ -45,6 +82,9 @@ if (Meteor.isClient) {
          */
         it('can add a log entry', function () {
             Accounts.createUser(testUser);
+            TeamCollection.insert(testTeam);
+            BoardCollection.insert(testBoard);
+            TaskCollection.insert(testTask);
 
             return new Promise((resolve, reject) => {
                 Meteor.call("logEntry.insert",
@@ -372,6 +412,9 @@ if (Meteor.isClient) {
          */
         it('allows taskId to be null', function () {
             Accounts.createUser(testUser);
+            TeamCollection.insert(testTeam);
+            BoardCollection.insert(testBoard);
+            TaskCollection.insert(testTask);
 
             return new Promise((resolve, reject) => {
                 // Insert log entry with taskId set to null
@@ -401,6 +444,9 @@ if (Meteor.isClient) {
          */
          it('allows duplicate log entries with different logIds', function () {
              Accounts.createUser(testUser);
+             TeamCollection.insert(testTeam);
+             BoardCollection.insert(testBoard);
+             TaskCollection.insert(testTask);
 
              return new Promise((resolve, reject) => {
                  // Insert the first log entry
@@ -475,5 +521,114 @@ if (Meteor.isClient) {
                 }
             });
         }).timeout(10000);
+
+        /**
+         * Test case for when teamId provided isn't actually a team in the database.
+         */
+        it('error for teamId of non-existing team', function () {
+            Accounts.createUser(testUser);
+            BoardCollection.insert(testBoard);
+            TaskCollection.insert(testTask);
+
+            let isError = false;
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("logEntry.insert",
+                    validLogEntry.logEntryAction,
+                    validLogEntry.username,
+                    validLogEntry.teamId,
+                    validLogEntry.boardId,
+                    validLogEntry.taskId,
+                    (error) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, 'team-info-missing');
+                assert.strictEqual(error.reason, 'Could not retrieve team information');
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for teamId of non-existing team");
+                }
+            });
+        }).timeout(10000);
+
+        /**
+         * Test case for when boardId provided isn't actually a board in the database.
+         */
+        it('error for boardId of non-existing board', function () {
+            Accounts.createUser(testUser);
+            TeamCollection.insert(testTeam);
+            TaskCollection.insert(testTask);
+
+            let isError = false;
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("logEntry.insert",
+                    validLogEntry.logEntryAction,
+                    validLogEntry.username,
+                    validLogEntry.teamId,
+                    validLogEntry.boardId,
+                    validLogEntry.taskId,
+                    (error) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, 'board-info-missing');
+                assert.strictEqual(error.reason, 'Could not retrieve board information');
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for boardId of non-existing board");
+                }
+            });
+        }).timeout(10000);
+
+        /**
+         * Test case for when taskId provided isn't actually a task in the database (only when taskId is provided).
+         */
+        it('error for taskId of non-existing task', function () {
+            Accounts.createUser(testUser);
+            TeamCollection.insert(testTeam);
+            BoardCollection.insert(testBoard);
+
+            let isError = false;
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("logEntry.insert",
+                    validLogEntry.logEntryAction,
+                    validLogEntry.username,
+                    validLogEntry.teamId,
+                    validLogEntry.boardId,
+                    validLogEntry.taskId,
+                    (error) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, 'task-info-missing');
+                assert.strictEqual(error.reason, 'Could not retrieve task information');
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for taskId of non-existing task");
+                }
+            });
+        }).timeout(10000);
+
     });
 }
