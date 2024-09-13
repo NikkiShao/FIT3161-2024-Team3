@@ -231,9 +231,6 @@ Meteor.methods({
         // get ID of the team which the task belongs to
         const teamId = BoardCollection.findOne(task.boardId).teamId;
 
-        // delete the task
-        TaskCollection.remove({_id: taskId});
-
         if (Meteor.isServer) {
             // Log task deletion
             try {
@@ -244,6 +241,9 @@ Meteor.methods({
                 throw new Meteor.Error('log-insert-failed', 'Failed to log task deletion');
             }
         }
+
+        // delete the task
+        TaskCollection.remove({_id: taskId});
     },
 
     /**
