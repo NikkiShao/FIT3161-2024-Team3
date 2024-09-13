@@ -193,9 +193,6 @@ Meteor.methods({
         // get ID of the team which the board belongs to
         const teamId = board.teamId;
 
-        // Delete the board itself
-        BoardCollection.remove({ _id: boardId });
-
         if (Meteor.isServer) {
             // Log the board deletion action
             try {
@@ -206,5 +203,8 @@ Meteor.methods({
                 throw new Meteor.Error('log-insert-failed', 'Failed to log board deletion');
             }
         }
+
+        // Delete the board itself
+        BoardCollection.remove({ _id: boardId });
     }
 });
