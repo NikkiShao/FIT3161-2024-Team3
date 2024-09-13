@@ -442,5 +442,38 @@ if (Meteor.isClient) {
                  assert.fail(`Error inserting duplicate log entries: ${error.message}`);
              });
          }).timeout(10000);
+
+        /**
+         * Test case for when username provided isn't actually a user in the database.
+         */
+        it('error for username of non-existing user', function () {
+
+            let isError = false;
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("logEntry.insert",
+                    validLogEntry.logEntryAction,
+                    validLogEntry.username,
+                    validLogEntry.teamId,
+                    validLogEntry.boardId,
+                    validLogEntry.taskId,
+                    (error) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, 'user-info-missing');
+                assert.strictEqual(error.reason, 'Could not retrieve user information');
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for username of non-existing user");
+                }
+            });
+        }).timeout(10000);
     });
 }
