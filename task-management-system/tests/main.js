@@ -1,10 +1,11 @@
 import assert from "assert";
 
-//import './user.tests.js';
-//import './board.tests.js';
-//import './task.tests.js';
-//import './team.tests.js';
-import './logentry.tests.js';
+// import './user.tests.js';
+// import './board.tests.js';
+// import './task.tests.js';
+import './team.tests.js';
+import './poll.tests.js'
+// import './logentry.tests.js';
 
 
 describe("task-management-system", function () {

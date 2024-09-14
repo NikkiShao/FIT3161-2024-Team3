@@ -32,6 +32,7 @@ Meteor.methods({
             pollOptions: optionsFormatted,
             teamId: teamId
         })
+        console.log("display pollId:", pollId)
 
         return pollId;
     },
