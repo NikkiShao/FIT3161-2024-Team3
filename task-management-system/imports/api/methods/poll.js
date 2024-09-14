@@ -5,7 +5,7 @@
  */
 
 import PollCollection from "../collections/poll";
-import {Meteor} from "meteor/meteor";
+import { Meteor } from "meteor/meteor";
 import BoardCollection from "../collections/board";
 
 Meteor.methods({
@@ -18,6 +18,67 @@ Meteor.methods({
      * @param teamId - ID of the team the poll belongs to
      */
     "add_poll": function (title, deadline, options, teamId) {
+
+        // validation checks
+
+        // Validate type of title
+        if (typeof title !== "string") {
+            throw new Meteor.Error("poll-add-failed", "Invalid poll title");
+        }
+
+        // Validate type of deadline
+        if (typeof deadline !== "string") {
+            throw new Meteor.Error("poll-add-failed", "Invalid poll deadline");
+        }
+
+        // Validate type of options
+        if (!Array.isArray(options)) {
+            throw new Meteor.Error("poll-add-failed", "Invalid poll options");
+        }
+
+        // Validate type of teamId
+        if (typeof teamId !== "string") {
+            throw new Meteor.Error("poll-add-failed", "Invalid teamId");
+        }
+
+        // Validate poll title is not empty and does not exceed 50 characters
+        if (title.trim() === "") {
+            throw new Meteor.Error("poll-add-failed", "Poll title is required");
+        }
+        if (title.length > 50) {
+            throw new Meteor.Error("poll-add-failed", "Poll title cannot exceed 50 characters");
+        }
+
+        // Validate poll deadline is a valid date and in the future
+        const deadlineDate = new Date(deadline);
+        if (isNaN(deadlineDate.getTime())) {
+            throw new Meteor.Error("poll-add-failed", "Invalid poll deadline date");
+        }
+        if (deadlineDate < new Date()) {
+            throw new Meteor.Error("poll-add-failed", "Poll deadline must be in the future");
+        }
+
+        // Validate deadline date format is in ISO format
+        if (deadlineDate.toISOString() !== deadline) {
+            throw new Meteor.Error("poll-add-failed", "Invalid poll deadline date format");
+        }
+
+        // Validate options contain at least two valid strings and none of the options are empty
+        if (options.length < 2) {
+            throw new Meteor.Error("poll-add-failed", "At least two poll options are required");
+        }
+        options.forEach(option => {
+            if (option.trim() === "") {
+                throw new Meteor.Error("poll-add-failed", "Poll option text cannot be empty");
+            }
+        });
+
+        // Validate teamId is not empty
+        if (teamId.trim() === "") {
+            throw new Meteor.Error("poll-add-failed", "Invalid teamId");
+        }
+
+
         const optionsFormatted = options.map((option) => {
             return {
                 optionText: option,
@@ -32,7 +93,7 @@ Meteor.methods({
             pollOptions: optionsFormatted,
             teamId: teamId
         })
-        console.log("display pollId:", pollId)
+        // console.log("display pollId:", pollId)
 
         return pollId;
     },
@@ -43,13 +104,15 @@ Meteor.methods({
      * @param pollId - ID of poll to delete
      */
     "delete_poll": async function (pollId) {
+        check(pollId, String);
+
         const poll = PollCollection.findOne(pollId);
         if (!poll) {
             throw new Meteor.Error('poll-delete-failed', 'Poll not found');
         }
 
         // delete the poll
-        PollCollection.remove({_id: pollId});
+        PollCollection.remove({ _id: pollId });
 
     },
 
@@ -60,6 +123,29 @@ Meteor.methods({
      * @param updatedPollData - the updated poll data
      */
     "update_poll": function (pollId, updatedPollData) {
+        // Check type of pollId
+        if (typeof pollId !== "string") {
+            throw new Meteor.Error("poll-update-failed", "Invalid pollId");
+        }
+
+        // Check type of updatedPollData
+        if (typeof updatedPollData !== "object") {
+            throw new Meteor.Error("poll-update-failed", "Invalid updatedPollData");
+        }
+
+        // Check if poll exists
+        if (!PollCollection.findOne({ _id: pollId })) {
+            throw new Meteor.Error("poll-update-failed", "Poll not found");
+        }
+
+        // Validate the options format
+        if (!Array.isArray(updatedPollData.options) || updatedPollData.options.some(option => {
+            return !option.optionText || !Array.isArray(option.voterUsernames);
+        })) {
+            throw new Meteor.Error('invalid-options', 'Invalid options data.');
+        }
+
+
         const poll = PollCollection.findOne({ _id: pollId });
         console.log("Poll: ", poll);
         if (!poll) {
