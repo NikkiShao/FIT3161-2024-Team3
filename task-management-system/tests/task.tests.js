@@ -29,7 +29,6 @@ if (Meteor.isClient) {
         });
 
         const testUser = {
-            // _id: "user1",
             username: "testUser",
             password: "testPassword",
             email: "test@test.com",
@@ -40,7 +39,6 @@ if (Meteor.isClient) {
         };
 
         const testBoard = {
-            // _id: "board1",
             boardName: "test board",
             boardCode: "code123",
             boardDeadline: "2024-12-05T17:55:00.000Z",
@@ -54,7 +52,6 @@ if (Meteor.isClient) {
         }
 
         const testTeamData = {
-            // _id: "testTeamId",
             teamName: "test team",
             teamLeader: "test1@test1.com",
             teamMembers: ["test2@test2.com"],
@@ -63,7 +60,6 @@ if (Meteor.isClient) {
         }
 
         const testUnpinnedTaskData = {
-            // _id: "unpinned1",
             taskName: "test task",
             taskDesc: "test description",
             taskDeadlineDate: "2024-12-05T17:55:00.000Z",
@@ -75,7 +71,6 @@ if (Meteor.isClient) {
         }
 
         const testPinnedTaskData = {
-            // _id: "pinned1",
             taskName: "test task",
             taskDesc: "test description",
             taskDeadlineDate: "2024-12-05T17:55:00.000Z",

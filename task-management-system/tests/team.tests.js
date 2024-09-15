@@ -9,6 +9,9 @@ import {Accounts} from "meteor/accounts-base";
 import {resetDatabase} from 'meteor/xolvio:cleaner';
 import TeamCollection from "../imports/api/collections/team";
 import "../imports/api/methods/team";
+import BoardCollection from "../imports/api/collections/board";
+import PollCollection from "../imports/api/collections/poll";
+import TaskCollection from "../imports/api/collections/task";
 
 const assert = require('assert');
 
@@ -57,6 +60,38 @@ if (Meteor.isClient) {
             teamMembers: ["test1@test1.com"],
             teamInvitations: [
                 {email: "test2@test2.com", token: "testToken1"}]
+        }
+
+        const testBoard = {
+            boardName: "test board",
+            boardCode: "code123",
+            boardDeadline: "2024-12-05T17:55:00.000Z",
+            boardDescription: "description string",
+            teamId: "",
+            boardTags: [{tagName: "test1", tagColour: "#000000"}],
+            boardStatuses: [
+                {"statusName": "To Do", "statusOrder": 1},
+                {"statusName": "Done", "statusOrder": 2}
+            ],
+        }
+
+        const testUnpinnedTaskData = {
+            taskName: "test task",
+            taskDesc: "test description",
+            taskDeadlineDate: "2024-12-05T17:55:00.000Z",
+            taskIsPinned: false,
+            boardId: "", // added dynamically during test cases
+            statusName: "Done",
+            tagNames: ["a", "b"],
+            contributions: [{email: "test@test.com", percent: 12}],
+        }
+
+        const testPolls = {
+            pollTitle: "test poll",
+            pollCreationDate: "2024-09-05T17:55:00.000Z",
+            pollDeadlineDate: "2024-12-05T17:55:00.000Z",
+            pollOptions: [{optionText: "option1", voterUsernames: []}, {optionText: "option2", voterUsernames: []}],
+            teamId: "" //added during test case
         }
 
         /**
@@ -518,17 +553,26 @@ if (Meteor.isClient) {
             // create members of team
             Accounts.createUser(testUser1);
             Accounts.createUser(testUser2);
-
-            // insert a collection
             const id = TeamCollection.insert(testTeam);
+            testBoard.teamId = id;
+            testPolls.teamId = id;
+            const boardId = BoardCollection.insert(testBoard);
+            const pollId = PollCollection.insert(testPolls);
+            testUnpinnedTaskData.boardId = boardId;
+            const taskId = TaskCollection.insert(testUnpinnedTaskData);
 
             // call delete method for deletion
             Meteor.call('delete_team', id, testUser1.username);
 
             // check deleted team is DELETED
             const deletedTeam = TeamCollection.findOne(id);
+            const deletedPoll = PollCollection.findOne(pollId);
+            const deletedTask = PollCollection.findOne(taskId);
+            const deletedBoard = PollCollection.findOne(boardId);
             assert.strictEqual(deletedTeam, undefined);
-
+            assert.strictEqual(deletedPoll, undefined);
+            assert.strictEqual(deletedTask, undefined);
+            assert.strictEqual(deletedBoard, undefined);
         });
     });
 }
