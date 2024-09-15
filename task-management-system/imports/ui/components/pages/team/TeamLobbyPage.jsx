@@ -6,7 +6,6 @@
  */
 
 import React, {useState} from 'react';
-import {ChevronLeftIcon, Cog8ToothIcon, PlusIcon} from "@heroicons/react/24/outline"
 import {useNavigate, useParams} from "react-router-dom";
 import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import Spinner from "react-bootstrap/Spinner";
@@ -18,7 +17,6 @@ import PollCollection from "../../../../api/collections/poll";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
-// import Card from "../../general/cards/Card";
 import {getUserInfo} from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
@@ -26,6 +24,7 @@ import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
 import PollCreationModal from "../../general/modal/PollCreationModal";
 import PollCard from "../../general/cards/PollCard.jsx";
+import {addIcon, backLeftArrow, logsIcon, settingsIcon} from "../../icons";
 
 
 export const TeamLobbyPage = () => {
@@ -75,12 +74,6 @@ export const TeamLobbyPage = () => {
 
         // check user is in the team
         if (teamData && teamData.teamMembers.includes(userInfo.email)) {
-
-            // variables for icons
-            const CogIcon = <Cog8ToothIcon strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}
-                                           style={{paddingRight: "5px"}}/>
-            const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
-                                       style={{paddingRight: "5px"}}/>;
 
             // sort by board code, then map to JSX object
             const displayedBoardCards = boardsData
@@ -159,12 +152,12 @@ export const TeamLobbyPage = () => {
                                     onClick={() => {
                                         navigate('/' + BaseUrlPath.TEAMS)
                                     }}>
-                                <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                                {backLeftArrow}
                                 Back
                             </Button>
                         </div>
                         <h1 className={"text-center"}>Team: {teamData.teamName}</h1>
-                        <Button className={"btn-light-grey"} onClick={() => navigate('settings')}>{CogIcon}Team Settings</Button>
+                        <Button className={"btn-light-grey"} onClick={() => navigate('settings')}>{settingsIcon} Team Settings</Button>
                     </div>
 
                     <hr className={"teams__hr"}/>
@@ -174,7 +167,7 @@ export const TeamLobbyPage = () => {
                         <h2 className={"text-center default__heading2"}>Boards</h2>
                         <Button className={"btn-grey"}
                                 onClick={onOpenBoardModal}
-                                style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                                style={{minWidth: "75px", width: "120px"}}>{addIcon} Add</Button>
                     </div>
 
                     <div className={"teams__cards-div"}>
@@ -185,7 +178,7 @@ export const TeamLobbyPage = () => {
                     </div>
 
                     <Button className={"board-log-button btn-light-grey"}
-                            onClick={() => navigate("logs")}>Board History Logs</Button>
+                            onClick={() => navigate("logs")}>{logsIcon} Board History Logs</Button>
 
                     <hr className={"teams__hr"}/>
 
@@ -194,7 +187,7 @@ export const TeamLobbyPage = () => {
                         <h2 className={"text-center default__heading2"}>Polls</h2>
                         <Button className={"btn-grey"}
                                 onClick={onOpenPollModal}
-                                style={{minWidth: "75px", width: "120px"}}>{plusIcon} Add</Button>
+                                style={{minWidth: "75px", width: "120px"}}>{addIcon} Add</Button>
                     </div>
 
                     {

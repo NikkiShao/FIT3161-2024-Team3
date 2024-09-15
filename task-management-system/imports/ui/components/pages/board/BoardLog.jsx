@@ -13,9 +13,8 @@ import LogEntryCollection from "../../../../api/collections/logEntry";
 import {useNavigate, useParams} from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "../../general/buttons/Button";
-import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {ChevronLeftIcon} from "@heroicons/react/24/outline";
 import BoardCollection from "../../../../api/collections/board";
+import {backLeftArrow} from "../../icons";
 
 /**
  * Board log component
@@ -54,7 +53,7 @@ export const BoardLog = () => {
                             onClick={() => {
                                 navigate(-1);
                             }}>
-                        <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                        {backLeftArrow}
                         Back
                     </Button>
 

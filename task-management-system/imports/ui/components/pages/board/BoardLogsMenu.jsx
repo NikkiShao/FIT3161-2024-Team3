@@ -15,7 +15,7 @@ import Spinner from "react-bootstrap/Spinner";
 import BoardCollection from "../../../../api/collections/board";
 import Button from "../../general/buttons/Button";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {ChevronLeftIcon} from "@heroicons/react/24/outline";
+import {backLeftArrow} from "../../icons";
 
 
 /**
@@ -129,7 +129,7 @@ export const BoardLogsMenu = () => {
                             onClick={() => {
                                 navigate('/' + BaseUrlPath.TEAMS + "/" + teamId);
                             }}>
-                        <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                        {backLeftArrow}
                         Back
                     </Button>
 

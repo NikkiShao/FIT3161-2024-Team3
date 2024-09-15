@@ -7,7 +7,7 @@
 
 import React, {useState} from 'react';
 import {Accounts} from 'meteor/accounts-base';
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {passwordStrength} from "check-password-strength";
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
@@ -16,8 +16,8 @@ import Input from "../../general/inputs/Input";
 import Button from "../../general/buttons/Button";
 
 import './registration.css'
-import {ChevronLeftIcon} from "@heroicons/react/24/outline";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
+import {backLeftArrow} from "../../icons";
 
 /**
  * Registration page component
@@ -176,7 +176,7 @@ export const RegistrationPage = () => {
                     onClick={() => {
                         navigate('/' + BaseUrlPath.LOGIN)
                     }}>
-                <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                {backLeftArrow}
                 Back
             </Button>
 

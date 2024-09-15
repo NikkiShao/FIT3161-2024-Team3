@@ -8,7 +8,6 @@ import React, {Fragment, useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
 import {useNavigate, useParams} from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
-import {ChevronLeftIcon, MinusCircleIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import {Modal} from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
@@ -23,6 +22,7 @@ import Button from "../../general/buttons/Button";
 import Input from "../../general/inputs/Input.jsx";
 import {generateInvitationToken, getUserInfo} from "../../util";
 import '../../general/modal/modal.css'
+import {backLeftArrow, closeModalIcon, minusCircleIcon, saveIcon, subAddIcon} from "../../icons";
 
 /**
  * Settings page for a team
@@ -70,7 +70,6 @@ export const TeamSettingsPage = () => {
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     // errors and messages
     const [errors, setErrors] = useState({
@@ -265,7 +264,7 @@ export const TeamSettingsPage = () => {
                                 onClick={() => {
                                     navigate(`/teams/${teamId}`);
                                 }}>
-                            <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                            {backLeftArrow}
                             Back
                         </Button>
 
@@ -326,9 +325,7 @@ export const TeamSettingsPage = () => {
                                                         isLeader ?
                                                             <button className="icon-btn"
                                                                     onClick={() => handleRemoveMember(member.emails[0].address)}>
-                                                                <MinusCircleIcon color={"var(--navy)"} strokeWidth={2}
-                                                                                 viewBox="0 0 24 24" width={30}
-                                                                                 height={30}/>
+                                                                {minusCircleIcon}
                                                             </button> : null
                                                     }
                                                 </div>
@@ -357,9 +354,7 @@ export const TeamSettingsPage = () => {
                                                         isLeader ?
                                                             <button className="icon-btn"
                                                                     onClick={() => handleRemoveInvitation(invitation.email)}>
-                                                                <MinusCircleIcon color={"var(--navy)"} strokeWidth={2}
-                                                                                 viewBox="0 0 24 24" width={30}
-                                                                                 height={30}/>
+                                                                {minusCircleIcon}
                                                             </button> : null
                                                     }
                                                 </div>
@@ -381,9 +376,7 @@ export const TeamSettingsPage = () => {
                                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                                     </div>
                                     <button className="icon-btn" onClick={handleAddInvitation}>
-                                        <PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24"
-                                                        width={30}
-                                                        height={30}/>
+                                        {subAddIcon}
                                     </button>
                                 </div>
                             </div> : null
@@ -392,7 +385,7 @@ export const TeamSettingsPage = () => {
                         {/* submit button if leader */}
                         {isLeader ?
                             <Button className="btn-brown btn-submit" type={"submit"} onClick={(e) => saveChanges(e)}>
-                                Save Changes
+                                {saveIcon} Save Changes
                             </Button> : null
                         }
 
@@ -425,7 +418,7 @@ export const TeamSettingsPage = () => {
                     // if there is only 1 user left (the leader)
                     teamData.teamMembers.length === 1 ?
                         <Modal
-                            closeIcon={closeIcon}
+                            closeIcon={closeModalIcon}
                             classNames={{modal: classNames('modal-base', '')}}
                             open={open}
                             onClose={onCloseModal}
@@ -447,7 +440,7 @@ export const TeamSettingsPage = () => {
 
                         // not the last user
                         <Modal
-                            closeIcon={closeIcon}
+                            closeIcon={closeModalIcon}
                             classNames={{
                                 modal: classNames('modal-base', ''),
                             }}

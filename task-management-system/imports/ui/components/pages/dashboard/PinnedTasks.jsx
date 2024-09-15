@@ -4,17 +4,17 @@
  * Contributors: Samuel, Nikki
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
+import React, {useCallback, useMemo, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
 import Spinner from "react-bootstrap/Spinner";
-import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
-import { TaskCollection } from '/imports/api/collections/task';
-import { BoardCollection } from '/imports/api/collections/board';
-import { TeamCollection } from '/imports/api/collections/team';
+import {TaskCollection} from '/imports/api/collections/task';
+import {BoardCollection} from '/imports/api/collections/board';
+import {TeamCollection} from '/imports/api/collections/team';
 import TaskCard from "/imports/ui/components/general/cards/TaskCard";
 import HoverTip from "../../general/hoverTip/HoverTip";
 import './dashboard.css';
+import {helpQuestionIcon} from "../../icons";
 
 const PinnedTasks = ({ userInfo }) => {
     const [pinToggle, setPinToggle] = useState(false);
@@ -68,7 +68,6 @@ const PinnedTasks = ({ userInfo }) => {
     }, [boardIds, pinToggle]);
 
     // for help hover
-    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
     const helpText = "This section shows the tasks you have pinned on any of your boards.";
 
     const isLoading = isLoadingTeams() || isLoadingBoards() || isLoadingTasks();
@@ -76,7 +75,7 @@ const PinnedTasks = ({ userInfo }) => {
     if (!isLoading) {
         return (
             <div className="background-base dashboard-item dashboard-pinned-column">
-                <HoverTip icon={questionIcon}
+                <HoverTip icon={helpQuestionIcon}
                           toolTipText={helpText}
                           divClassName={"page-help-tip"}
                           textClassname

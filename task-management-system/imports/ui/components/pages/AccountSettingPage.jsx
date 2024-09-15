@@ -18,6 +18,7 @@ import TeamCollection from '../../../api/collections/team.js'
 import UserCollection from '../../../api/collections/user.js';
 import "../pages/registration/registration.css"
 import Input from "../general/inputs/Input";
+import {saveIcon} from "../icons";
 
 /**
  * Account settings page component
@@ -239,7 +240,7 @@ function AccountSettings() {
                 </div>
 
                 <Button className={"btn-brown btn-submit"} onClick={handleSubmit}>
-                    Save Changes
+                    {saveIcon} Save Changes
                 </Button>
                 {updateSuccess === null ? null :
                     updateSuccess ?

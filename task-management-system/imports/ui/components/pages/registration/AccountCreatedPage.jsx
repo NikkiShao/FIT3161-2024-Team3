@@ -7,8 +7,8 @@
 
 
 import React from "react";
-import {useNavigate, useParams} from "react-router-dom";
-import {EnvelopeOpenIcon, ArrowRightIcon} from "@heroicons/react/24/outline";
+import {useNavigate} from "react-router-dom";
+import {ArrowRightIcon, EnvelopeOpenIcon} from "@heroicons/react/24/outline";
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";

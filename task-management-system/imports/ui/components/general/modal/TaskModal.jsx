@@ -6,7 +6,7 @@
 
 import React, {useState} from 'react';
 import {Modal} from 'react-responsive-modal';
-import {CheckIcon, MinusCircleIcon, PlusIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import {PlusIcon} from "@heroicons/react/24/outline";
 
 import classNames from "classnames";
 import Button from "../buttons/Button";
@@ -17,6 +17,7 @@ import TaskTag from "../cards/TaskTag";
 import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
 import {getUserInfo, isUrgentOverdue} from "../../util";
+import {addIcon, closeModalIcon, minusCircleIcon, saveIcon} from "../../icons";
 
 /**
  * Task modal to view/edit or create tasks
@@ -239,18 +240,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
     }
 
     // icons
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
-
-    const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
-                               style={{paddingRight: "5px"}}/>;
-    const saveIcon = <CheckIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
-                                style={{paddingRight: "5px"}}/>;
-
-    const addTagIcon = <PlusIcon color={"var(--navy)"} className={"clickable"}
-                                 strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>
-
-    const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
-                                       height={30}/>;
+    const addTagIcon = <PlusIcon color={"var(--navy)"} className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>
 
     // all delete task modal stuff
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -312,7 +302,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                 <Modal
                     open={isOpen} // Control the visibility of the modal
                     onClose={modalCloseClearInputs} // Function to call when the modal should close
-                    closeIcon={closeIcon}
+                    closeIcon={closeModalIcon}
                     center
                     classNames={{
                         modal: classNames('modal-base modal-large'),
@@ -517,7 +507,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                         <button className={"icon-btn"} onClick={(e) => {
                                                             removeContribution(e, memberEmail)
                                                         }}>
-                                                            {minusIcon}
+                                                            {minusCircleIcon}
                                                         </button>
                                                     </div>
                                                 )
@@ -565,7 +555,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                     {saveIcon} Save Changes
                                 </Button> :
                                 <Button type="submit" className="btn-brown btn-submit">
-                                    {plusIcon} Add Task
+                                    {addIcon} Add Task
                                 </Button>
                         }
                     </form>
@@ -586,7 +576,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                 <Modal
                     open={deleteModalOpen} // Control the visibility of the modal
                     onClose={onCloseDeleteModal} // Function to call when the modal should close
-                    closeIcon={closeIcon}
+                    closeIcon={closeModalIcon}
                     center
                     classNames={{
                         modal: classNames('modal-base'),

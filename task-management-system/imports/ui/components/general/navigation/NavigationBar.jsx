@@ -9,7 +9,7 @@ import React, {useState} from "react";
 import {NavLink, useLocation} from "react-router-dom";
 import {Tracker} from 'meteor/tracker';
 import {Meteor} from "meteor/meteor";
-import {HomeIcon, UserGroupIcon, Cog6ToothIcon, ArrowUpTrayIcon} from "@heroicons/react/24/outline";
+import {ArrowUpTrayIcon, Cog6ToothIcon, HomeIcon, UserGroupIcon} from "@heroicons/react/24/outline";
 
 import './navigationBar.css'
 import {getUserInfo} from "../../util";

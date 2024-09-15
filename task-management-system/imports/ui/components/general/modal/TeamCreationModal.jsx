@@ -8,11 +8,11 @@
 import React, {Fragment, useState} from 'react';
 import classNames from "classnames";
 import {Modal} from 'react-responsive-modal';
-import {MinusCircleIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
 import {getUserInfo} from "../../util";
 import '../../general/modal/modal.css';
+import {closeModalIcon, minusCircleIcon, subAddIcon} from "../../icons";
 
 /**
  * The popup for adding a new team on the teams list page
@@ -36,11 +36,6 @@ export const TeamCreationModal = ({open, closeHandler}) => {
 
     // Regex for validating email addresses
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-
-    // Icons for UI elements
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
-    const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}/>;
-    const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}/>;
 
     // Handler for adding a new team member
     const handleAddMember = (event) => {
@@ -113,7 +108,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
     }
     return (
         <Modal
-            closeIcon={closeIcon}
+            closeIcon={closeModalIcon}
             classNames={{modal: classNames('modal-base', '')}}
             open={open}
             onClose={closeHandler}
@@ -163,7 +158,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                                             <button className="icon-btn"
                                                     onClick={(event) =>
                                                         handleRemoveMember(event, member)}>
-                                                {minusIcon}
+                                                {minusCircleIcon}
                                             </button>
                                         </div>
                                         <div></div>
@@ -190,7 +185,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                     </div>
                     <button className="icon-btn" onClick={handleAddMember}>
-                        {plusIcon}
+                        {subAddIcon}
                     </button>
                 </div>
 

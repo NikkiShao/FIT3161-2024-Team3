@@ -9,7 +9,7 @@ import React, {Fragment, useState} from 'react';
 import {Modal} from 'react-responsive-modal';
 import {useNavigate, useParams} from "react-router-dom";
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {ChevronLeftIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import {XCircleIcon} from "@heroicons/react/24/outline";
 import Spinner from "react-bootstrap/Spinner";
 
 import BoardCollection from '../../../../api/collections/board';
@@ -23,6 +23,7 @@ import classNames from "classnames";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import {getUserInfo} from "../../util";
 import './board.css'
+import {backLeftArrow, closeModalIcon, saveIcon, subAddIcon} from "../../icons";
 
 /**
  * Board Settings Page
@@ -60,11 +61,7 @@ export const BoardSettings = () => {
     const startCond = (boardNameInput === '' && boardCodeInput === '' && boardDeadlineTimeInput === '' && boardDeadlineDateInput === '' && boardDescriptionInput === '');
     const minDeadlineDate = new Date();
 
-    const removeIcon = <XCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2}
-                                    viewBox="0 0 24 24" width={22} height={22}/>
-    const addIcon = <PlusCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2}
-                                    viewBox="0 0 24 24" width={30} height={30}/>
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
+    const removeIcon = <XCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={22} height={22}/>
 
     const isLoadingTeam = useSubscribe('specific_team', teamId);
     const isLoadingBoard = useSubscribe('board_by_id', boardId);
@@ -276,7 +273,7 @@ export const BoardSettings = () => {
                                 onClick={() => {
                                     navigate('/' + BaseUrlPath.TEAMS + "/" + teamId + "/boards/" + boardId);
                                 }}>
-                            <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                            {backLeftArrow}
                             Back
                         </Button>
 
@@ -392,7 +389,7 @@ export const BoardSettings = () => {
                                         onChange={(e) => setBoardNewStatusInput(e.target.value)}
                                     />
                                     <button className="icon-btn" onClick={(e) => handleAddStatus(e)}>
-                                        {addIcon}
+                                        {subAddIcon}
                                     </button>
                                 </div>
 
@@ -441,7 +438,7 @@ export const BoardSettings = () => {
                                         value={boardNewTagHex}
                                         onChange={(e) => setBoardNewTagHex(e.target.value)}
                                     />
-                                    <button className="icon-btn" onClick={handleAddTag}>{addIcon}</button>
+                                    <button className="icon-btn" onClick={handleAddTag}>{subAddIcon}</button>
                                 </div>
 
                                 {errors.boardNewTag &&
@@ -451,7 +448,7 @@ export const BoardSettings = () => {
 
                         {/* submit button */}
                         <Button className="btn-brown btn-submit" type={"submit"} onClick={(e) => saveChanges(e)}>
-                            Save Changes
+                            {saveIcon} Save Changes
                         </Button>
                         {updateSuccess === null ? null :
                             updateSuccess ?
@@ -477,7 +474,7 @@ export const BoardSettings = () => {
 
                 </WhiteBackground>
                 <Modal
-                    closeIcon={closeIcon}
+                    closeIcon={closeModalIcon}
                     classNames={{modal: classNames('modal-base', '')}}
                     open={open}
                     onClose={onCloseModal}

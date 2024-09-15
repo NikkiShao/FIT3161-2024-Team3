@@ -7,26 +7,25 @@
 
 import React, {useState} from 'react';
 import classNames from "classnames";
-import {XCircleIcon} from "@heroicons/react/24/outline";
 import {Modal} from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import '../../general/modal/modal.css'
 
 import Button from "../../general/buttons/Button";
+import {closeModalIcon} from "../../icons";
 
 const ModalExamples = () => {
     const [open, setOpen] = useState(false);
 
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     return (
         <div>
             <Button className={"btn-brown"} onClick={onOpenModal}>Open modal</Button>
 
             <Modal
-                closeIcon={closeIcon}
+                closeIcon={closeModalIcon}
                 classNames={{
                     modal: classNames('modal-base', ''),
                 }}

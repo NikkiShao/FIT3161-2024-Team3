@@ -7,7 +7,6 @@
 
 import React from "react";
 import Tippy from '@tippyjs/react/headless';
-import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import classNames from "classnames";
 import "./hoverTip.css"
 

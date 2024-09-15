@@ -16,16 +16,14 @@ import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
 import TeamCollection from '../../../../api/collections/team.js'
 
 
-import {XCircleIcon} from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import '../../general/modal/modal.css';
+import {closeModalIcon} from "../../icons";
 
 
 const DeleteAccountModal = ({open, closeHandler}) => {
     const userData = getUserInfo();
     const [isJoined, setIsJoined] = useState(false);
-
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
 
@@ -74,7 +72,7 @@ const DeleteAccountModal = ({open, closeHandler}) => {
 
     return (
         <Modal
-            closeIcon={closeIcon}
+            closeIcon={closeModalIcon}
             classNames={{
                 modal: classNames('modal-base', ''),
             }}

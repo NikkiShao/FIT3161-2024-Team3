@@ -7,7 +7,6 @@
 
 import React, {useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {PlusIcon} from "@heroicons/react/24/outline";
 import {useNavigate} from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -21,7 +20,7 @@ import Button from "../../general/buttons/Button";
 import {getUserInfo} from "../../util";
 import TeamCreationModal from "../../general/modal/TeamCreationModal";
 import "./team.css"
-import board from "../../../../api/collections/board.js";
+import {addIcon} from "../../icons";
 
 export const TeamsListPage = () => {
 
@@ -83,9 +82,6 @@ export const TeamsListPage = () => {
             }
         }
 
-        const plusIcon = <PlusIcon strokeWidth={3} viewBox="0 0 21 21" width={22} height={22}
-                                   style={{paddingRight: "5px"}}/>;
-
         // sort by team name (if you don't sort, it changes every time)
         const sortedTeamsData = teamsData.sort((a, b) => a.teamName.localeCompare(b.teamName));
 
@@ -101,10 +97,10 @@ export const TeamsListPage = () => {
 
                 <div className="header-space-centered">
                     <Button className={"btn-grey"}
-                            style={{minWidth: "75px", width: "120px", visibility: "hidden"}}>{plusIcon} Add</Button>
+                            style={{minWidth: "75px", width: "120px", visibility: "hidden"}}>{addIcon} Add</Button>
                     <h1 className={"text-center default__heading1"}>Teams List</h1>
                     <Button className={"btn-grey"} style={{minWidth: "75px", width: "120px"}}
-                            onClick={onOpenModal}>{plusIcon} Add</Button>
+                            onClick={onOpenModal}>{addIcon} Add</Button>
                 </div>
 
                 {

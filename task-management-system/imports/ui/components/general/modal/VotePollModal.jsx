@@ -5,16 +5,15 @@
  * Version: 1.5
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { Modal } from 'react-responsive-modal';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Modal} from 'react-responsive-modal';
 import classNames from "classnames";
-import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
-import { XCircleIcon } from "@heroicons/react/24/outline";
 import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
-import { getUserInfo } from "../../util";
+import {getUserInfo} from "../../util";
+import {closeModalIcon, helpQuestionIcon} from "../../icons";
 
 /**
  * Modal for voting in a poll
@@ -25,8 +24,6 @@ import { getUserInfo } from "../../util";
  */
 const VotePollModal = ({ open, closeHandler, pollData }) => {
     const username = getUserInfo().username;
-
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
 
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
@@ -111,12 +108,9 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
         setErrorMessage(""); // Clear any error messages when an option is selected
     }, []);
 
-    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
-        width={20} height={20} />;
-
     return (
         <Modal
-            closeIcon={closeIcon}
+            closeIcon={closeModalIcon}
             classNames={{ modal: classNames('modal-base', '') }}
             open={open}
             onClose={closeHandler}
@@ -127,7 +121,7 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
                 <div className={"header-space-centered"}>
                     <div style={{ width: "25px", visibility: "hidden" }}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
-                    <HoverTip icon={questionIcon}
+                    <HoverTip icon={helpQuestionIcon}
                         outerText={""}
                         toolTipText={"You may change your vote anytime before the poll is closed."}
                         style={{ marginBottom: "10px" }}

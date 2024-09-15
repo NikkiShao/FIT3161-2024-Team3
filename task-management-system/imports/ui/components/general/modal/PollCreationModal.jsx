@@ -8,11 +8,11 @@
 import React, {Fragment, useState} from 'react';
 import classNames from "classnames";
 import {Modal} from 'react-responsive-modal';
-import {MinusCircleIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
 import '../../general/modal/modal.css';
+import {closeModalIcon, minusCircleIcon, subAddIcon} from "../../icons";
 
 /**
  * The popup for adding a new poll
@@ -34,11 +34,6 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
 
     // for date checking
     const minDeadlineDate = new Date();
-
-    // Icons for UI elements
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
-    const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}/>;
-    const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30} height={30}/>;
 
     // Handler for adding an option
     const handleAddOption = (event) => {
@@ -130,7 +125,7 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
     }
     return (
         <Modal
-            closeIcon={closeIcon}
+            closeIcon={closeModalIcon}
             classNames={{modal: classNames('modal-base', '')}}
             open={open}
             onClose={closeHandler}
@@ -200,7 +195,7 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
                                                 <button className="icon-btn"
                                                         onClick={(event) =>
                                                             handleRemoveOption(event, option)}>
-                                                    {minusIcon}
+                                                    {minusCircleIcon}
                                                 </button>
                                             </div>
                                             <div></div>
@@ -226,7 +221,7 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
                         {errors.pollOptions && <span className="text-red small-text">{errors.pollOptions}</span>}
                     </div>
                     <button className="icon-btn" onClick={handleAddOption}>
-                        {plusIcon}
+                        {subAddIcon}
                     </button>
                 </div>
 
