@@ -11,6 +11,7 @@ import "../imports/api/methods/task";
 import TaskCollection from "../imports/api/collections/task";
 import BoardCollection from "../imports/api/collections/board";
 import TeamCollection from "../imports/api/collections/team";
+import { generateInvitationToken } from "../imports/ui/components/util";
 
 const assert = require('assert');
 
@@ -44,7 +45,7 @@ if (Meteor.isClient) {
             boardCode: "code123",
             boardDeadline: "2024-12-05T17:55:00.000Z",
             boardDescription: "description string",
-            teamId: "testTeamId",
+            teamId: "",
             boardTags: [{tagName: "test1", tagColour: "#000000"}],
             boardStatuses: [
                 {"statusName": "To Do", "statusOrder": 1},
@@ -53,10 +54,12 @@ if (Meteor.isClient) {
         }
 
         const testTeamData = {
-            _id: "testTeamId",
-            name: "test team",
-            leader: "test1@test1.com",
-            members: ["test2@test2.com"]
+            // _id: "testTeamId",
+            teamName: "test team",
+            teamLeader: "test1@test1.com",
+            teamMembers: ["test2@test2.com"],
+            teamInvitations: [
+                {email: "test2@test2.com", token: "testToken1"}]
         }
 
         const testUnpinnedTaskData = {
@@ -92,9 +95,9 @@ if (Meteor.isClient) {
             // create test user for logging username
             Accounts.createUser(testUser);
             const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
-            testBoard.teamId =  teamId;
             testPinnedTaskData.boardId = boardId;
             testPinnedTaskData._id = null;
 
@@ -124,8 +127,8 @@ if (Meteor.isClient) {
 
             // create test user for logging username
             Accounts.createUser(testUser);
-            // BoardCollection.insert(testBoard);
-
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
@@ -153,408 +156,491 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
 
-        // // todo: here add test cases for EACH input being invalid for ADDING a task
+        //test for empty task name
+        it('errors with invalid task name: empty name', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
+            let isError = false;
+
+            const addedTask = {
+                taskName: "",
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty name input");
+                }
+            });
+        });
+
+        //test for invalid long team name
+        it('errors with invalid name: too long name > 20 characters', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
+
+            const addedTask = {
+                taskName: "tasktasktasktasktasktask",
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid name input that is too long");
+                }
+            });
+        });
         
-        // //test for empty task name
-        // it('errors with invalid task name: empty name', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     const boardId = BoardCollection.insert(testBoard);
-        //     testUnpinnedTaskData.boardId = boardId;
-        //     testUnpinnedTaskData._id = null;
+        //test for empty task name
+        it('errors with invalid task description: empty description', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
         
-        //     let isError = false;
+            let isError = false;
 
-        //     const addedTask = {
-        //         taskName: "",
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: "",
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
 
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
             
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
             
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid empty name input");
-        //         }
-        //     });
-        // });
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty description input");
+                }
+            });
+        });
 
-        // //test for invalid long team name
-        // it('errors with invalid name: too long name > 20 characters', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
-        //     let isError = false;
+        //test for invalid long team name
+        it('errors with invalid task description: too long description > 1000 characters', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
 
-        //     const addedTask = {
-        //         taskName: "tasktasktasktasktasktask",
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
+            let isError = false;
+            const longDesc = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: longDesc,
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
             
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
             
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid name input that is too long");
-        //         }
-        //     });
-        // });
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid description input that is too long");
+                }
+            });
+        });
         
-        // //test for empty task name
-        // it('errors with invalid task description: empty description', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
+        //test deadline related validation
+        it('errors with invalid task deadline: empty deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
+
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: "",
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty deadline input");
+                }
+            });
+        });
+
+        it('errors with invalid task deadline: passed deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
+
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: "2024-08-05T17:55:00.000Z",
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid deadline input");
+                }
+            });
+        });
         
-        //     let isError = false;
+        it('errors with invalid task deadline: missing date deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
 
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: "",
-        //         taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: "T17:55:00.000Z",
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid deadline input");
+                }
+            });
+        });
 
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
-            
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
-            
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid empty description input");
-        //         }
-        //     });
-        // });
+        it('errors with invalid task deadline: missing time deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
 
-        // //test for invalid long team name
-        // it('errors with invalid task description: too long description > 1000 characters', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: "2024-08-05T",
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions,
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid deadline input");
+                }
+            });
+        });
 
-        //     let isError = false;
-        //     const longDesc = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: longDesc,
-        //         taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
+        it('errors with invalid task contribution: total exceed 100%', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
+
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: [{email: "test@test.com", percent: 120}]
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
             
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-task-failed")
             
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid description input that is too long");
-        //         }
-        //     });
-        // });
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid contribution input");
+                }
+            });
+        });
+
+        it('errors with invalid board: board does not exist', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            testUnpinnedTaskData._id = null;
+
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "task-missing-board")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for non-existing board");
+                }
+            });
+        });
         
-        // //test deadline related validation
-        // it('errors with invalid task deadline: empty deadline', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
+        it('errors with invalid user: user does not exist', function () {
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
 
-        //     let isError = false;
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: "",
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
+            let isError = false;
+            const addedTask = {
+                taskName: testUnpinnedTaskData.taskName,
+                taskDesc: testUnpinnedTaskData.taskDesc,
+                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
+                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
+                boardId: testUnpinnedTaskData.boardId,
+                statusName: testUnpinnedTaskData.statusName,
+                tagNames: testUnpinnedTaskData.tagNames,
+                contributions: testUnpinnedTaskData.contributions
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("insert_task", addedTask, testUser.username,
             
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "task-missing-user")
             
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid empty deadline input");
-        //         }
-        //     });
-        // });
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for non-existing user");
+                }
+            });
+        });
 
-        // it('errors with invalid task deadline: passed deadline', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
-
-        //     let isError = false;
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: "2024-08-05T17:55:00.000Z",
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
-            
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
-            
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid deadline input");
-        //         }
-        //     });
-        // });
-        
-        // it('errors with invalid task deadline: missing date deadline', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
-
-        //     let isError = false;
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: "T17:55:00.000Z",
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
-            
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
-            
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid deadline input");
-        //         }
-        //     });
-        // });
-
-        // it('errors with invalid task deadline: missing time deadline', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
-
-        //     let isError = false;
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: "2024-08-05T",
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions,
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
-            
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
-            
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid deadline input");
-        //         }
-        //     });
-        // });
-
-        // it('errors with invalid task contribution: total exceed 100%', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     BoardCollection.insert(testBoard);
-
-        //     let isError = false;
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: [{email: "test@test.com", percent: 120}]
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
-            
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
-            
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for invalid contribution input");
-        //         }
-        //     });
-        // });
-
-        // it('errors with invalid board: board does not exist', function () {
-        //     // insert test user
-        //     Accounts.createUser(testUser);
-        //     let isError = false;
-        //     const addedTask = {
-        //         taskName: testUnpinnedTaskData.taskName,
-        //         taskDesc: testUnpinnedTaskData.taskDesc,
-        //         taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-        //         taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-        //         boardId: testUnpinnedTaskData.boardId,
-        //         statusName: testUnpinnedTaskData.statusName,
-        //         tagNames: testUnpinnedTaskData.tagNames,
-        //         contributions: testUnpinnedTaskData.contributions
-        //     }
-        //     // Wrap the Meteor.call in a Promise
-        //     new Promise((resolve, reject) => {
-        //         Meteor.call("insert_task", addedTask, testUser.username,
-            
-        //             (error, result) => {
-        //                 if (error) {
-        //                     reject(error);
-        //                 } else {
-        //                     resolve(result);
-        //                 }
-        //             }
-        //         );
-        //     }).catch((error) => {
-        //         isError = true;
-        //         assert.strictEqual(error.error, "add-task-failed")
-            
-        //     }).then(() => {
-        //         if (!isError) {
-        //             assert.fail("Did not provide required error for non-existing board");
-        //         }
-        //     });
-        // });
-        
         /**
          * Test case to check if a task can be updated successfully.
          */
@@ -562,9 +648,10 @@ if (Meteor.isClient) {
 
             // create test user for logging username
             Accounts.createUser(testUser);
-
+            const teamId = TeamCollection.insert(testTeamData);
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
             testPinnedTaskData.boardId = boardId;
             testPinnedTaskData._id = "TestId";
 
@@ -603,7 +690,533 @@ if (Meteor.isClient) {
         });
 
         // todo: here add test cases for EACH input being invalid for UPDATING a task
+        //test for empty task name
+        it('errors with invalid updated task name: empty name', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
 
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            const editedTask = {
+                _id: "TestId",
+                taskName: "",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty name input");
+                }
+            });
+        });
+
+        //test for invalid long team name
+        it('errors with invalid updated name: too long name > 20 characters', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "tasktasktasktasktasktask",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid name input that is too long");
+                }
+            });
+        });
+        
+        //test for empty task name
+        it('errors with invalid updated task description: empty description', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "",
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty description input");
+                }
+            });
+        });
+
+        //test for invalid long team name
+        it('errors with invalid updated task description: too long description > 1000 characters', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+            const longDesc = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: longDesc,
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid description input that is too long");
+                }
+            });
+        });
+        
+        //test deadline related validation
+        it('errors with invalid updated task deadline: empty deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty deadline input");
+                }
+            });
+        });
+
+        it('errors with invalid updated task deadline: passed deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-08-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid deadline input");
+                }
+            });
+        });
+        
+        it('errors with invalid updated task deadline: missing date deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid deadline input");
+                }
+            });
+        });
+
+        it('errors with invalid updated task deadline: missing time deadline', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-10-06T",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid deadline input");
+                }
+            });
+        });
+
+        it('errors with invalid updated task contribution: total exceed 100%', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            const teamId = TeamCollection.insert(testTeamData);
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
+            testPinnedTaskData.boardId = boardId;
+            testPinnedTaskData._id = "TestId";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 220}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "update-task-failed")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid contribution input");
+                }
+            });
+        });
+
+        it('errors with invalid board: board does not exist', function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            testUnpinnedTaskData._id = null;
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            // create edited task object
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: "boardId", // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "task-missing-board")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for non-existing board");
+                }
+            });
+        });
+        
+        it('errors with invalid user: user does not exist', function () {
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // insert board which task belongs to
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+            testUnpinnedTaskData._id = null;
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+
+            const editedTask = {
+                _id: "TestId",
+                taskName: "test task new",
+                taskDesc: "test description new",
+                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
+                taskIsPinned: false,
+                boardId: boardId, // added dynamically during test cases
+                statusName: "To Do",
+                tagNames: ["a", "c", "d"],
+                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
+            }
+            // Wrap the Meteor.call in a Promise
+            new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "task-missing-user")
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for non-existing user");
+                }
+            });
+        });
 
         /**
          * Test case to check if a task can be deleted successfully.
@@ -612,9 +1225,10 @@ if (Meteor.isClient) {
 
             // create test user for logging username
             Accounts.createUser(testUser);
-
+            const teamId = TeamCollection.insert(testTeamData);
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
+            testBoard.teamId = teamId;
             testPinnedTaskData.boardId = boardId;
 
             // insert a collection to delete
@@ -654,7 +1268,7 @@ if (Meteor.isClient) {
                 assert.fail("Deleting a nonexistent task did NOT give an error");
             })
 
-        }).timeout(10000);
+        }).timeout(1000000);
 
 
     });

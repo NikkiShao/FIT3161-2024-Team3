@@ -8,8 +8,10 @@ import {Meteor} from 'meteor/meteor';
 import {check, Match} from 'meteor/check';
 import {TaskCollection} from "/imports/api/collections/task.js";
 import "../methods/logEntry";
+import "../methods/board";
 import BoardCollection from "../collections/board";
 import UserCollection from "../collections/user";
+import TeamCollection from '../collections/team';
 
 Meteor.methods({
     /**
@@ -27,7 +29,6 @@ Meteor.methods({
      * @param {string} username - username of the creator
      */
     'insert_task': async function (taskData, username) {
-
         check(taskData, {
             _id: null,
             taskName: String,
@@ -90,14 +91,11 @@ Meteor.methods({
         });
 
         let logAction = `created task: ${taskData.taskName}`;
-        console.log("log action", logAction);
+
         if (Meteor.isServer) {
             // get ID of the team which the task belongs to
             const teamId = BoardCollection.findOne(taskData.boardId).teamId;
-            console.log("teamId", teamId);
-            console.log("boardId", taskData.boardId);
-            console.log("taskId", taskId);
-            console.log(username);
+
             // Log the task action if there were changes
             if (logAction) {
                 try {
@@ -177,7 +175,7 @@ Meteor.methods({
             throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
         }
 
-        const user = UserCollection.findOne({username: taskData.username});
+        const user = UserCollection.findOne({username: username});
         if (!user) {
             throw new Meteor.Error('task-missing-user', 'Could not retrieve user information');
         }
