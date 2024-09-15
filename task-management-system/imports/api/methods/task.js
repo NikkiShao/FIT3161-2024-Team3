@@ -123,7 +123,9 @@ Meteor.methods({
         }
 
         if (currentTask.taskDeadlineDate !== taskData.taskDeadlineDate) {
-            logChanges.push(`task deadline changed from '${currentTask.taskDeadlineDate}' to '${taskData.taskDeadlineDate}'`);
+            const oldDate = new Date (currentTask.taskDeadlineDate).toLocaleString();
+            const newDate = new Date (taskData.taskDeadlineDate).toLocaleString();
+            logChanges.push(`task deadline changed from '${oldDate}' to '${newDate}'`);
         }
 
         if (currentTask.statusName !== taskData.statusName) {
