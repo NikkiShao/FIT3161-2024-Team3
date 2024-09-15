@@ -18,6 +18,7 @@ import {useSubscribe, useTracker} from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
 import {getUserInfo, isUrgentOverdue} from "../../util";
 import {addIcon, closeModalIcon, minusCircleIcon, saveIcon} from "../../icons";
+import {isDark} from "@bkwld/light-or-dark";
 
 /**
  * Task modal to view/edit or create tasks
@@ -239,9 +240,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         setContributions(newContribution)
     }
 
-    // icons
-    const addTagIcon = <PlusIcon color={"var(--navy)"} className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>
-
     // all delete task modal stuff
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const onOpenDeleteModal = () => setDeleteModalOpen(true);
@@ -455,9 +453,12 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                     {
                                                         tagsData ? tagsData.map((tag, index) => {
                                                             if (!tagNames.includes(tag.tagName)) {
+                                                                const addTagIcon = <PlusIcon color={isDark(tag.tagColour) ? "var(--white)" : "var(--black)"}
+                                                                                             className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>
+
                                                                 return (
                                                                     <button key={index}
-                                                                            style={{backgroundColor: tag.tagColour}}
+                                                                            style={{backgroundColor: tag.tagColour, color: isDark(tag.tagColour) ? "var(--white)" : "var(--black)"}}
                                                                             onClick={(e) => addTag(e, tag.tagName)}
                                                                             className={"task-tag icon-btn"}
                                                                     >
