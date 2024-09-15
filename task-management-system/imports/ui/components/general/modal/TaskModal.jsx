@@ -429,7 +429,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                             <div id={"task-modal__tags-group"}>
                                                 <div className={"task-modal__tags-display"}>
                                                     {
-                                                        tagNames.map((tagName) => {
+                                                        tagNames
+                                                            .sort((a, b) => a.localeCompare(b))
+                                                            .map((tagName) => {
                                                             // here find the tag colour that matches this name
                                                             const tagColour = tagsData.filter((tag) => {
                                                                 return tagName === tag.tagName
@@ -451,7 +453,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                 <div className={"task-modal__tags-display"}>
                                                     {/* populate tags based on database entry */}
                                                     {
-                                                        tagsData ? tagsData.map((tag, index) => {
+                                                        tagsData ? tagsData
+                                                            .sort((a, b) => a.tagName.localeCompare(b.tagName))
+                                                            .map((tag, index) => {
                                                             if (!tagNames.includes(tag.tagName)) {
                                                                 const addTagIcon = <PlusIcon color={isDark(tag.tagColour) ? "var(--white)" : "var(--black)"}
                                                                                              className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>

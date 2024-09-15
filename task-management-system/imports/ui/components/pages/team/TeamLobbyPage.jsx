@@ -125,7 +125,9 @@ export const TeamLobbyPage = () => {
                 })
 
 
-            const displayedPollCards = filteredPolls.map((poll) => (
+            const displayedPollCards = filteredPolls
+                .sort((a, b) => new Date(b.pollCreationDate) - new Date(a.pollCreationDate))
+                .map((poll) => (
                     <PollCard
                         key={poll._id}
                         pollId={poll._id}

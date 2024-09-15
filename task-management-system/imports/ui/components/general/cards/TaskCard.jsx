@@ -88,7 +88,9 @@ const TaskCard = ({
 
             {/* card bottom div */}
             <div id="task__tag-div">
-                {tagNames.map((tag, index) =>
+                {tagNames
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((tag, index) =>
                     <TaskTag
                         key={index}
                         tagName={tag}
