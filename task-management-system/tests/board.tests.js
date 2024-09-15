@@ -1,6 +1,6 @@
 /**
  * File Description: Board database testing
- * File version: 1.1
+ * File version: 1.2
  * Contributors: Nikki, Mark
  */
 
@@ -92,7 +92,6 @@ if (Meteor.isClient) {
                 assert.notStrictEqual(boardId, undefined);
                 // find board object and check it is not null
                 const board = BoardCollection.findOne(boardId);
-                console.log(" ====你好====== ", board)
                 assert.notStrictEqual(board, null);
             } catch (e) {
                 assert.fail("Error adding board. Returned with error:" + e.message);
