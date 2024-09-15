@@ -572,10 +572,12 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                     </form>
 
                     { taskId ?
-                        <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
-                             className={"text-red underline clickable"}
-                             onClick={onOpenDeleteModal}
-                        >Delete Task
+                        <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", display: "flex", justifyContent: "end"}}>
+                            <div style={{width: "fit-content"}}
+                                 className={"text-red underline clickable"}
+                                 onClick={onOpenDeleteModal}>
+                                Delete Task
+                            </div>
                         </div> : null
                     }
 

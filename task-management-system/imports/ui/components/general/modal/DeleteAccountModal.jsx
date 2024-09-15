@@ -87,9 +87,9 @@ const DeleteAccountModal = ({open, closeHandler}) => {
         >
             <div className='modal-div-center'>
                 <h1>Delete Account?</h1>
-                <div>Are you sure you would like to your account and all data associated with it?</div>
+                <div>Are you sure you would like to delete your account and all data associated with it?</div>
                 <div>You must leave all the teams first.</div>
-                <div className='text-red'>This action cannot be reverted.</div>
+                <div className={"main-text text-red"}>This action cannot be reverted.</div>
 
                 <div className="button-group-row btn-submit">
                     <Button type={"submit"}

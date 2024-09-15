@@ -248,10 +248,12 @@ function AccountSettings() {
                 }
             </form>
 
-            <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
-                 className={"text-red underline clickable"}
-                 onClick={onOpenModal}
-            >Delete account and all data
+            <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", display: "flex", justifyContent: "end"}}>
+                <div style={{width: "fit-content"}}
+                    className={"text-red underline clickable"}
+                    onClick={onOpenModal}>
+                    Delete account and all data
+                </div>
             </div>
         </WhiteBackground>
     );

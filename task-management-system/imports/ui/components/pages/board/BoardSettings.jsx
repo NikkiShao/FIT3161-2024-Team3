@@ -461,8 +461,19 @@ export const BoardSettings = () => {
                         }
                     </form>
 
-                    <span className={"text-red underline clickable"} style={{width: "100%", textAlign: "end"}}
-                          onClick={onOpenModal}>Delete Board</span>
+                    <div style={{
+                        width: "100%",
+                        minWidth: "100%",
+                        maxWidth: "100%",
+                        display: "flex",
+                        justifyContent: "end"
+                    }}>
+                        <div style={{width: "fit-content"}}
+                             className={"text-red underline clickable"}
+                             onClick={onOpenModal}>
+                            Delete Board
+                        </div>
+                    </div>
 
                 </WhiteBackground>
                 <Modal
@@ -472,9 +483,10 @@ export const BoardSettings = () => {
                     onClose={onCloseModal}
                     center>
                     <div className={"modal-div-center"}>
-                        <h1 className={"text-center"}>Delete Board</h1>
-                        <span>You are about to delete "{boardNameInput}".</span>
-                        <span>Are you sure?</span>
+                        <h1 className={"text-center"}>Delete Board?</h1>
+                        <span>Are you sure you would like to delete the board?</span>
+                        <div className={"main-text"}>This action will be recorded in the Logs.</div>
+                        <div className={"main-text text-red"}>This action cannot be reverted.</div>
                         <div className={"button-group-row btn-submit"}>
                             <Button className={"btn-red"} onClick={deleteBoard}>Confirm</Button>
                             <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>

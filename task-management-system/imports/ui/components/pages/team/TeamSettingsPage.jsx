@@ -404,8 +404,20 @@ export const TeamSettingsPage = () => {
                         }
                     </form>
 
-                    <span className={"text-red underline clickable"} style={{width: "100%", textAlign: "end"}}
-                          onClick={onOpenModal}>Leave Team</span>
+                    <div style={{
+                        width: "100%",
+                        minWidth: "100%",
+                        maxWidth: "100%",
+                        display: "flex",
+                        justifyContent: "end"
+                    }}>
+                        <div style={{width: "fit-content"}}
+                             className={"text-red underline clickable"}
+                             onClick={onOpenModal}>
+                            Leave Team
+                        </div>
+                    </div>
+
                 </WhiteBackground>
 
                 {/* leave team modal */}
@@ -419,9 +431,10 @@ export const TeamSettingsPage = () => {
                             onClose={onCloseModal}
                             center>
                             <div className={"modal-div-center"}>
-                                <h1 className={"text-center"}>Delete Team</h1>
+                                <h1 className={"text-center"}>Delete Team?</h1>
                                 <span className={"main-text"}>You are the last member in the team, leaving the team will delete the team.</span>
                                 <span className={"main-text"}>Are you sure?</span>
+                                <div className={"main-text text-red"}>This action cannot be reverted.</div>
                                 <div className={"button-group-row btn-submit"}>
                                     <Button className={"btn-red"} onClick={deleteTeam}>Confirm</Button>
                                     <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>
@@ -476,11 +489,12 @@ export const TeamSettingsPage = () => {
                                     : // if you are a normal team member
                                     <>
                                         <h1 className={"text-center"}>Leave Team</h1>
-                                        <div className={"main-text"}>You will permanently leave the team.</div>
-                                        <div className={"main-text"}>Are you sure?</div>
+                                        <div className={"main-text"}>Are you sure you would like to permanently leave the team?</div>
+                                        <div className={"main-text text-red"}>This action cannot be reverted.</div>
 
                                         <div className={"button-group-row btn-submit"}>
-                                            <Button className={"btn-red"} onClick={() => leaveTeam(false)}>Leave Team</Button>
+                                            <Button className={"btn-red"} onClick={() => leaveTeam(false)}>Leave
+                                                Team</Button>
                                             <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>
                                         </div>
                                     </>

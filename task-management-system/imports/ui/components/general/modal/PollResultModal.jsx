@@ -9,13 +9,12 @@ import React from 'react';
 import {Modal} from 'react-responsive-modal';
 import {CheckIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import "../../../../../client/main.css";
-import "./polls.css";
 import HoverTip from "../hoverTip/HoverTip";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import {useTracker} from "meteor/react-meteor-data";
 import UserCollection from "../../../../api/collections/user";
 import {getUserInfo} from "../../util";
+import "./polls.css";
 
 /**
  * The modal for displaying poll results in a closed poll
