@@ -69,7 +69,12 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName}) => {
                 }
             });
 
-            setHighestVote(highestVotedOptions.join(", "));
+            // only set the highest vote option is someone voted in the poll
+            if (maxVotes > 0) {
+                setHighestVote(highestVotedOptions.join(", "));
+            } else {
+                setHighestVote("No votes")
+            }
         }
     }
 
@@ -167,20 +172,23 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName}) => {
             <Button
                 className="btn-brown view-button"
                 onClick={handleViewPollClick}>
-                Vote
+                {pollStatus === PollStatus.CLOSED ? "View" : "Vote"}
             </Button>
 
-            <PollResultModal
-                open={isResultModalOpen}
-                closeHandler={closeResultModal}
-                pollData={{title, options}}
-            />
+            {
+                pollStatus === PollStatus.CLOSED ?
+                    <PollResultModal
+                        open={isResultModalOpen}
+                        closeHandler={closeResultModal}
+                        pollData={{title, options}}
+                    /> :
+                    <VotePollModal
+                        open={isVoteModalOpen}
+                        closeHandler={closeVoteModal}
+                        pollData={{pollId, title, options}}
+                    />
+            }
 
-            <VotePollModal
-                open={isVoteModalOpen}
-                closeHandler={closeVoteModal}
-                pollData={{pollId, title, options}}
-            />
         </Card>
     );
 };
