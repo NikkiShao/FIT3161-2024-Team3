@@ -1,7 +1,7 @@
 /**
  * File Description: Board database testing
- * File version: 1.0
- * Contributors: Nikki
+ * File version: 1.1
+ * Contributors: Nikki, Mark
  */
 
 import {Meteor} from "meteor/meteor";
@@ -9,7 +9,10 @@ import {Accounts} from "meteor/accounts-base";
 const assert = require('assert');
 import {resetDatabase} from 'meteor/xolvio:cleaner';
 import "../imports/api/methods/board";
+import "../imports/api/methods/logEntry";
 import BoardCollection from "../imports/api/collections/board";
+import TeamCollection from "../imports/api/collections/team";
+
 
 /**
  * Test suite for client-side board methods.
@@ -43,9 +46,9 @@ if (Meteor.isClient) {
         }
 
         const testBoard = {
-            boardName: "test board",
+            boardName: "test_board",
             boardCode: "code123",
-            boardDeadline: "2024-09-05T17:55:00.000Z",
+            boardDeadline: "2024-10-02T13:55:00.000Z",
             boardDescription: "description string",
             teamId: "testTeamId",
             "boardTags": [{tagName: "test1", tagColour: "#000000"}],
@@ -58,40 +61,54 @@ if (Meteor.isClient) {
         /**
          * Test case to check if a board can be added successfully.
          */
-        it('can add a board', function () {
+        it('can add a board', async function () {
 
             // create test user for logging username
             Accounts.createUser(testUser);
 
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+
             // Wrap the Meteor.call in a Promise
-            return new Promise((resolve, reject) => {
-                Meteor.call("add_board",
-                    testBoardData.boardName,
-                    testBoardData.boardCode,
-                    testBoardData.boardDeadline,
-                    testBoardData.boardDescription,
-                    testBoardData.teamId,
-                    testUser.username,
-                    (error, boardId) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(boardId);
+            try {
+                const boardId = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                console.log("板子号：",result);
+                                console.error("出现问题:", error);
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
                         }
-                    }
-                );
-            }).then(boardId => {
+                    );
+                });
                 // check board ID is NOT undefined
                 assert.notStrictEqual(boardId, undefined);
                 // find board object and check it is not null
                 const board = BoardCollection.findOne(boardId);
+                console.log(" ====你好====== ",board)
                 assert.notStrictEqual(board, null);
-            }).catch(error => {
-                assert.fail("Error adding board. Returned with error:" + error.message);
-            });
+            } catch (e) {
+                assert.fail("Error adding board. Returned with error:" + e.message);
+            }
         }).timeout(10000);
 
-        // todo: here add test cases for EACH input being invalid for ADDING a board
+
+        // /**
+        //  * Test case to check if the board name is a string
+        //  */
+
+        // it()
+
+
 
         /**
          * Test case to check if a board can be updated successfully.
@@ -162,28 +179,28 @@ if (Meteor.isClient) {
         /**
          * Test case to check if a board can be deleted successfully.
          */
-        it('errors on deleting nonexistent board', function () {
+        it('errors on deleting nonexistent board', async function () {
 
             // create test user for logging username
             Accounts.createUser(testUser);
 
             // call delete method for deletion
-            return new Promise((resolve, reject) => {
-                Meteor.call('delete_board', "nonexistentId", testUser.username, (error) => {
-                    if (error) {
-                        resolve(error)
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call('delete_board', "nonexistentId", testUser.username, (error) => {
+                        if (error) {
+                            resolve(error);
 
-                    } else {
-                        reject()
-                    }
+                        } else {
+                            reject();
+                        }
+                    });
                 });
-            }).then((resolvedError) => {
                 assert.strictEqual(resolvedError.error, "board-delete-failed");
                 assert.strictEqual(resolvedError.reason, "Board not found");
-
-            }).catch(() => {
+            } catch {
                 assert.fail("Deleting a nonexistent board did NOT give an error");
-            })
+            }
 
         }).timeout(10000);
 
