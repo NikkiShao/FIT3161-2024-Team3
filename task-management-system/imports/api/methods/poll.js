@@ -6,7 +6,6 @@
 
 import PollCollection from "../collections/poll";
 import {Meteor} from "meteor/meteor";
-import BoardCollection from "../collections/board";
 
 Meteor.methods({
     /**

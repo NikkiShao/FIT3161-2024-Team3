@@ -3,8 +3,8 @@
  * File version: 1.6
  * Contributors: Audrey, Nikki, Sam
  */
-import { Meteor } from 'meteor/meteor';
-import { BoardCollection } from '/imports/api/collections/board.js';
+import {Meteor} from 'meteor/meteor';
+import {BoardCollection} from '/imports/api/collections/board.js';
 import TaskCollection from "../collections/task";
 import "../methods/logEntry";
 

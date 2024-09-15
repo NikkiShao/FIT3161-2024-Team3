@@ -21,7 +21,6 @@ import PollCollection from "../../../../api/collections/poll";
 import TaskCollection from "../../../../api/collections/task";
 import TeamCollection from "../../../../api/collections/team";
 import UserCollection from "../../../../api/collections/user";
-import HoverTip from "../../general/hoverTip/HoverTip";
 import HoverTipExamples from "./HoverTipExamples";
 
 /**

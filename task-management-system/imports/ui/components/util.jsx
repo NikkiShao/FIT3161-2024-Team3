@@ -4,7 +4,7 @@
  * Contributors: Nikki
  */
 
-import React, {useState} from "react";
+import {useState} from "react";
 import {Tracker} from "meteor/tracker";
 import {Meteor} from "meteor/meteor";
 

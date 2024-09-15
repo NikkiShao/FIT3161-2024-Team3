@@ -8,13 +8,9 @@ import React, {useState} from "react";
 import {Navigate} from "react-router-dom";
 import {Tracker} from "meteor/tracker";
 import {Meteor} from "meteor/meteor";
-
-import WhiteBackground from "/imports/ui/components/general/whiteBackground/WhiteBackground";
-import PageLayout from "/imports/ui/enums/PageLayout";
 import RoutingAccess from "/imports/ui/enums/RoutingAccess";
 import UrlBasePath from "/imports/ui/enums/BaseUrlPath";
 import Spinner from "react-bootstrap/Spinner";
-import {getUserInfo} from "../../util";
 
 /**
  * Protects a route that can ONLY be accessed either logged-in or NOT logged-in users.

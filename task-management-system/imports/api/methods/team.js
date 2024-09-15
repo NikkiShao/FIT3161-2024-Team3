@@ -9,7 +9,7 @@ import {TeamCollection} from '/imports/api/collections/team.js';
 import {generateInvitationToken} from "../../ui/components/util";
 import BoardCollection from "../collections/board";
 import PollCollection from "../collections/poll";
-import { check } from "meteor/check";
+import {check} from "meteor/check";
 
 
 Meteor.methods({

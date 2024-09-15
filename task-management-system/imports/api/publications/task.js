@@ -4,7 +4,7 @@
  * Contributors: Nikki
  */
 
-import { Meteor } from "meteor/meteor";
+import {Meteor} from "meteor/meteor";
 import {TaskCollection} from "../collections/task.js";
 
 /**
