@@ -58,7 +58,7 @@ export const UnvotedPolls = () =>  {
                               divClassName={"page-help-tip"}
                               textClassname
                     />
-                    <h2 className={"dashboard-column-title"}>Polls To Do</h2>
+                    <h2 className={"dashboard-column-title"}>Polls To Do ({pollsToDo.length})</h2>
                     {pollsToDo.length?
                     <div className='teams__cards-div text-left-aligned'>
                         {pollsToDo.map((poll)=>(
