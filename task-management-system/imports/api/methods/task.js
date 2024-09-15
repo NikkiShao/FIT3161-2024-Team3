@@ -1,7 +1,7 @@
 /**
  * File Description: Task database entity
- * File version: 1.7
- * Contributors: Nikki, Sam
+ * File version: 1.8
+ * Contributors: Nikki, Sam, AUdrey
  */
 
 import {Meteor} from 'meteor/meteor';
@@ -9,6 +9,7 @@ import {check, Match} from 'meteor/check';
 import {TaskCollection} from "/imports/api/collections/task.js";
 import "../methods/logEntry";
 import BoardCollection from "../collections/board";
+import UserCollection from "../collections/user";
 
 Meteor.methods({
     /**
@@ -41,6 +42,41 @@ Meteor.methods({
         });
         check(username, String)
 
+        if (taskData.taskName === '' || taskData.taskName.length > 100) {
+            throw new Meteor.Error('add-task-failed', 'Invalid name input');
+        };
+
+        if (taskData.taskDesc === '' || taskData.taskDesc.length > 1000) { 
+            throw new Meteor.Error('add-task-failed', 'Invalid description input');
+        };
+
+
+        let splitDateTime = taskData.taskDeadlineDate.split('T');
+        if(taskData.taskDeadlineDate === '' || new Date(taskData.taskDeadlineDate) < new Date() || splitDateTime.length !== 2){
+            throw new Meteor.Error('add-task-failed', 'Invalid date-time input');
+        }
+
+        let totalContribution = 0;
+        for (let key in taskData.contributions) {
+            if (taskData.contributions.hasOwnProperty(key)) {
+                totalContribution += Number(taskData.contributions[key])
+            }
+        }
+
+        if (totalContribution > 100) {
+            throw new Meteor.Error('add-task-failed', 'Invalid contribution input');
+        };
+
+        const board = BoardCollection.findOne({_id: taskData.boardId});
+        if (!board) {
+            throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
+        }
+
+        const user = UserCollection.findOne({username: username});
+        if (!user) {
+            throw new Meteor.Error('task-missing-user', 'Could not retrieve user information');
+        }
+
         let taskId = TaskCollection.insert({
             taskName: taskData.taskName,
             taskDesc: taskData.taskDesc,
@@ -54,11 +90,14 @@ Meteor.methods({
         });
 
         let logAction = `created task: ${taskData.taskName}`;
-
+        console.log("log action", logAction);
         if (Meteor.isServer) {
             // get ID of the team which the task belongs to
             const teamId = BoardCollection.findOne(taskData.boardId).teamId;
-
+            console.log("teamId", teamId);
+            console.log("boardId", taskData.boardId);
+            console.log("taskId", taskId);
+            console.log(username);
             // Log the task action if there were changes
             if (logAction) {
                 try {
@@ -107,6 +146,41 @@ Meteor.methods({
             contributions: [Object]
         });
         check(username, String)
+
+        if (taskData.taskName === '' || taskData.taskName.length > 100) {
+            throw new Meteor.Error('update-task-failed', 'Invalid name input');
+        };
+
+        if (taskData.taskDesc === '' || taskData.taskDesc.length > 1000) { 
+            throw new Meteor.Error('update-task-failed', 'Invalid description input');
+        };
+
+
+        let splitDateTime = taskData.taskDeadlineDate.split('T');
+        if(taskData.taskDeadlineDate === '' || new Date(taskData.taskDeadlineDate) < new Date() || splitDateTime.length !== 2){
+            throw new Meteor.Error('update-task-failed', 'Invalid date-time input');
+        }
+
+        let totalContribution = 0;
+        for (let key in taskData.contributions) {
+            if (taskData.contributions.hasOwnProperty(key)) {
+                totalContribution += Number(taskData.contributions[key])
+            }
+        }
+
+        if (totalContribution > 100) {
+            throw new Meteor.Error('update-task-failed', 'Invalid contribution input');
+        };
+
+        const board = BoardCollection.findOne({_id: taskData.boardId});
+        if (!board) {
+            throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
+        }
+
+        const user = UserCollection.findOne({username: taskData.username});
+        if (!user) {
+            throw new Meteor.Error('task-missing-user', 'Could not retrieve user information');
+        }
 
         let logAction = '';
         const logChanges = [];
