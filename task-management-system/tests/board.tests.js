@@ -4,10 +4,10 @@
  * Contributors: Nikki, Mark
  */
 
-import {Meteor} from "meteor/meteor";
-import {Accounts} from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
+import { Accounts } from "meteor/accounts-base";
 const assert = require('assert');
-import {resetDatabase} from 'meteor/xolvio:cleaner';
+import { resetDatabase } from 'meteor/xolvio:cleaner';
 import "../imports/api/methods/board";
 import "../imports/api/methods/logEntry";
 import BoardCollection from "../imports/api/collections/board";
@@ -40,7 +40,7 @@ if (Meteor.isClient) {
         const testBoardData = {
             boardName: "test board",
             boardCode: "code123",
-            boardDeadline: "2024-09-05T17:55:00.000Z",
+            boardDeadline: "2025-09-05T17:55:00.000Z",
             boardDescription: "description string",
             teamId: "testTeamId",
         }
@@ -48,13 +48,13 @@ if (Meteor.isClient) {
         const testBoard = {
             boardName: "test_board",
             boardCode: "code123",
-            boardDeadline: "2024-10-02T13:55:00.000Z",
+            boardDeadline: "2025-10-02T13:55:00.000Z",
             boardDescription: "description string",
             teamId: "testTeamId",
-            "boardTags": [{tagName: "test1", tagColour: "#000000"}],
+            "boardTags": [{ tagName: "test1", tagColour: "#000000" }],
             "boardStatuses": [
-                {"statusName": "To Do", "statusOrder": 1},
-                {"statusName": "Done", "statusOrder": 2}
+                { "statusName": "To Do", "statusOrder": 1 },
+                { "statusName": "Done", "statusOrder": 2 }
             ],
         }
 
@@ -81,8 +81,6 @@ if (Meteor.isClient) {
                         testUser.username,
                         (error, result) => {
                             if (error) {
-                                console.log("板子号：",result);
-                                console.error("出现问题:", error);
                                 reject(error);
                             } else {
                                 resolve(result);
@@ -94,7 +92,7 @@ if (Meteor.isClient) {
                 assert.notStrictEqual(boardId, undefined);
                 // find board object and check it is not null
                 const board = BoardCollection.findOne(boardId);
-                console.log(" ====你好====== ",board)
+                console.log(" ====你好====== ", board)
                 assert.notStrictEqual(board, null);
             } catch (e) {
                 assert.fail("Error adding board. Returned with error:" + e.message);
@@ -102,11 +100,464 @@ if (Meteor.isClient) {
         }).timeout(10000);
 
 
-        // /**
-        //  * Test case to check if the board name is a string
-        //  */
+        /**
+         * Test case to check if the board name is a string
+         */
+        it('adding board with invalid board name', async function () {
 
-        // it()
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        123,
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-name");
+                assert.strictEqual(resolvedError.reason, "Board name must be a string");
+            } catch {
+                assert.fail("Adding a board with an invalid board name did NOT give an error");
+            }
+        }).timeout(10000);
+
+        /**
+         * Test case to check if the board name is not empty
+         */
+
+        it('adding board with empty board name', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        "",
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-parameters");
+                assert.strictEqual(resolvedError.reason, "Missing parameters");
+            } catch {
+                assert.fail("Adding a board with an empty board name did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+        /**
+         * Test case to check if the board name is not too long
+         */
+
+        it('adding board with too long board name', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        "This is a very long board name that is over 30 characters",
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-name");
+                assert.strictEqual(resolvedError.reason, "Board name can not exceed 30 characters");
+            } catch {
+                assert.fail("Adding a board with a too long board name did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the board code is a string
+         */
+
+        it('adding board with invalid board code', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        123,
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-code");
+                assert.strictEqual(resolvedError.reason, "Board code must be a string");
+            } catch {
+                assert.fail("Adding a board with an invalid board code did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the board code is not empty
+         */
+
+        it('adding board with empty board code', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        "",
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-parameters");
+                assert.strictEqual(resolvedError.reason, "Missing parameters");
+            } catch {
+                assert.fail("Adding a board with an empty board code did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the board code is not too long
+         */
+
+        it('adding board with too long board code', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        "This is a very long board code that is over 10 characters",
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-code");
+                assert.strictEqual(resolvedError.reason, "Board code can not exceed 10 characters");
+            } catch {
+                assert.fail("Adding a board with a too long board code did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+        /**
+         * Test case to check if the board code is alphanumeric
+         */
+
+        it('adding board with non-alphanumeric board code', async function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        "code123@",
+                        testBoardData.boardDeadline,
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-code");
+                assert.strictEqual(resolvedError.reason, "Board code can only contain letters and numbers");
+            } catch {
+                assert.fail("Adding a board with a non-alphanumeric board code did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the deadline is in the future
+         */
+
+        it('adding board with future deadline', async function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        testBoardData.boardCode,
+                        "2020-09-05T17:55:00.000Z",
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-deadline");
+                assert.strictEqual(resolvedError.reason, "Deadline must be in the future");
+            } catch {
+                assert.fail("Adding a board with a past deadline did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the deadline is not empty
+         */
+
+        it('adding board with empty deadline', async function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        testBoardData.boardCode,
+                        "",
+                        testBoardData.boardDescription,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-parameters");
+                assert.strictEqual(resolvedError.reason, "Missing parameters");
+            } catch {
+                assert.fail("Adding a board with an empty deadline did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the description is a string 
+         */
+
+        it('adding board with invalid description', async function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        123,
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-description");
+                assert.strictEqual(resolvedError.reason, "Board description must be a string");
+            } catch {
+                assert.fail("Adding a board with an invalid description did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the description is not empty
+         */
+
+        it('adding board with empty description', async function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        "",
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-parameters");
+                assert.strictEqual(resolvedError.reason, "Missing parameters");
+            } catch {
+                assert.fail("Adding a board with an empty description did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case to check if the description is too long
+         */
+        it('adding board with too long description', async function () {
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            const teamId = TeamCollection.insert({ _id: "testTeamId", teamName: "Test Team" });
+
+            // A description longer than 150 characters
+            const longDescription = "This is a very long description that exceeds the character limit. " +
+                "It should trigger a validation error because it is longer than 150 characters. " +
+                "This additional text ensures the limit is surpassed.";
+
+            // Wrap the Meteor.call in a Promise
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call("add_board",
+                        testBoardData.boardName,
+                        testBoardData.boardCode,
+                        testBoardData.boardDeadline,
+                        longDescription, // Use the long description here
+                        teamId,
+                        testUser.username,
+                        (error, result) => {
+                            if (error) {
+                                resolve(error);
+                            } else {
+                                reject();
+                            }
+                        }
+                    );
+                });
+                assert.strictEqual(resolvedError.error, "invalid-description");
+                assert.strictEqual(resolvedError.reason, "Board description can not exceed 150 characters");
+            } catch {
+                assert.fail("Adding a board with a too long description did NOT give an error");
+            }
+        }).timeout(10000);
 
 
 
@@ -129,11 +580,11 @@ if (Meteor.isClient) {
                 boardDescription: "edited description string",
                 teamId: "testTeamId",
                 boardStatuses: [
-                    {"statusName": "To Do", "statusOrder": 1},
-                    {"statusName": "New Status", "statusOrder": 2},
-                    {"statusName": "Done", "statusOrder": 3}
+                    { "statusName": "To Do", "statusOrder": 1 },
+                    { "statusName": "New Status", "statusOrder": 2 },
+                    { "statusName": "Done", "statusOrder": 3 }
                 ],
-                boardTags: [{tagName: "test2", tagColour: "#fff000"}],
+                boardTags: [{ tagName: "test2", tagColour: "#fff000" }],
             }
 
             // call update method
@@ -147,14 +598,155 @@ if (Meteor.isClient) {
             assert.strictEqual(updatedBoard.boardDescription, 'edited description string');
             assert.strictEqual(updatedBoard.teamId, 'testTeamId');
             assert.deepEqual(updatedBoard.boardStatuses, [
-                {"statusName": "To Do", "statusOrder": 1},
-                {"statusName": "New Status", "statusOrder": 2},
-                {"statusName": "Done", "statusOrder": 3}
+                { "statusName": "To Do", "statusOrder": 1 },
+                { "statusName": "New Status", "statusOrder": 2 },
+                { "statusName": "Done", "statusOrder": 3 }
             ]);
-            assert.deepEqual(updatedBoard.boardTags, [{tagName: "test2", tagColour: "#fff000"}]);
+            assert.deepEqual(updatedBoard.boardTags, [{ tagName: "test2", tagColour: "#fff000" }]);
         });
 
-        // todo: here add test cases for EACH input being invalid for UPDATING a board
+        /**
+         * Test case to check if a boardId is a string
+         */
+        it('updating board with invalid boardId', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            // create edited board object
+            const editedBoard = {
+                boardName: "new board",
+                boardCode: "updated123",
+                boardDeadline: "2024-10-05T17:55:00.000Z",
+                boardDescription: "edited description string",
+                teamId: "testTeamId",
+                boardStatuses: [
+                    { "statusName": "To Do", "statusOrder": 1 },
+                    { "statusName": "New Status", "statusOrder": 2 },
+                    { "statusName": "Done", "statusOrder": 3 }
+                ],
+                boardTags: [{ tagName: "test2", tagColour: "#fff000" }],
+            }
+
+            // call update method
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call('update_board', 123, editedBoard, testUser.username, (error) => {
+                        if (error) {
+                            resolve(error);
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+                assert.strictEqual(resolvedError.error, "invalid-boardId");
+                assert.strictEqual(resolvedError.reason, "Board ID must be a string");
+            } catch {
+                assert.fail("Updating a board with an invalid board ID did NOT give an error");
+            }
+        }).timeout(10000);
+
+        /**
+         * Test case when the boardId is missing
+         */
+        it('updating board with missing boardId', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            // create edited board object
+            const editedBoard = {
+                boardName: "new board",
+                boardCode: "updated123",
+                boardDeadline: "2024-10-05T17:55:00.000Z",
+                boardDescription: "edited description string",
+                teamId: "testTeamId",
+                boardStatuses: [
+                    { "statusName": "To Do", "statusOrder": 1 },
+                    { "statusName": "New Status", "statusOrder": 2 },
+                    { "statusName": "Done", "statusOrder": 3 }
+                ],
+                boardTags: [{ tagName: "test2", tagColour: "#fff000" }],
+            }
+
+            // call update method
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call('update_board', "", editedBoard, testUser.username, (error) => {
+                        if (error) {
+                            resolve(error);
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+                assert.strictEqual(resolvedError.error, "invalid-parameters");
+                assert.strictEqual(resolvedError.reason, "Missing parameters");
+            } catch {
+                assert.fail("Updating a board with missing board ID did NOT give an error");
+            }
+        }).timeout(10000);
+
+        /**
+         * Test case when the board details are missing
+         */
+        it('updating board with missing board details', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            // insert in a board to edit
+            const boardId = BoardCollection.insert(testBoard);
+
+            // call update method
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call('update_board', boardId, "", testUser.username, (error) => {
+                        if (error) {
+                            resolve(error);
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+                assert.strictEqual(resolvedError.error, "invalid-parameters");
+                assert.strictEqual(resolvedError.reason, "Missing parameters");
+            } catch {
+                assert.fail("Updating a board with missing board details did NOT give an error");
+            }
+        }
+        ).timeout(10000);
+
+
+        /**
+         * Test case when the board details are invalid
+         */
+        it('updating board with invalid board details', async function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+
+            // insert in a board to edit
+            const boardId = BoardCollection.insert(testBoard);
+
+            // call update method
+            try {
+                const resolvedError = await new Promise((resolve, reject) => {
+                    Meteor.call('update_board', boardId, 123, testUser.username, (error) => {
+                        if (error) {
+                            resolve(error);
+                        } else {
+                            reject();
+                        }
+                    });
+                });
+                assert.strictEqual(resolvedError.error, "invalid-boardData");
+                assert.strictEqual(resolvedError.reason, "Board data must be an object");
+            } catch {
+                assert.fail("Updating a board with invalid board details did NOT give an error");
+            }
+        }
+        ).timeout(10000);
 
 
         /**
