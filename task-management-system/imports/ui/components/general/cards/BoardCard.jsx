@@ -8,7 +8,7 @@
 import React from "react";
 import classNames from "classnames";
 import Card from "./Card";
-import './BoardCard.css';
+import './boardCard.css';
 import { useNavigate } from "react-router-dom";
 import Button from "../buttons/Button";
 import {renderTime} from "../../util";

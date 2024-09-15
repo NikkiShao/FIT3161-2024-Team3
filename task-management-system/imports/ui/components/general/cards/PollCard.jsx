@@ -10,7 +10,7 @@ import React, {useEffect, useState} from "react";
 // import components and styles
 import Card from "../cards/Card";
 import Button from "../buttons/Button";
-import './PollCard.css';
+import './pollCard.css';
 import PollStatus from "../../../enums/PollStatus";
 import PollResultModal from '../modal/PollResultModal.jsx';
 import VotePollModal from '../modal/VotePollModal.jsx';

@@ -14,7 +14,7 @@ import RegistrationPage from "./components/pages/registration/RegistrationPage";
 import AccountCreatedPage from "./components/pages/registration/AccountCreatedPage";
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 
-import DashboardPage from "./components/pages/DashboardPage";
+import DashboardPage from "./components/pages/dashboard/DashboardPage";
 import AccountSettingPage from '../ui/components/pages/AccountSettingPage';
 import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
 

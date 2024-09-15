@@ -568,7 +568,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                     {plusIcon} Add Task
                                 </Button>
                         }
-
                     </form>
 
                     { taskId ?
