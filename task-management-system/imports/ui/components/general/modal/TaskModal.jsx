@@ -288,7 +288,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             setTitle(taskData.taskName)
             setDescription(taskData.taskDesc)
             setDeadlineDate(taskData.taskDeadlineDate.split("T")[0])
-            setDeadlineTime(taskData.taskDeadlineDate.split("T")[1].substring(0, 12))
+            setDeadlineTime(taskData.taskDeadlineDate.split("T")[1])
             setIsPinned(taskData.taskIsPinned)
             setStatus(taskData.statusName)
             setTagNames(taskData.tagNames)

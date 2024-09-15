@@ -182,7 +182,7 @@ export const BoardSettings = () => {
                     {
                         boardName: boardNameInput,
                         boardCode: boardCodeInput,
-                        boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}Z`,
+                        boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
                         boardDescription: boardDescriptionInput,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags
@@ -261,7 +261,7 @@ export const BoardSettings = () => {
             setBoardNameInput(boardData.boardName);
             setBoardCodeInput(boardData.boardCode);
             setBoardDeadlineDateInput(boardData.boardDeadline.split('T')[0]);
-            setBoardDeadlineTimeInput(boardData.boardDeadline.split('T')[1].substring(0, 12));
+            setBoardDeadlineTimeInput(boardData.boardDeadline.split('T')[1]);
             setBoardDescriptionInput(boardData.boardDescription);
             setBoardStatuses(boardData.boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map(status => status.statusName));
             setBoardExistingTags(boardData.boardTags);

@@ -100,7 +100,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
                 Meteor.call('add_board',
                     boardNameInput,
                     boardCodeInput,
-                    deadlineDateObject.toISOString(),
+                    boardDeadlineDateInput + 'T' + boardDeadlineTimeInput,
                     boardDescriptionInput,
                     teamId,
                     userInfo.username,
