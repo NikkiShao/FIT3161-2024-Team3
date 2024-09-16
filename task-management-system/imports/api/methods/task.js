@@ -53,7 +53,7 @@ Meteor.methods({
 
 
         let splitDateTime = taskData.taskDeadlineDate.split('T');
-        if(taskData.taskDeadlineDate === '' || new Date(taskData.taskDeadlineDate) < new Date() || splitDateTime.length !== 2){
+        if(taskData.taskDeadlineDate === '' || splitDateTime.length !== 2){
             throw new Meteor.Error('add-task-failed', 'Invalid date-time input');
         }
 
@@ -155,7 +155,7 @@ Meteor.methods({
 
 
         let splitDateTime = taskData.taskDeadlineDate.split('T');
-        if(taskData.taskDeadlineDate === '' || new Date(taskData.taskDeadlineDate) < new Date() || splitDateTime.length !== 2){
+        if(taskData.taskDeadlineDate === '' || splitDateTime.length !== 2){
             throw new Meteor.Error('update-task-failed', 'Invalid date-time input');
         }
 

@@ -378,50 +378,6 @@ if (Meteor.isClient) {
                 }
             });
         });
-
-        it('errors with invalid task deadline: passed deadline', function () {
-            // create test user for logging username
-            Accounts.createUser(testUser);
-            const teamId = TeamCollection.insert(testTeamData);
-            testBoard.teamId = teamId;
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
-            testUnpinnedTaskData.boardId = boardId;
-            testUnpinnedTaskData._id = null;
-
-            let isError = false;
-            const addedTask = {
-                taskName: testUnpinnedTaskData.taskName,
-                taskDesc: testUnpinnedTaskData.taskDesc,
-                taskDeadlineDate: "2024-08-05T17:55:00.000Z",
-                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-                boardId: testUnpinnedTaskData.boardId,
-                statusName: testUnpinnedTaskData.statusName,
-                tagNames: testUnpinnedTaskData.tagNames,
-                contributions: testUnpinnedTaskData.contributions,
-            }
-            // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
-                Meteor.call("insert_task", addedTask, testUser.username,
-            
-                    (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-            }).catch((error) => {
-                isError = true;
-                assert.strictEqual(error.error, "add-task-failed")
-            
-            }).then(() => {
-                if (!isError) {
-                    assert.fail("Did not provide required error for invalid deadline input");
-                }
-            });
-        });
         
         it('errors with invalid task deadline: missing date deadline', function () {
             // create test user for logging username
@@ -928,55 +884,6 @@ if (Meteor.isClient) {
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty deadline input");
-                }
-            });
-        });
-
-        it('errors with invalid updated task deadline: passed deadline', function () {
-            // create test user for logging username
-            Accounts.createUser(testUser);
-            const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
-            testBoard.teamId = teamId;
-            testPinnedTaskData.boardId = boardId;
-            testPinnedTaskData._id = "TestId";
-
-            // insert in a team to edit
-            const taskId = TaskCollection.insert(testPinnedTaskData);
-
-            // create edited task object
-            const editedTask = {
-                _id: "TestId",
-                taskName: "test task new",
-                taskDesc: "test description new",
-                taskDeadlineDate: "2024-08-06T17:55:00.000Z",
-                taskIsPinned: false,
-                boardId: boardId, // added dynamically during test cases
-                statusName: "To Do",
-                tagNames: ["a", "c", "d"],
-                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
-            }
-
-            // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
-                Meteor.call("update_task", taskId, editedTask, testUser.username,
-            
-                    (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-            }).catch((error) => {
-                isError = true;
-                assert.strictEqual(error.error, "update-task-failed")
-            
-            }).then(() => {
-                if (!isError) {
-                    assert.fail("Did not provide required error for invalid deadline input");
                 }
             });
         });
