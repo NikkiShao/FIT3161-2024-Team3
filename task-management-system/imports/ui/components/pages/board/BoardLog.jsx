@@ -36,7 +36,8 @@ export const BoardLog = () => {
     });
 
     const isLoading = isLoadingBoard()  || isLoadingLogs();
-    const helpText = "This is a table contains a history of all actions performed on the board and its tasks."
+    const helpText = "This is a table contains a history of all actions performed on the board and its tasks. " +
+        "Logs older than one year will be deleted."
 
     if (isLoading) {
         // display a loading icon when the page is loading
