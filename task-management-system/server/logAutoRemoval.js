@@ -1,6 +1,6 @@
 /**
  * File Description: Log entry cleanup for removing entries older than one year
- * File version: 1.0
+ * File version: 1.1
  * Contributors: Sam
  */
 
@@ -11,19 +11,18 @@ import LogEntryCollection from "/imports/api/collections/logEntry";
  * Automatically cleans up log entries older than one year.
  * Runs at a specified interval.
  */
-export function autoCleanOldLogEntries(hour = 8) { // Set to run at 8am by default
+export function autoCleanOldLogEntries(dayOfWeek = 0, hour = 8) { // Set to run on Sunday at 8am by default
     const now = new Date();
     const cleanTime = new Date(now);
     cleanTime.setHours(hour, 0, 0, 0);
     const timeUntilClean = cleanTime - now;
+    const weekInMilliseconds = 1000 * 60 * 60 * 24 * 7;
 
-    const dayInMilliseconds = 1000 * 60 * 60 * 24;
-
-    // Run the task immediately and then at the specified hour every day
+    // Run the task immediately and then at the specified time every week
     cleanOldLogEntries();
     Meteor.setTimeout(() => {
         cleanOldLogEntries();
-        Meteor.setInterval(cleanOldLogEntries, dayInMilliseconds);
+        Meteor.setInterval(cleanOldLogEntries, weekInMilliseconds);
     }, timeUntilClean);
 }
 
