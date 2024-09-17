@@ -27,6 +27,7 @@ import '/imports/api/publications/logEntry.js';
 
 import {initialiseMailer} from "../imports/api/mailer";
 import {autoSendNotification} from "./notification";
+import { autoCleanOldLogEntries } from "./logAutoRemoval";
 
 
 Accounts.emailTemplates.verifyEmail = {
@@ -52,5 +53,8 @@ Meteor.startup(async () => {
 
         // set up auto email notification
         autoSendNotification()
+
+        // set up automatic log entry cleanup
+        autoCleanOldLogEntries();
     }
 });
