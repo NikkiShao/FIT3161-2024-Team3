@@ -74,9 +74,9 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         if (!boardDeadlineDateInput || !boardDeadlineTimeInput) {
             newErrors.boardDeadline = "Please fill in the board deadline";
             isError = true
-        } else if (deadlineDateObject < new Date()) {
-            // deadline is passed, invalid
-            newErrors.boardDeadline = "Deadline must be in the future";
+        } else if (isNaN(deadlineDateObject)) {
+            // deadline is invalid format
+            newErrors.boardDeadline = "Deadline datetime is invalid";
             isError = true
         }
 
@@ -178,7 +178,6 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
                             <Input
                                 className={"short-input"}
                                 type="date"
-                                min={minDeadlineDate.toISOString().split('T')[0]}
                                 id={"boardDeadline"}
                                 value={boardDeadlineDateInput}
                                 onChange={(e) => setBoardDeadlineDateInput(e.target.value)}

@@ -49,7 +49,7 @@ Meteor.startup(async () => {
 
     if (Meteor.isServer) {
         // initialise the node mailer
-        initialiseMailer()
+        await initialiseMailer()
 
         // set up auto email notification
         autoSendNotification()

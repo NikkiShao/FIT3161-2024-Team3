@@ -46,6 +46,7 @@
 .voting input[type="radio"] {
   margin-right: 16px; /* 单选按钮和文本之间的距离 */
   width: 18px;
+  min-width: 18px;
   height: 18px;
 }
 

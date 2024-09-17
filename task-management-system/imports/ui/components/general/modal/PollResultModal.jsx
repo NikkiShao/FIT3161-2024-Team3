@@ -113,7 +113,9 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
                                             ) : (
                                                 <span className='one-line main-text'>{answer}</span>  // Display the full answer if not truncated
                                             )}
-                                        <span className={"text-grey non-clickable"} style={{minWidth: "40px"}}>{percentage}%</span>
+                                        <span className={"text-grey non-clickable"} style={{minWidth: "50px", textAlign: "end"}}>
+                                            {percentage}%
+                                        </span>
                                         {/* the below is the background grey that fills depending on the voting % */}
                                         <span
                                             className="percentage-bar"

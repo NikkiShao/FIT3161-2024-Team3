@@ -27,6 +27,7 @@ export function autoSendNotification (hour = 8) {
     // const minInMilliseconds = 1000 * 60 ; // for testing purposes, fires each minute
 
     // Run the task immediately and then at midnight
+    // sendReminderNotification();
     Meteor.setTimeout(() => {
         sendReminderNotification();
         Meteor.setInterval(sendReminderNotification, dayInMilliseconds);

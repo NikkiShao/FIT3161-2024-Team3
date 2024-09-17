@@ -15,7 +15,7 @@ let transporter;
 /**
  * Initialises the node mailer
  */
-export function initialiseMailer() {
+export async function initialiseMailer() {
 
     // SMTP configuration with Google API
     const smtpConfig = {
@@ -32,11 +32,13 @@ export function initialiseMailer() {
     transporter = nodemailer.createTransport(smtpConfig);
 
     // verify connection configuration
-    transporter.verify(function (error, success) {
+    await transporter.verify(function (error, success) {
         if (error) {
             console.log(error);
+            return false;
         } else {
             console.log('Server is ready to take our messages');
+            return true;
         }
     });
 }
@@ -92,14 +94,14 @@ Meteor.methods({
                             <p>Hello,</p>
                             <p>You have been invited to join the team <strong>${teamName}</strong>.</p>
                             <p>Please click one of the buttons below to accept or reject the invitation:</p>
-                            <a href="http://localhost:3000/accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
-                            <a href="http://localhost:3000/decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
+                            <a href="${process.env.ROOT_URL}accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
+                            <a href="${process.env.ROOT_URL}decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
                             <p>Thank you!</p>
                             <br/>
                             <p>Alternatively, you may click/navigate to the below URL to accept or decline: </p>
                             <ul>
-                                <li>Accept: http://localhost:3000/accept-invite/${teamId}/${token}</li>
-                                <li>Decline: http://localhost:3000/decline-invite/${teamId}/${token}</li>
+                                <li>Accept: ${process.env.ROOT_URL}accept-invite/${teamId}/${token}</li>
+                                <li>Decline: ${process.env.ROOT_URL}decline-invite/${teamId}/${token}</li>
                             </ul>
                         </div>
                 </body>
@@ -120,6 +122,8 @@ Meteor.methods({
  * @param boardsByTeam - object containing each board that needs to be sent grouped by team IDs
  */
 export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
+
+    console.log("Sending reminder to: " + email)
 
     let teamSections = teamsToSend.map(team => {
 

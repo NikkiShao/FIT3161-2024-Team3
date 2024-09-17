@@ -106,9 +106,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         if (!deadlineDate || !deadlineTime) {
             newErrors.deadline = "Please fill in the task deadline";
             isError = true
-        } else if (!taskId && deadlineDateObject < new Date()) {
-            // NEW TASK and deadline is passed, invalid
-            newErrors.deadline = "Deadline must be in the future";
+        } else if (isNaN(deadlineDateObject)) {
+            // deadline is invalid format
+            newErrors.deadline = "Deadline datetime is invalid";
             isError = true
         }
 
@@ -377,7 +377,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                         <Input
                                             type="date"
                                             style={{marginBottom: "6px"}}
-                                            min={minDeadlineDate.toISOString().split('T')[0]}
                                             id={"deadlineDate"}
                                             value={deadlineDate}
                                             onChange={(e) => setDeadlineDate(e.target.value)}

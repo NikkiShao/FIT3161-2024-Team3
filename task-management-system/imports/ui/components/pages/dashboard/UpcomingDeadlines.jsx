@@ -137,7 +137,7 @@ export const UpcomingDeadlines = () =>  {
                                 ))}
                                 </tbody>
                     </table> :
-                    <span className={"main-text non-clickable"}>
+                    <span className={"main-text text-grey non-clickable"}>
                         You don't have anything due for the next 7 days.
                     </span>}
                 </div>

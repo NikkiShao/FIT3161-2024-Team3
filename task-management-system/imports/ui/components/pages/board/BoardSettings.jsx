@@ -145,9 +145,14 @@ export const BoardSettings = () => {
             isError = true
         }
 
+        let deadlineDateObject = new Date(boardDeadlineDateInput + 'T' + boardDeadlineTimeInput);
         if (!boardDeadlineDateInput || !boardDeadlineTimeInput) {
             newErrors.boardDeadline = "Please fill in your deadline date and time";
             isError = true;
+        } else if (isNaN(deadlineDateObject)) {
+            // deadline is invalid format
+            newErrors.boardDeadline = "Deadline datetime is invalid";
+            isError = true
         }
 
         if (!boardDescriptionInput) {
@@ -321,7 +326,6 @@ export const BoardSettings = () => {
                                     <Input
                                         className={"short-input"}
                                         type="date"
-                                        min={minDeadlineDate.toISOString().split('T')[0]}
                                         id={"boardDeadlineDate"}
                                         value={boardDeadlineDateInput}
                                         onChange={(e) => setBoardDeadlineDateInput(e.target.value)}
