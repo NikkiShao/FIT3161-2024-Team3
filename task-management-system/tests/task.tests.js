@@ -12,6 +12,7 @@ import TaskCollection from "../imports/api/collections/task";
 import BoardCollection from "../imports/api/collections/board";
 import TeamCollection from "../imports/api/collections/team";
 import { generateInvitationToken } from "../imports/ui/components/util";
+import UserCollection from "../imports/api/collections/user";
 
 const assert = require('assert');
 
@@ -160,11 +161,11 @@ if (Meteor.isClient) {
             // insert board which task belongs to
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
-            testUnpinnedTaskData._id = null;
             let isError = false;
 
             const addedTask = {
-                taskName: "",
+                _id: null,
+                taskName: '',
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
                 taskIsPinned: testUnpinnedTaskData.taskIsPinned,
@@ -175,7 +176,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -189,16 +190,15 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty name input");
                 }
             });
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
-        it('errors with invalid name: too long name > 20 characters', function () {
+        it('errors with invalid name: too long name > 100 characters', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
             const teamId = TeamCollection.insert(testTeamData);
@@ -207,9 +207,11 @@ if (Meteor.isClient) {
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
             testUnpinnedTaskData._id = null;
+            let isError = false;
 
             const addedTask = {
-                taskName: "tasktasktasktasktasktask",
+                _id: null,
+                taskName: "tasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktask",
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
                 taskIsPinned: testUnpinnedTaskData.taskIsPinned,
@@ -219,7 +221,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions,
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -239,7 +241,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid name input that is too long");
                 }
             });
-        });
+        }).timeout(10000);
         
         //test for empty task name
         it('errors with invalid task description: empty description', function () {
@@ -255,8 +257,9 @@ if (Meteor.isClient) {
             let isError = false;
 
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
-                taskDesc: "",
+                taskDesc: '',
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
                 taskIsPinned: testUnpinnedTaskData.taskIsPinned,
                 boardId: testUnpinnedTaskData.boardId,
@@ -266,7 +269,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -286,7 +289,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid empty description input");
                 }
             });
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with invalid task description: too long description > 1000 characters', function () {
@@ -302,6 +305,7 @@ if (Meteor.isClient) {
             let isError = false;
             const longDesc = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: longDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
@@ -312,7 +316,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions,
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -332,7 +336,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid description input that is too long");
                 }
             });
-        });
+        }).timeout(10000);
         
         //test deadline related validation
         it('errors with invalid task deadline: empty deadline', function () {
@@ -347,9 +351,10 @@ if (Meteor.isClient) {
 
             let isError = false;
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
-                taskDeadlineDate: "",
+                taskDeadlineDate: '',
                 taskIsPinned: testUnpinnedTaskData.taskIsPinned,
                 boardId: testUnpinnedTaskData.boardId,
                 statusName: testUnpinnedTaskData.statusName,
@@ -357,7 +362,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions,
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -377,7 +382,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid empty deadline input");
                 }
             });
-        });
+        }).timeout(10000);
         
         it('errors with invalid task deadline: missing date deadline', function () {
             // create test user for logging username
@@ -391,6 +396,7 @@ if (Meteor.isClient) {
 
             let isError = false;
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: "T17:55:00.000Z",
@@ -401,7 +407,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions,
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -421,7 +427,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid deadline input");
                 }
             });
-        });
+        }).timeout(10000);
 
         it('errors with invalid task deadline: missing time deadline', function () {
             // create test user for logging username
@@ -435,6 +441,7 @@ if (Meteor.isClient) {
 
             let isError = false;
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: "2024-08-05T",
@@ -445,7 +452,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions,
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -465,7 +472,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid deadline input");
                 }
             });
-        });
+        }).timeout(10000);
 
         it('errors with invalid task contribution: total exceed 100%', function () {
             // create test user for logging username
@@ -479,6 +486,7 @@ if (Meteor.isClient) {
 
             let isError = false;
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
@@ -489,7 +497,7 @@ if (Meteor.isClient) {
                 contributions: [{email: "test@test.com", percent: 120}]
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -509,7 +517,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid contribution input");
                 }
             });
-        });
+        }).timeout(10000);
 
         it('errors with invalid board: board does not exist', function () {
             // create test user for logging username
@@ -518,6 +526,7 @@ if (Meteor.isClient) {
 
             let isError = false;
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
@@ -528,7 +537,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -548,7 +557,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for non-existing board");
                 }
             });
-        });
+        }).timeout(10000);
         
         it('errors with invalid user: user does not exist', function () {
             const teamId = TeamCollection.insert(testTeamData);
@@ -560,6 +569,7 @@ if (Meteor.isClient) {
 
             let isError = false;
             const addedTask = {
+                _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
@@ -570,7 +580,7 @@ if (Meteor.isClient) {
                 contributions: testUnpinnedTaskData.contributions
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("insert_task", addedTask, testUser.username,
             
                     (error, result) => {
@@ -590,7 +600,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for non-existing user");
                 }
             });
-        });
+        }).timeout(10000);
 
         /**
          * Test case to check if a task can be updated successfully.
@@ -640,7 +650,6 @@ if (Meteor.isClient) {
 
         });
 
-        // todo: here add test cases for EACH input being invalid for UPDATING a task
         //test for empty task name
         it('errors with invalid updated task name: empty name', function () {
             // create test user for logging username
@@ -668,7 +677,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -688,7 +697,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid empty name input");
                 }
             });
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with invalid updated name: too long name > 20 characters', function () {
@@ -707,7 +716,7 @@ if (Meteor.isClient) {
             // create edited task object
             const editedTask = {
                 _id: "TestId",
-                taskName: "tasktasktasktasktasktask",
+                taskName: "tasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktask",
                 taskDesc: "test description new",
                 taskDeadlineDate: "2024-10-06T17:55:00.000Z",
                 taskIsPinned: false,
@@ -718,8 +727,8 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
-                Meteor.call("update_task", editedTask, testUser.username,
+            return new Promise((resolve, reject) => {
+                Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
                         if (error) {
@@ -738,7 +747,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid name input that is too long");
                 }
             });
-        });
+        }).timeout(10000);
         
         //test for empty task name
         it('errors with invalid updated task description: empty description', function () {
@@ -768,7 +777,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -788,7 +797,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid empty description input");
                 }
             });
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with invalid updated task description: too long description > 1000 characters', function () {
@@ -817,7 +826,7 @@ if (Meteor.isClient) {
                 contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -837,7 +846,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid description input that is too long");
                 }
             });
-        });
+        }).timeout(10000);
         
         //test deadline related validation
         it('errors with invalid updated task deadline: empty deadline', function () {
@@ -866,7 +875,7 @@ if (Meteor.isClient) {
                 contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -886,7 +895,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid empty deadline input");
                 }
             });
-        });
+        }).timeout(10000);
         
         it('errors with invalid updated task deadline: missing date deadline', function () {
             // create test user for logging username
@@ -915,7 +924,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -935,7 +944,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid deadline input");
                 }
             });
-        });
+        }).timeout(10000);
 
         it('errors with invalid updated task deadline: missing time deadline', function () {
             // create test user for logging username
@@ -964,7 +973,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -984,7 +993,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid deadline input");
                 }
             });
-        });
+        }).timeout(10000);
 
         it('errors with invalid updated task contribution: total exceed 100%', function () {
             // create test user for logging username
@@ -1013,7 +1022,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -1033,7 +1042,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid contribution input");
                 }
             });
-        });
+        }).timeout(10000);
 
         it('errors with invalid board: board does not exist', function () {
             // create test user for logging username
@@ -1055,7 +1064,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -1075,7 +1084,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for non-existing board");
                 }
             });
-        });
+        }).timeout(10000);
         
         it('errors with invalid user: user does not exist', function () {
             const teamId = TeamCollection.insert(testTeamData);
@@ -1098,7 +1107,7 @@ if (Meteor.isClient) {
                 contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
             }
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_task", taskId, editedTask, testUser.username,
             
                     (error, result) => {
@@ -1118,7 +1127,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for non-existing user");
                 }
             });
-        });
+        }).timeout(10000);
 
         /**
          * Test case to check if a task can be deleted successfully.

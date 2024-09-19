@@ -52,18 +52,16 @@ Meteor.methods({
         };
 
 
-        let splitDateTime = taskData.taskDeadlineDate.split('T');
-        if(taskData.taskDeadlineDate === '' || splitDateTime.length !== 2){
+        let dateObject = new Date(taskData.taskDeadlineDate);
+        if(taskData.taskDeadlineDate === '' || (isNaN(dateObject))){
             throw new Meteor.Error('add-task-failed', 'Invalid date-time input');
         }
 
         let totalContribution = 0;
-        for (let key in taskData.contributions) {
-            if (taskData.contributions.hasOwnProperty(key)) {
-                totalContribution += Number(taskData.contributions[key])
-            }
+        for(let i = 0; i < taskData.contributions.length; i++){
+            if(taskData.contributions[i].percent)
+                totalContribution += taskData.contributions[i].percent;
         }
-
         if (totalContribution > 100) {
             throw new Meteor.Error('add-task-failed', 'Invalid contribution input');
         };
@@ -154,18 +152,16 @@ Meteor.methods({
         };
 
 
-        let splitDateTime = taskData.taskDeadlineDate.split('T');
-        if(taskData.taskDeadlineDate === '' || splitDateTime.length !== 2){
+        let dateObject = new Date(taskData.taskDeadlineDate);
+        if(taskData.taskDeadlineDate === '' || (isNaN(dateObject))){
             throw new Meteor.Error('update-task-failed', 'Invalid date-time input');
         }
 
         let totalContribution = 0;
-        for (let key in taskData.contributions) {
-            if (taskData.contributions.hasOwnProperty(key)) {
-                totalContribution += Number(taskData.contributions[key])
-            }
+        for(let i = 0; i < taskData.contributions.length; i++){
+            if(taskData.contributions[i].percent)
+                totalContribution += taskData.contributions[i].percent;
         }
-
         if (totalContribution > 100) {
             throw new Meteor.Error('update-task-failed', 'Invalid contribution input');
         };

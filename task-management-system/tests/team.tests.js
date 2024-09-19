@@ -135,7 +135,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     '',
                     testTeamData.members,
@@ -161,7 +161,7 @@ if (Meteor.isClient) {
             });
             // assert.strictEqual(1, "2")
         
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with invalid name: too long name > 20 characters', function () {
@@ -170,7 +170,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     "teamteamteamteamteamteam",
                     testTeamData.members,
@@ -195,7 +195,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid email input for team members  
         it('errors with invalid email: invalid email format', function () {
@@ -204,7 +204,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     testTeamData.name,
                     ["email"],
@@ -228,7 +228,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid email input");
                 }
             });
-        });
+        }).timeout(10000);
         
         //test for duplicate email in the members array
         it('errors with email: duplicate member email', function () {
@@ -237,7 +237,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     testTeamData.name,
                     ["test1@test1.com", "test1@test1.com"],
@@ -261,7 +261,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for duplicate email input");
                 }
             });
-        });
+        }).timeout(10000);
 
         
         /**
@@ -293,7 +293,7 @@ if (Meteor.isClient) {
             assert.deepEqual(updatedTeam.teamMembers, ["test1@test1.com", "test2@test2.com"]);
             assert.deepEqual(updatedTeam.teamInvitations, [{email: "test3@test3.com", token: "testToken2"}]);
 
-        });
+        }).timeout(10000);
 
         //test for empty team name
         it('errors with invalid updated name: empty name', function () {
@@ -315,7 +315,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, emptyNameTeam, false,
                     (error, result) => {
                         if (error) {
@@ -335,7 +335,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with updated invalid name: too long name > 20 characters', function () {
@@ -357,7 +357,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, longNameTeam, false,
                     (error, result) => {
                         if (error) {
@@ -377,7 +377,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid email input for team members        
         it('errors with invalid updated email: invalid email format', function () {
@@ -399,7 +399,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -419,7 +419,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for duplicate email in the members array
         it('errors with invalid updated email: duplicate email', function () {
@@ -440,7 +440,7 @@ if (Meteor.isClient) {
                 teamInvitations: [{email: "test3@test3.com", token: "testToken2"}]
             }
 
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -460,7 +460,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid email input
         it('errors with invalid updated invitation email: invalid email format', function () {
@@ -482,7 +482,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -502,7 +502,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for duplicate invitations
         it('errors with invalid updated invitation email: duplicate email', function () {
@@ -524,7 +524,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -544,7 +544,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
         
         /**
          * Test case to check if a team can be deleted successfully.
@@ -573,6 +573,6 @@ if (Meteor.isClient) {
             assert.strictEqual(deletedPoll, undefined);
             assert.strictEqual(deletedTask, undefined);
             assert.strictEqual(deletedBoard, undefined);
-        });
+        }).timeout(10000);
     });
 }
