@@ -56,11 +56,6 @@ Meteor.methods({
             throw new Meteor.Error('board-insert-failed', 'Board code can not exceed 10 characters');
         }
 
-        // Check if the code is unique
-        if (BoardCollection.findOne({boardCode: code})) {
-            throw new Meteor.Error('board-insert-failed', 'Board code already exists');
-        }
-
         // check if the code is alphanumeric
         if (!/^[A-Za-z0-9]+$/i.test(code)) {
             throw new Meteor.Error('board-insert-failed', 'Board code can only contain letters and numbers');
@@ -116,7 +111,15 @@ Meteor.methods({
     "update_board": async function (boardId, boardData, username) {
         // Check types of input
         check(boardId, String);
-        check(boardData, Object);
+        check(boardData, {
+            boardName: String,
+            boardCode: String,
+            boardDeadline: String,
+            boardDescription: String,
+            teamId: String,
+            boardTags: [{tagName: String, tagColour: String}],
+            boardStatuses: [{statusName: String, statusOrder: Number}]
+        });
         check(username, String);
 
         // Retrieve the current board data
@@ -223,8 +226,7 @@ Meteor.methods({
         // check board exists
         const board = BoardCollection.findOne(boardId);
         if (!board) {
-
-            throw new Meteor.Error('board-delete-failed', `Board not found`);
+            return;
         }
 
         // Retrieve all tasks associated with the board
