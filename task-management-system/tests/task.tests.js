@@ -7,12 +7,10 @@
 import {Meteor} from "meteor/meteor";
 import {Accounts} from "meteor/accounts-base";
 import {resetDatabase} from 'meteor/xolvio:cleaner';
-import "../imports/api/methods/task";
 import TaskCollection from "../imports/api/collections/task";
 import BoardCollection from "../imports/api/collections/board";
 import TeamCollection from "../imports/api/collections/team";
-import { generateInvitationToken } from "../imports/ui/components/util";
-import UserCollection from "../imports/api/collections/user";
+import "../imports/api/methods/task";
 
 const assert = require('assert');
 
@@ -90,11 +88,13 @@ if (Meteor.isClient) {
 
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = null;
 
             // Wrap the Meteor.call in a Promise
@@ -123,11 +123,13 @@ if (Meteor.isClient) {
 
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
 
             // Wrap the Meteor.call in a Promise
@@ -152,15 +154,17 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
 
-        //test for empty task name
+        // test for empty task name
         it('errors with invalid task name: empty name', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             let isError = false;
 
             const addedTask = {
@@ -190,6 +194,7 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
+                assert.strictEqual(error.reason, "Invalid name input")
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty name input");
@@ -201,17 +206,19 @@ if (Meteor.isClient) {
         it('errors with invalid name: too long name > 100 characters', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
             let isError = false;
 
             const addedTask = {
                 _id: null,
-                taskName: "tasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktask",
+                taskName: "a".repeat(101),
                 taskDesc: testUnpinnedTaskData.taskDesc,
                 taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
                 taskIsPinned: testUnpinnedTaskData.taskIsPinned,
@@ -235,7 +242,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid name input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid name input that is too long");
@@ -247,11 +255,13 @@ if (Meteor.isClient) {
         it('errors with invalid task description: empty description', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
         
             let isError = false;
@@ -283,7 +293,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid description input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty description input");
@@ -295,15 +306,18 @@ if (Meteor.isClient) {
         it('errors with invalid task description: too long description > 1000 characters', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
 
             let isError = false;
-            const longDesc = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+
+            const longDesc = "a".repeat(1001)
             const addedTask = {
                 _id: null,
                 taskName: testUnpinnedTaskData.taskName,
@@ -330,7 +344,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid description input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid description input that is too long");
@@ -342,11 +357,13 @@ if (Meteor.isClient) {
         it('errors with invalid task deadline: empty deadline', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
 
             let isError = false;
@@ -376,7 +393,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid date-time input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty deadline input");
@@ -384,14 +402,16 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
         
-        it('errors with invalid task deadline: missing date deadline', function () {
+        it('errors with invalid task deadline: incorrect deadline date time format', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
 
             let isError = false;
@@ -399,7 +419,7 @@ if (Meteor.isClient) {
                 _id: null,
                 taskName: testUnpinnedTaskData.taskName,
                 taskDesc: testUnpinnedTaskData.taskDesc,
-                taskDeadlineDate: "T17:55:00.000Z",
+                taskDeadlineDate: "invalid date string",
                 taskIsPinned: testUnpinnedTaskData.taskIsPinned,
                 boardId: testUnpinnedTaskData.boardId,
                 statusName: testUnpinnedTaskData.statusName,
@@ -421,52 +441,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
-            }).then(() => {
-                if (!isError) {
-                    assert.fail("Did not provide required error for invalid deadline input");
-                }
-            });
-        }).timeout(10000);
+                assert.strictEqual(error.reason, "Invalid date-time input")
 
-        it('errors with invalid task deadline: missing time deadline', function () {
-            // create test user for logging username
-            Accounts.createUser(testUser);
-            const teamId = TeamCollection.insert(testTeamData);
-            testBoard.teamId = teamId;
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
-            testUnpinnedTaskData.boardId = boardId;
-            testUnpinnedTaskData._id = null;
-
-            let isError = false;
-            const addedTask = {
-                _id: null,
-                taskName: testUnpinnedTaskData.taskName,
-                taskDesc: testUnpinnedTaskData.taskDesc,
-                taskDeadlineDate: "2024-08-05T",
-                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-                boardId: testUnpinnedTaskData.boardId,
-                statusName: testUnpinnedTaskData.statusName,
-                tagNames: testUnpinnedTaskData.tagNames,
-                contributions: testUnpinnedTaskData.contributions,
-            }
-            // Wrap the Meteor.call in a Promise
-            return new Promise((resolve, reject) => {
-                Meteor.call("insert_task", addedTask, testUser.username,
-            
-                    (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-            }).catch((error) => {
-                isError = true;
-                assert.strictEqual(error.error, "add-task-failed")
-            
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid deadline input");
@@ -477,11 +453,13 @@ if (Meteor.isClient) {
         it('errors with invalid task contribution: total exceed 100%', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
             testBoard.teamId = teamId;
-            // insert board which task belongs to
+            // create board for task
             const boardId = BoardCollection.insert(testBoard);
             testUnpinnedTaskData.boardId = boardId;
+
             testUnpinnedTaskData._id = null;
 
             let isError = false;
@@ -511,7 +489,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid contribution input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid contribution input");
@@ -522,6 +501,7 @@ if (Meteor.isClient) {
         it('errors with invalid board: board does not exist', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+
             testUnpinnedTaskData._id = null;
 
             let isError = false;
@@ -551,7 +531,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "task-missing-board")
-            
+                assert.strictEqual(error.reason, "Could not retrieve board information")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for non-existing board");
@@ -559,69 +540,27 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
         
-        it('errors with invalid user: user does not exist', function () {
-            const teamId = TeamCollection.insert(testTeamData);
-            testBoard.teamId = teamId;
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
-            testUnpinnedTaskData.boardId = boardId;
-            testUnpinnedTaskData._id = null;
-
-            let isError = false;
-            const addedTask = {
-                _id: null,
-                taskName: testUnpinnedTaskData.taskName,
-                taskDesc: testUnpinnedTaskData.taskDesc,
-                taskDeadlineDate: testUnpinnedTaskData.taskDeadlineDate,
-                taskIsPinned: testUnpinnedTaskData.taskIsPinned,
-                boardId: testUnpinnedTaskData.boardId,
-                statusName: testUnpinnedTaskData.statusName,
-                tagNames: testUnpinnedTaskData.tagNames,
-                contributions: testUnpinnedTaskData.contributions
-            }
-            // Wrap the Meteor.call in a Promise
-            return new Promise((resolve, reject) => {
-                Meteor.call("insert_task", addedTask, testUser.username,
-            
-                    (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-            }).catch((error) => {
-                isError = true;
-                assert.strictEqual(error.error, "task-missing-user")
-            
-            }).then(() => {
-                if (!isError) {
-                    assert.fail("Did not provide required error for non-existing user");
-                }
-            });
-        }).timeout(10000);
-
         /**
          * Test case to check if a task can be updated successfully.
          */
         it('can update task details', function () {
-
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
-            testPinnedTaskData._id = "TestId";
+
+            testPinnedTaskData._id = "TestId2";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
             const editedTask = {
-                _id: "TestId",
+                _id: "TestId2",
                 taskName: "test task new",
                 taskDesc: "test description new",
                 taskDeadlineDate: "2024-10-06T17:55:00.000Z",
@@ -654,16 +593,19 @@ if (Meteor.isClient) {
         it('errors with invalid updated task name: empty name', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "",
@@ -691,7 +633,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid name input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty name input");
@@ -700,23 +643,26 @@ if (Meteor.isClient) {
         }).timeout(10000);
 
         //test for invalid long team name
-        it('errors with invalid updated name: too long name > 20 characters', function () {
+        it('errors with invalid updated name: too long name > 100 characters', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
-                taskName: "tasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktasktask",
+                taskName: "a".repeat(101),
                 taskDesc: "test description new",
                 taskDeadlineDate: "2024-10-06T17:55:00.000Z",
                 taskIsPinned: false,
@@ -741,7 +687,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid name input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid name input that is too long");
@@ -753,17 +700,20 @@ if (Meteor.isClient) {
         it('errors with invalid updated task description: empty description', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "test task new",
@@ -791,7 +741,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid description input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty description input");
@@ -803,17 +754,20 @@ if (Meteor.isClient) {
         it('errors with invalid updated task description: too long description > 1000 characters', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
-            const longDesc = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+            const longDesc = "a".repeat(1001)
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "test task new",
@@ -840,7 +794,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid description input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid description input that is too long");
@@ -852,17 +807,20 @@ if (Meteor.isClient) {
         it('errors with invalid updated task deadline: empty deadline', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "test task new",
@@ -889,7 +847,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid date-time input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid empty deadline input");
@@ -897,25 +856,28 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
         
-        it('errors with invalid updated task deadline: missing date deadline', function () {
+        it('errors with invalid updated task deadline: incorrect deadline date time format', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "test task new",
                 taskDesc: "test description new",
-                taskDeadlineDate: "T17:55:00.000Z",
+                taskDeadlineDate: "invalid datetime string",
                 taskIsPinned: false,
                 boardId: boardId, // added dynamically during test cases
                 statusName: "To Do",
@@ -938,56 +900,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
-            }).then(() => {
-                if (!isError) {
-                    assert.fail("Did not provide required error for invalid deadline input");
-                }
-            });
-        }).timeout(10000);
+                assert.strictEqual(error.reason, "Invalid date-time input")
 
-        it('errors with invalid updated task deadline: missing time deadline', function () {
-            // create test user for logging username
-            Accounts.createUser(testUser);
-            const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
-            testBoard.teamId = teamId;
-            testPinnedTaskData.boardId = boardId;
-            testPinnedTaskData._id = "TestId";
-
-            // insert in a team to edit
-            const taskId = TaskCollection.insert(testPinnedTaskData);
-
-            // create edited task object
-            const editedTask = {
-                _id: "TestId",
-                taskName: "test task new",
-                taskDesc: "test description new",
-                taskDeadlineDate: "2024-10-06T",
-                taskIsPinned: false,
-                boardId: boardId, // added dynamically during test cases
-                statusName: "To Do",
-                tagNames: ["a", "c", "d"],
-                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
-            }
-
-            // Wrap the Meteor.call in a Promise
-            return new Promise((resolve, reject) => {
-                Meteor.call("update_task", taskId, editedTask, testUser.username,
-            
-                    (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-            }).catch((error) => {
-                isError = true;
-                assert.strictEqual(error.error, "update-task-failed")
-            
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid deadline input");
@@ -998,17 +912,20 @@ if (Meteor.isClient) {
         it('errors with invalid updated task contribution: total exceed 100%', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
+
             testPinnedTaskData._id = "TestId";
 
             // insert in a team to edit
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "test task new",
@@ -1036,7 +953,8 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "update-task-failed")
-            
+                assert.strictEqual(error.reason, "Invalid contribution input")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for invalid contribution input");
@@ -1044,13 +962,14 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
 
-        it('errors with invalid board: board does not exist', function () {
+        it('errors with update to invalid board: board does not exist', function () {
             // create test user for logging username
             Accounts.createUser(testUser);
             testUnpinnedTaskData._id = null;
             const taskId = TaskCollection.insert(testPinnedTaskData);
 
             // create edited task object
+            let isError = false;
             const editedTask = {
                 _id: "TestId",
                 taskName: "test task new",
@@ -1078,56 +997,15 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "task-missing-board")
-            
+                assert.strictEqual(error.reason, "Could not retrieve board information")
+
             }).then(() => {
                 if (!isError) {
                     assert.fail("Did not provide required error for non-existing board");
                 }
             });
         }).timeout(10000);
-        
-        it('errors with invalid user: user does not exist', function () {
-            const teamId = TeamCollection.insert(testTeamData);
-            testBoard.teamId = teamId;
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
-            testUnpinnedTaskData.boardId = boardId;
-            testUnpinnedTaskData._id = null;
-            const taskId = TaskCollection.insert(testPinnedTaskData);
 
-            const editedTask = {
-                _id: "TestId",
-                taskName: "test task new",
-                taskDesc: "test description new",
-                taskDeadlineDate: "2024-10-06T17:55:00.000Z",
-                taskIsPinned: false,
-                boardId: boardId, // added dynamically during test cases
-                statusName: "To Do",
-                tagNames: ["a", "c", "d"],
-                contributions: [{email: "new1@test.com", percent: 22}, {email: "new2@test.com", percent: 62}],
-            }
-            // Wrap the Meteor.call in a Promise
-            return new Promise((resolve, reject) => {
-                Meteor.call("update_task", taskId, editedTask, testUser.username,
-            
-                    (error, result) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-            }).catch((error) => {
-                isError = true;
-                assert.strictEqual(error.error, "task-missing-user")
-            
-            }).then(() => {
-                if (!isError) {
-                    assert.fail("Did not provide required error for non-existing user");
-                }
-            });
-        }).timeout(10000);
 
         /**
          * Test case to check if a task can be deleted successfully.
@@ -1136,10 +1014,11 @@ if (Meteor.isClient) {
 
             // create test user for logging username
             Accounts.createUser(testUser);
+            // create team for board
             const teamId = TeamCollection.insert(testTeamData);
-            // insert board which task belongs to
-            const boardId = BoardCollection.insert(testBoard);
             testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
             testPinnedTaskData.boardId = boardId;
 
             // insert a collection to delete
@@ -1152,35 +1031,6 @@ if (Meteor.isClient) {
             const deletedTask = TaskCollection.findOne(taskId);
             assert.strictEqual(deletedTask, undefined);
         });
-
-        /**
-         * Test case to check if a task can be deleted successfully.
-         */
-        it('errors on deleting nonexistent task', function () {
-
-            // create test user for logging username
-            Accounts.createUser(testUser);
-
-            // call delete method for deletion
-            return new Promise((resolve, reject) => {
-                Meteor.call('delete_task', "nonexistentId", testUser.username, (error) => {
-                    if (error) {
-                        resolve(error)
-
-                    } else {
-                        reject()
-                    }
-                });
-            }).then((resolvedError) => {
-                assert.strictEqual(resolvedError.error, "task-delete-failed");
-                assert.strictEqual(resolvedError.reason, "Task not found");
-
-            }).catch(() => {
-                assert.fail("Deleting a nonexistent task did NOT give an error");
-            })
-
-        }).timeout(1000000);
-
 
     });
 }

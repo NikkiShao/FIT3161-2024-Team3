@@ -10,8 +10,6 @@ import {TaskCollection} from "/imports/api/collections/task.js";
 import "../methods/logEntry";
 import "../methods/board";
 import BoardCollection from "../collections/board";
-import UserCollection from "../collections/user";
-import TeamCollection from '../collections/team';
 
 Meteor.methods({
     /**
@@ -69,11 +67,6 @@ Meteor.methods({
         const board = BoardCollection.findOne({_id: taskData.boardId});
         if (!board) {
             throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
-        }
-
-        const user = UserCollection.findOne({username: username});
-        if (!user) {
-            throw new Meteor.Error('task-missing-user', 'Could not retrieve user information');
         }
 
         let taskId = TaskCollection.insert({
@@ -169,11 +162,6 @@ Meteor.methods({
         const board = BoardCollection.findOne({_id: taskData.boardId});
         if (!board) {
             throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
-        }
-
-        const user = UserCollection.findOne({username: username});
-        if (!user) {
-            throw new Meteor.Error('task-missing-user', 'Could not retrieve user information');
         }
 
         let logAction = '';
@@ -293,7 +281,7 @@ Meteor.methods({
     "delete_task": async function (taskId, username) {
         const task = TaskCollection.findOne(taskId);
         if (!task) {
-            throw new Meteor.Error('task-delete-failed', 'Task not found');
+            return;
         }
 
         // get ID of the team which the task belongs to
