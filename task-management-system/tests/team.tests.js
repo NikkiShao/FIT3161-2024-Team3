@@ -86,7 +86,7 @@ if (Meteor.isClient) {
                 assert.notStrictEqual(teamId, undefined);
                 // find team object and check it is not null
                 const team = TeamCollection.findOne(teamId);
-                assert.notStrictEqual(team, null);
+                assert.notStrictEqual(team, null); 
             }).catch(error => {
                 assert.fail("Error adding team. Returned with error:" + error.message);
             });
