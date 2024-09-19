@@ -5,16 +5,16 @@
  * Version: 1.5
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { Modal } from 'react-responsive-modal';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Modal} from 'react-responsive-modal';
 import classNames from "classnames";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import {XCircleIcon} from "@heroicons/react/24/outline";
 import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
-import { getUserInfo } from "../../util";
+import {getUserInfo} from "../../util";
 
 /**
  * Modal for voting in a poll
@@ -23,10 +23,10 @@ import { getUserInfo } from "../../util";
  * @param closeHandler - handler to call to close it
  * @param pollData - data of the poll to vote in
  */
-const VotePollModal = ({ open, closeHandler, pollData }) => {
+const VotePollModal = ({open, closeHandler, pollData}) => {
     const username = getUserInfo().username;
 
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
+    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
 
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
@@ -44,22 +44,20 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
             setErrorMessage("Please select an option before voting."); // Set the error message
         } else {
             setIsSubmitting(true); // Disable the button while submitting
-            const updatedOptionsData = {
-                options: pollData.options.map(option =>
-                    option.voterUsernames.includes(username)
-                        ? {
-                            ...option,
-                            voterUsernames: option.voterUsernames.filter(voter => voter !== username)
-                        }
-                        : option
-                ).map(option =>
-                    option.optionText === selectedOption
-                        ? { ...option, voterUsernames: [...option.voterUsernames, username] }
-                        : option
-                )
-            };
+            const updatedOptionsData = pollData.options.map(option =>
+                option.voterUsernames.includes(username)
+                    ? {
+                        ...option,
+                        voterUsernames: option.voterUsernames.filter(voter => voter !== username)
+                    }
+                    : option
+            ).map(option =>
+                option.optionText === selectedOption
+                    ? {...option, voterUsernames: [...option.voterUsernames, username]}
+                    : option
+            );
 
-            // Call the new update_poll_votes method in poll.js and pass the entire pollData
+            // Call the method in poll.js
             Meteor.call("update_poll_votes", pollId, updatedOptionsData, (error) => {
                 if (error) {
                     switch (error.reason) {
@@ -111,12 +109,12 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
     }, []);
 
     const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
-        width={20} height={20} />;
+                                                 width={20} height={20}/>;
 
     return (
         <Modal
             closeIcon={closeIcon}
-            classNames={{ modal: classNames('modal-base', '') }}
+            classNames={{modal: classNames('modal-base', '')}}
             open={open}
             onClose={closeHandler}
             center>
@@ -124,12 +122,12 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
 
                 {/* poll title */}
                 <div className={"header-space-centered"}>
-                    <div style={{ width: "25px", visibility: "hidden" }}></div>
+                    <div style={{width: "25px", visibility: "hidden"}}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
                     <HoverTip icon={questionIcon}
-                        outerText={""}
-                        toolTipText={"You may change your vote anytime before the poll is closed."}
-                        style={{ marginBottom: "10px" }}
+                              outerText={""}
+                              toolTipText={"You may change your vote anytime before the poll is closed."}
+                              style={{marginBottom: "10px"}}
                     />
                 </div>
 
