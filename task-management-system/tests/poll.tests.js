@@ -40,7 +40,6 @@ if (Meteor.isClient) {
             "teamId": "aKeCSqyho8o38KW9S"
         };
 
-
         const pollOptions = [
             {
                 "optionText": "data1",
@@ -55,7 +54,6 @@ if (Meteor.isClient) {
                 "voterUsernames": []
             }
         ];
-
 
         /**
          * Test case to check if a poll can be added successfully.
@@ -89,7 +87,7 @@ if (Meteor.isClient) {
         /**
          * Test case to check invalid empty title.
          */
-        it('cannot add a poll with empty title', async function () {
+        it('errors with invalid title: empty title', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
             try {
@@ -116,7 +114,7 @@ if (Meteor.isClient) {
         /**
          * Test case to check invalid empty teamId.
          */
-        it('cannot add a poll with empty teamId', async function () {
+        it('errors with invalid teamId: empty teamId', async function () {
             try {
                 await new Promise((resolve, reject) => {
                     Meteor.call("add_poll",
@@ -139,16 +137,15 @@ if (Meteor.isClient) {
         }).timeout(15000);
 
         /**
-         * Test case to check invalid title with more then 50 characters. 
+         * Test case to check invalid title with more than 100 characters.
          */
-
-        it('cannot add a poll with title exceeding 50 characters', async function () {
+        it('errors with invalid title: exceeds 100 characters', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
             try {
                 await new Promise((resolve, reject) => {
                     Meteor.call("add_poll",
-                        "This is a very long title that exceeds 50 characters",
+                        "This is a test title that exceeds the maximum number of characters allowed for a poll title. This is a test title that exceeds the maximum number of characters allowed for a poll title. The maximum number of characters allowed for a poll title is 100.",
                         testPollData.pollDeadlineDate,
                         testPollData.pollOptions,
                         teamId,
@@ -160,17 +157,16 @@ if (Meteor.isClient) {
                             }
                         });
                 });
-                assert.fail("Poll added with title exceeding 50 characters");
+                assert.fail("Poll added with title exceeding 100 characters");
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }
-        ).timeout(15000);
+        }).timeout(15000);
 
         /**
          * Test case to check invalid deadline date.
          */
-        it('cannot add a poll with invalid deadline date', async function () {
+        it('errors with invalid deadline: non-date string', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
             try {
@@ -192,14 +188,12 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }
-        ).timeout(15000);
-
+        }).timeout(15000);
 
         /**
          * Test case to check invalid deadline date in the past.
          */
-        it('cannot add a poll with deadline date in the past', async function () {
+        it('errors with invalid deadline: past date', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
             try {
@@ -221,13 +215,12 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }
-        ).timeout(15000);
+        }).timeout(15000);
 
         /**
          * Test case to check invalid deadline date that is not in ISO format.
          */
-        it('cannot add a poll with deadline date not in ISO format', async function () {
+        it('errors with invalid deadline: not in ISO format', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
             try {
@@ -249,14 +242,12 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }
-        ).timeout(15000);
-
+        }).timeout(15000);
 
         /**
          * Test case to check invalid options with less than 2 options.
          */
-        it('cannot add a poll with less than 2 options', async function () {
+        it('errors with invalid options: less than 2 options', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
             try {
@@ -278,13 +269,40 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }
-        ).timeout(15000);
-
+        }).timeout(15000);
 
         /**
-        * Test case to check if a poll can be deleted successfully.
-        */
+         * Test case to check if teamId exists.
+         */
+        it('errors with invalid teamId: non-existent teamId', async function () {
+            // Use a teamId that does not exist in the database
+            const nonExistentTeamId = "nonExistentTeamId";
+
+            try {
+                await new Promise((resolve, reject) => {
+                    Meteor.call("add_poll",
+                        testPollData.pollTitle,
+                        testPollData.pollDeadlineDate,
+                        testPollData.pollOptions,
+                        nonExistentTeamId,
+                        (error, pollId) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(pollId);
+                            }
+                        });
+                });
+                assert.fail("Poll added with non-existent teamId");
+            } catch (error_1) {
+                assert.strictEqual(error_1.error, "poll-add-failed");
+                assert.strictEqual(error_1.reason, "Could not retrieve team information");
+            }
+        }).timeout(15000);
+
+        /**
+         * Test case to check if a poll can be deleted successfully.
+         */
         it('can delete a poll', function () {
             const teamId = TeamCollection.insert(testTeam);
             Meteor.call("add_poll",
@@ -295,8 +313,7 @@ if (Meteor.isClient) {
                 async (error, pollId) => {
                     if (error) {
                         assert.fail("Error adding poll: " + error.message);
-                    }
-                    else {
+                    } else {
                         try {
                             await new Promise((resolve, reject) => {
                                 Meteor.call("delete_poll", pollId, (error_1) => {
@@ -306,8 +323,7 @@ if (Meteor.isClient) {
                                         resolve();
                                     }
                                 });
-                            }
-                            );
+                            });
                             const poll = PollCollection.findOne(pollId);
                             assert.strictEqual(poll, undefined); // Poll should not exist after deletion
                         } catch (error_2) {
@@ -320,12 +336,11 @@ if (Meteor.isClient) {
         /**
          * Test case to check if delete_poll throws error when poll doesn't exist.
          */
-        it('cannot delete a poll that does not exist', async function () {
+        it('errors with invalid pollId: non-existent poll for deletion', async function () {
             Meteor.call("add_poll", testPollData.pollTitle, testPollData.pollDeadlineDate, testPollData.pollOptions, testPollData.teamId, async (error, pollId) => {
                 if (error) {
                     assert.fail("Error adding poll: " + error.message);
-                }
-                else {
+                } else {
                     try {
                         await new Promise((resolve, reject) => {
                             Meteor.call("delete_poll", "invalid", (error_1) => {
@@ -344,11 +359,9 @@ if (Meteor.isClient) {
             });
         }).timeout(15000);
 
-        
         /**
          * Test case to check if a poll can be updated successfully.
          */
-
         it('can update a poll', async function () {
             const teamId = TeamCollection.insert(testTeam);
             Meteor.call("add_poll",
@@ -359,8 +372,7 @@ if (Meteor.isClient) {
                 async (error, pollId) => {
                     if (error) {
                         assert.fail("Error adding poll: " + error.message);
-                    }
-                    else {
+                    } else {
                         try {
                             const updatedPollData = {
                                 pollTitle: "Updated Poll",
@@ -389,16 +401,14 @@ if (Meteor.isClient) {
                 });
         }).timeout(15000);
 
-
         /**
          * Test case to check if poll does not exist when updating.
          */
-        it('cannot update a poll that does not exist', async function () {
+        it('errors with invalid pollId: non-existent poll for update', async function () {
             Meteor.call("add_poll", testPollData.pollTitle, testPollData.pollDeadlineDate, testPollData.pollOptions, testPollData.teamId, async (error, pollId) => {
                 if (error) {
                     assert.fail("Error adding poll: " + error.message);
-                }
-                else {
+                } else {
                     try {
                         const updatedPollData = {
                             pollTitle: "Updated Poll",
@@ -423,20 +433,16 @@ if (Meteor.isClient) {
                     }
                 }
             });
-        }
-        ).timeout(15000);
-
+        }).timeout(15000);
 
         /**
          * Test case to check if pollId is invalid.
          */
-
-        it('cannot update a poll with invalid pollId', async function () {
+        it('errors with invalid pollId: incorrect format for update', async function () {
             Meteor.call("add_poll", testPollData.pollTitle, testPollData.pollDeadlineDate, testPollData.pollOptions, testPollData.teamId, async (error, pollId) => {
                 if (error) {
                     assert.fail("Error adding poll: " + error.message);
-                }
-                else {
+                } else {
                     try {
                         const updatedPollData = {
                             pollTitle: "Updated Poll",
@@ -461,14 +467,12 @@ if (Meteor.isClient) {
                     }
                 }
             });
-        }
-        ).timeout(15000);
-
+        }).timeout(15000);
 
         /**
          * Test case to check if poll's options format is invalid.
          */
-        it('cannot update a poll with invalid pollOptions format', async function () {
+        it('errors with invalid options: incorrect format for update', async function () {
             const teamId = TeamCollection.insert(testTeam);
             Meteor.call("add_poll",
                 testPollData.pollTitle,
@@ -478,14 +482,13 @@ if (Meteor.isClient) {
                 async (error, pollId) => {
                     if (error) {
                         assert.fail("Error adding poll: " + error.message);
-                    }
-                    else {
+                    } else {
                         try {
                             const updatedPollData = {
                                 pollTitle: "Updated Poll",
                                 pollCreationDate: "2024-09-10T06:27:04.648Z",
                                 pollDeadlineDate: "2024-10-02T13:55:00.000Z",
-                                options: [ "invalid" ],
+                                options: ["invalid"],
                                 teamId: teamId
                             };
 
@@ -504,13 +507,6 @@ if (Meteor.isClient) {
                         }
                     }
                 });
-        }
-        ).timeout(15000);
-
-
-
-
-
-
+        }).timeout(15000);
     });
 }

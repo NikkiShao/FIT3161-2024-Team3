@@ -7,6 +7,8 @@
 import PollCollection from "../collections/poll";
 import { Meteor } from "meteor/meteor";
 import BoardCollection from "../collections/board";
+import { check } from "meteor/check";
+import TeamCollection from "../collections/team";
 
 Meteor.methods({
     /**
@@ -19,33 +21,23 @@ Meteor.methods({
      */
     "add_poll": function (title, deadline, options, teamId) {
 
-        // validation checks
+        // validation checks of inputs
+        check(title, String);
+        check(deadline, String);
+        check(options, [String]);
+        check(teamId, String);
 
-        // Validate type of title
-        if (typeof title !== "string") {
-            throw new Meteor.Error("poll-add-failed", "Invalid poll title");
-        }
-
-        // Validate type of deadline
-        if (typeof deadline !== "string") {
-            throw new Meteor.Error("poll-add-failed", "Invalid poll deadline");
-        }
-
-        // Validate type of options
-        if (!Array.isArray(options)) {
-            throw new Meteor.Error("poll-add-failed", "Invalid poll options");
-        }
-
-        // Validate type of teamId
-        if (typeof teamId !== "string") {
-            throw new Meteor.Error("poll-add-failed", "Invalid teamId");
+        // Validate teamId exists
+        if (!TeamCollection.findOne
+            ({ _id: teamId })) {
+            throw new Meteor.Error("poll-add-failed", "Could not retrieve team information");
         }
 
         // Validate poll title is not empty and does not exceed 50 characters
         if (title.trim() === "") {
             throw new Meteor.Error("poll-add-failed", "Poll title is required");
         }
-        if (title.length > 50) {
+        if (title.length > 100) {
             throw new Meteor.Error("poll-add-failed", "Poll title cannot exceed 50 characters");
         }
 
@@ -77,7 +69,6 @@ Meteor.methods({
         if (teamId.trim() === "") {
             throw new Meteor.Error("poll-add-failed", "Invalid teamId");
         }
-
 
         const optionsFormatted = options.map((option) => {
             return {
@@ -123,15 +114,9 @@ Meteor.methods({
      * @param updatedPollData - the updated poll data
      */
     "update_poll": function (pollId, updatedPollData) {
-        // Check type of pollId
-        if (typeof pollId !== "string") {
-            throw new Meteor.Error("poll-update-failed", "Invalid pollId");
-        }
-
-        // Check type of updatedPollData
-        if (typeof updatedPollData !== "object") {
-            throw new Meteor.Error("poll-update-failed", "Invalid updatedPollData");
-        }
+        // Validate inputs
+        check(pollId, String);
+        check(updatedPollData, Object);
 
         // Check if poll exists
         if (!PollCollection.findOne({ _id: pollId })) {
