@@ -50,11 +50,6 @@ Meteor.methods({
             throw new Meteor.Error("poll-add-failed", "Poll deadline must be in the future");
         }
 
-        // Validate deadline date format is in ISO format
-        if (deadlineDate.toISOString() !== deadline) {
-            throw new Meteor.Error("poll-add-failed", "Invalid poll deadline date format");
-        }
-
         // Validate options contain at least two valid strings and none of the options are empty
         if (options.length < 2) {
             throw new Meteor.Error("poll-add-failed", "At least two poll options are required");
@@ -90,6 +85,46 @@ Meteor.methods({
     },
 
     /**
+     * Updates a votes of a poll
+     *
+     * @param pollId - ID of poll to update
+     * @param updatedOptionsData - the updated options data
+     */
+    "update_poll_votes": function (pollId, updatedOptionsData) {
+
+        // Validate inputs
+        check(pollId, String);
+        check(updatedOptionsData, [{
+            optionText: String,
+            voterUsernames: [String]
+        }]);
+
+        // Check if poll exists
+        if (!PollCollection.findOne({ _id: pollId })) {
+            throw new Meteor.Error("poll-update-failed", "Poll not found");
+        }
+
+        // Validate the options format
+        let appearedUsernames = []
+        for (let i=0; i < updatedOptionsData.length; i++) {
+            appearedUsernames = appearedUsernames.concat(updatedOptionsData[i].voterUsernames);
+        }
+        const checkSet = new Set(appearedUsernames);
+
+        if (checkSet.size !== appearedUsernames.length) {
+            throw new Meteor.Error("poll-update-failed", "Duplicated username in multiple poll options");
+        }
+
+        PollCollection.update(pollId,
+            {
+                $set: {
+                    "pollOptions": updatedOptionsData,
+                }
+            }
+        );
+    },
+
+    /**
      * Deletes the poll.
      *
      * @param pollId - ID of poll to delete
@@ -99,50 +134,11 @@ Meteor.methods({
 
         const poll = PollCollection.findOne(pollId);
         if (!poll) {
-            throw new Meteor.Error('poll-delete-failed', 'Poll not found');
+            return;
         }
 
         // delete the poll
         PollCollection.remove({ _id: pollId });
 
     },
-
-    /**
-     * Updates an entire poll with new data
-     *
-     * @param pollId - ID of poll to update
-     * @param updatedPollData - the updated poll data
-     */
-    "update_poll": function (pollId, updatedPollData) {
-        // Validate inputs
-        check(pollId, String);
-        check(updatedPollData, Object);
-
-        // Check if poll exists
-        if (!PollCollection.findOne({ _id: pollId })) {
-            throw new Meteor.Error("poll-update-failed", "Poll not found");
-        }
-
-        // Validate the options format
-        if (!Array.isArray(updatedPollData.options) || updatedPollData.options.some(option => {
-            return !option.optionText || !Array.isArray(option.voterUsernames);
-        })) {
-            throw new Meteor.Error('invalid-options', 'Invalid options data.');
-        }
-
-
-        const poll = PollCollection.findOne({ _id: pollId });
-        console.log("Poll: ", poll);
-        if (!poll) {
-            throw new Meteor.Error("Poll not found");
-        }
-
-        PollCollection.update(pollId,
-            {
-                $set: {
-                    "pollOptions": updatedPollData.options,
-                }
-            }
-        );
-    }
 });

@@ -40,14 +40,23 @@ if (Meteor.isClient) {
             "teamId": "aKeCSqyho8o38KW9S"
         };
 
+        const testPoll = {
+            "_id": "testPollId",
+            "pollTitle": "test",
+            "pollCreationDate": "2024-08-10T06:27:04.648Z",
+            "pollDeadlineDate": "2024-08-12T13:55:00.000Z",
+            "pollOptions": [{optionText: "option1", voterUsernames: []}, {optionText: "option2", voterUsernames: []}],
+            "teamId": "aKeCSqyho8o38KW9S"
+        };
+
         const pollOptions = [
             {
-                "optionText": "data1",
-                "voterUsernames": []
+                "optionText": "option1",
+                "voterUsernames": ["abcd", "efgh"]
             },
             {
-                "optionText": "data2",
-                "voterUsernames": []
+                "optionText": "option2",
+                "voterUsernames": ["1111"]
             },
             {
                 "optionText": "data3",
@@ -82,7 +91,7 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.fail("Error adding poll: " + error_1.message);
             }
-        }).timeout(15000);
+        }).timeout(10000);
 
         /**
          * Test case to check invalid empty title.
@@ -90,8 +99,7 @@ if (Meteor.isClient) {
         it('errors with invalid title: empty title', async function () {
             const teamId = TeamCollection.insert(testTeam);
 
-            try {
-                await new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => {
                     Meteor.call("add_poll",
                         "",
                         testPollData.pollDeadlineDate,
@@ -99,17 +107,19 @@ if (Meteor.isClient) {
                         teamId,
                         (error, pollId) => {
                             if (error) {
-                                reject(error);
+                                resolve(error);
                             } else {
-                                resolve(pollId);
+                                reject();
                             }
                         });
+                }).then((resolvedError) => {
+                    assert.strictEqual(resolvedError.error, "poll-add-failed");
+
+                }).catch((error) => {
+                    assert.fail("Poll added with empty title");
+
                 });
-                assert.fail("Poll added with empty title");
-            } catch (error_1) {
-                assert.strictEqual(error_1.error, "poll-add-failed");
-            }
-        }).timeout(15000);
+        })
 
         /**
          * Test case to check invalid empty teamId.
@@ -134,7 +144,7 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }).timeout(15000);
+        })
 
         /**
          * Test case to check invalid title with more than 100 characters.
@@ -161,7 +171,7 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }).timeout(15000);
+        })
 
         /**
          * Test case to check invalid deadline date.
@@ -173,7 +183,7 @@ if (Meteor.isClient) {
                 await new Promise((resolve, reject) => {
                     Meteor.call("add_poll",
                         testPollData.pollTitle,
-                        "invalid",
+                        "invalid date",
                         testPollData.pollOptions,
                         teamId,
                         (error, pollId) => {
@@ -188,7 +198,7 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }).timeout(15000);
+        })
 
         /**
          * Test case to check invalid deadline date in the past.
@@ -215,34 +225,7 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }).timeout(15000);
-
-        /**
-         * Test case to check invalid deadline date that is not in ISO format.
-         */
-        it('errors with invalid deadline: not in ISO format', async function () {
-            const teamId = TeamCollection.insert(testTeam);
-
-            try {
-                await new Promise((resolve, reject) => {
-                    Meteor.call("add_poll",
-                        testPollData.pollTitle,
-                        "2024-10-02T13:55:00.000",
-                        testPollData.pollOptions,
-                        teamId,
-                        (error, pollId) => {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(pollId);
-                            }
-                        });
-                });
-                assert.fail("Poll added with deadline date not in ISO format");
-            } catch (error_1) {
-                assert.strictEqual(error_1.error, "poll-add-failed");
-            }
-        }).timeout(15000);
+        })
 
         /**
          * Test case to check invalid options with less than 2 options.
@@ -269,7 +252,7 @@ if (Meteor.isClient) {
             } catch (error_1) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
             }
-        }).timeout(15000);
+        })
 
         /**
          * Test case to check if teamId exists.
@@ -298,7 +281,116 @@ if (Meteor.isClient) {
                 assert.strictEqual(error_1.error, "poll-add-failed");
                 assert.strictEqual(error_1.reason, "Could not retrieve team information");
             }
-        }).timeout(15000);
+        })
+
+
+        /**
+         * Test case to check if a poll can be updated successfully.
+         */
+        it('can update a poll', async function () {
+            const teamId = TeamCollection.insert(testTeam);
+            const pollId = PollCollection.insert(testPoll);
+
+            Meteor.call("update_poll_votes", pollId, pollOptions)
+
+            const updatedPoll = PollCollection.findOne(pollId);
+            assert.strictEqual(updatedPoll.pollTitle, testPoll.pollTitle);
+            assert.strictEqual(updatedPoll.pollCreationDate, testPoll.pollCreationDate);
+            assert.strictEqual(updatedPoll.pollDeadlineDate, testPoll.pollDeadlineDate);
+            assert.deepEqual(updatedPoll.pollOptions, pollOptions);
+            assert.strictEqual(updatedPoll.teamId, testPoll.teamId);
+
+        })
+
+        /**
+         * Test case to check if poll does not exist when updating.
+         */
+        it('errors with invalid pollId: non-existent poll for update', async function () {
+            const teamId = TeamCollection.insert(testTeam);
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("update_poll_votes", "invalidId", pollOptions, (error) => {
+                    if (error) {
+                        resolve(error);
+                    } else {
+                        reject();
+                    }
+                });
+            }).then((resolvedError) => {
+                assert.strictEqual(resolvedError.error, "poll-update-failed");
+                assert.strictEqual(resolvedError.reason, "Poll not found");
+
+            }).catch(() => {
+                assert.fail("Editing non-existing poll did NOT give an error");
+            });
+
+        })
+
+        /**
+         * Test case to check if poll's options format is invalid.
+         */
+        it('errors with invalid options: incorrect format for update', async function () {
+            const teamId = TeamCollection.insert(testTeam);
+            const pollId = PollCollection.insert(testPoll);
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("update_poll_votes", pollId, ["invalid"], (error) => {
+                    if (error) {
+                        resolve(error);
+                    } else {
+                        reject();
+                    }
+                });
+            }).then((resolvedError) => {
+                // match error from check()
+                assert.strictEqual(resolvedError.error, 400);
+
+            }).catch(() => {
+                assert.fail("Updating with invalid options did NOT give an error");
+            });
+
+        })
+
+        /**
+         * Test case to check if error when 1 user votes on multiple poll's options.
+         */
+        it('errors with invalid options: incorrect format for update', async function () {
+            const teamId = TeamCollection.insert(testTeam);
+            const pollId = PollCollection.insert(testPoll);
+
+            const pollOptions = [
+                {
+                    "optionText": "option1",
+                    "voterUsernames": ["abcd", "efgh"]
+                },
+                {
+                    "optionText": "option2",
+                    "voterUsernames": ["abcd"]
+                },
+                {
+                    "optionText": "data3",
+                    "voterUsernames": []
+                }
+            ];
+
+            return new Promise((resolve, reject) => {
+                Meteor.call("update_poll_votes", pollId, pollOptions, (error) => {
+                    if (error) {
+                        resolve(error);
+                    } else {
+                        reject();
+                    }
+                });
+            }).then((resolvedError) => {
+                // match error from check()
+                assert.strictEqual(resolvedError.error, "poll-update-failed");
+                assert.strictEqual(resolvedError.reason, "Duplicated username in multiple poll options");
+
+            }).catch(() => {
+                assert.fail("Updating with invalid options did NOT give an error");
+            });
+
+        })
 
         /**
          * Test case to check if a poll can be deleted successfully.
@@ -331,182 +423,7 @@ if (Meteor.isClient) {
                         }
                     }
                 });
-        }).timeout(15000);
+        })
 
-        /**
-         * Test case to check if delete_poll throws error when poll doesn't exist.
-         */
-        it('errors with invalid pollId: non-existent poll for deletion', async function () {
-            Meteor.call("add_poll", testPollData.pollTitle, testPollData.pollDeadlineDate, testPollData.pollOptions, testPollData.teamId, async (error, pollId) => {
-                if (error) {
-                    assert.fail("Error adding poll: " + error.message);
-                } else {
-                    try {
-                        await new Promise((resolve, reject) => {
-                            Meteor.call("delete_poll", "invalid", (error_1) => {
-                                if (error_1) {
-                                    reject(error_1);
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        });
-                        assert.fail("Poll deleted that does not exist");
-                    } catch (error_2) {
-                        assert.strictEqual(error_2.error, "poll-delete-failed");
-                    }
-                }
-            });
-        }).timeout(15000);
-
-        /**
-         * Test case to check if a poll can be updated successfully.
-         */
-        it('can update a poll', async function () {
-            const teamId = TeamCollection.insert(testTeam);
-            Meteor.call("add_poll",
-                testPollData.pollTitle,
-                testPollData.pollDeadlineDate,
-                testPollData.pollOptions,
-                teamId,
-                async (error, pollId) => {
-                    if (error) {
-                        assert.fail("Error adding poll: " + error.message);
-                    } else {
-                        try {
-                            const updatedPollData = {
-                                pollTitle: "Updated Poll",
-                                pollCreationDate: "2024-09-10T06:27:04.648Z",
-                                pollDeadlineDate: "2024-10-02T13:55:00.000Z",
-                                options: pollOptions,
-                                teamId: teamId
-                            };
-
-                            await new Promise((resolve, reject) => {
-                                Meteor.call("update_poll", pollId, updatedPollData, (error_1) => {
-                                    if (error_1) {
-                                        reject(error_1);
-                                    } else {
-                                        resolve();
-                                    }
-                                });
-                            });
-
-                            const poll = PollCollection.findOne(pollId);
-                            assert.strictEqual(poll.pollTitle, updatedPollData.pollTitle);
-                        } catch (error_2) {
-                            assert.fail("Error updating poll: " + error_2.message);
-                        }
-                    }
-                });
-        }).timeout(15000);
-
-        /**
-         * Test case to check if poll does not exist when updating.
-         */
-        it('errors with invalid pollId: non-existent poll for update', async function () {
-            Meteor.call("add_poll", testPollData.pollTitle, testPollData.pollDeadlineDate, testPollData.pollOptions, testPollData.teamId, async (error, pollId) => {
-                if (error) {
-                    assert.fail("Error adding poll: " + error.message);
-                } else {
-                    try {
-                        const updatedPollData = {
-                            pollTitle: "Updated Poll",
-                            pollCreationDate: "2024-09-10T06:27:04.648Z",
-                            pollDeadlineDate: "2024-10-02T13:55:00.000Z",
-                            options: pollOptions,
-                            teamId: testPollData.teamId
-                        };
-
-                        await new Promise((resolve, reject) => {
-                            Meteor.call("update_poll", "invalid", updatedPollData, (error_1) => {
-                                if (error_1) {
-                                    reject(error_1);
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        });
-                        assert.fail("Poll updated that does not exist");
-                    } catch (error_2) {
-                        assert.strictEqual(error_2.error, "poll-update-failed");
-                    }
-                }
-            });
-        }).timeout(15000);
-
-        /**
-         * Test case to check if pollId is invalid.
-         */
-        it('errors with invalid pollId: incorrect format for update', async function () {
-            Meteor.call("add_poll", testPollData.pollTitle, testPollData.pollDeadlineDate, testPollData.pollOptions, testPollData.teamId, async (error, pollId) => {
-                if (error) {
-                    assert.fail("Error adding poll: " + error.message);
-                } else {
-                    try {
-                        const updatedPollData = {
-                            pollTitle: "Updated Poll",
-                            pollCreationDate: "2024-09-10T06:27:04.648Z",
-                            pollDeadlineDate: "2024-10-02T13:55:00.000Z",
-                            options: pollOptions,
-                            teamId: testPollData.teamId
-                        };
-
-                        await new Promise((resolve, reject) => {
-                            Meteor.call("update_poll", "invalid_ID", updatedPollData, (error_1) => {
-                                if (error_1) {
-                                    reject(error_1);
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        });
-                        assert.fail("Poll updated with invalid pollId");
-                    } catch (error_2) {
-                        assert.strictEqual(error_2.error, "poll-update-failed");
-                    }
-                }
-            });
-        }).timeout(15000);
-
-        /**
-         * Test case to check if poll's options format is invalid.
-         */
-        it('errors with invalid options: incorrect format for update', async function () {
-            const teamId = TeamCollection.insert(testTeam);
-            Meteor.call("add_poll",
-                testPollData.pollTitle,
-                testPollData.pollDeadlineDate,
-                testPollData.pollOptions,
-                teamId,
-                async (error, pollId) => {
-                    if (error) {
-                        assert.fail("Error adding poll: " + error.message);
-                    } else {
-                        try {
-                            const updatedPollData = {
-                                pollTitle: "Updated Poll",
-                                pollCreationDate: "2024-09-10T06:27:04.648Z",
-                                pollDeadlineDate: "2024-10-02T13:55:00.000Z",
-                                options: ["invalid"],
-                                teamId: teamId
-                            };
-
-                            await new Promise((resolve, reject) => {
-                                Meteor.call("update_poll", pollId, updatedPollData, (error_1) => {
-                                    if (error_1) {
-                                        reject(error_1);
-                                    } else {
-                                        resolve();
-                                    }
-                                });
-                            });
-                            assert.fail("Poll updated with invalid options format");
-                        } catch (error_2) {
-                            assert.strictEqual(error_2.error, "invalid-options");
-                        }
-                    }
-                });
-        }).timeout(15000);
     });
 }

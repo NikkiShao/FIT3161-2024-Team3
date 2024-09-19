@@ -44,8 +44,7 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
             setErrorMessage("Please select an option before voting."); // Set the error message
         } else {
             setIsSubmitting(true); // Disable the button while submitting
-            const updatedPollData = {
-                ...pollData,
+            const updatedOptionsData = {
                 options: pollData.options.map(option =>
                     option.voterUsernames.includes(username)
                         ? {
@@ -60,8 +59,8 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
                 )
             };
 
-            // Call the new update_poll method in poll.js and pass the entire pollData
-            Meteor.call("update_poll", pollId, updatedPollData, (error) => {
+            // Call the new update_poll_votes method in poll.js and pass the entire pollData
+            Meteor.call("update_poll_votes", pollId, updatedOptionsData, (error) => {
                 if (error) {
                     switch (error.reason) {
                         case 'Poll not found':
