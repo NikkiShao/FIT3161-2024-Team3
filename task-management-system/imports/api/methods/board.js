@@ -7,6 +7,7 @@ import { Meteor } from 'meteor/meteor';
 import { BoardCollection } from '/imports/api/collections/board.js';
 import TaskCollection from "../collections/task";
 import "../methods/logEntry";
+import { check } from 'meteor/check';
 
 // Helper function to promisify Meteor.call
 Meteor.callPromise = function (method, ...args) {
@@ -33,63 +34,46 @@ Meteor.methods({
      * @param username - username of the creator
      */
     "add_board": async function (name, code, deadline, desc, teamId, username) {
-        // Check for missing parameters
-        if (!name || !code || !deadline || !desc || !teamId || !username) {
-            throw new Meteor.Error('invalid-parameters', 'Missing parameters');
+        check(name, String);
+        check(code, String);
+        check(deadline, String);
+        check(desc, String);
+        check(teamId, String);
+        check(username, String);
+
+        // check if the board inputs are not empty
+        if (name === "" || code === "" ||  desc === "") {
+            throw new Meteor.Error('board-insert-failed', 'Inputs can not be an empty string');
         }
 
-        // Check for duplicate board code
-        if (BoardCollection
-            .find({ boardCode: code, teamId: teamId })
-            .count() > 0) {
-            throw new Meteor.Error('duplicate-board-code', 'Board code already exists');
-        }
-
-        // Check for duplicate board name
-        if (BoardCollection
-            .find({ boardName: name, teamId: teamId })
-            .count() > 0) {
-            throw new Meteor.Error('duplicate-board-name', 'Board name already exists');
-        }
-
-        // check if the deadline is in the future
-        if (new Date(deadline) < new Date()) {
-            throw new Meteor.Error('invalid-deadline', 'Deadline must be in the future');
-        }
-
-        // check if name is a string
-        if (typeof name !== 'string') {
-            throw new Meteor.Error('invalid-name', 'Board name must be a string');
-        }
-
-        // check if code is a string
-        if (typeof code !== 'string') {
-            throw new Meteor.Error('invalid-code', 'Board code must be a string');
+        // check if the deadline is a valid date
+        if (isNaN(Date.parse(deadline))) {
+            throw new Meteor.Error('board-insert-failed', 'Invalid deadline date');
         }
 
         // check if the code is less or equal to 10 characters
         if (code.length > 10) {
-            throw new Meteor.Error('invalid-code', 'Board code can not exceed 10 characters');
+            throw new Meteor.Error('board-insert-failed', 'Board code can not exceed 10 characters');
+        }
+
+        // Check if the code is unique
+        if (BoardCollection.findOne({boardCode: code})) {
+            throw new Meteor.Error('board-insert-failed', 'Board code already exists');
         }
 
         // check if the code is alphanumeric
         if (!/^[A-Za-z0-9]+$/i.test(code)) {
-            throw new Meteor.Error('invalid-code', 'Board code can only contain letters and numbers');
+            throw new Meteor.Error('board-insert-failed', 'Board code can only contain letters and numbers');
         }
 
         // check if the name is less or equal to 30 characters  
         if (name.length > 30) {
-            throw new Meteor.Error('invalid-name', 'Board name can not exceed 30 characters');
-        }
-
-        // check if description is a string
-        if (typeof desc !== 'string') {
-            throw new Meteor.Error('invalid-description', 'Board description must be a string');
+            throw new Meteor.Error('board-insert-failed', 'Board name can not exceed 30 characters');
         }
 
         // check if the description is less or equal to 150 characters
         if (desc.length > 150) {
-            throw new Meteor.Error('invalid-description', 'Board description can not exceed 150 characters');
+            throw new Meteor.Error('board-insert-failed', 'Board description can not exceed 150 characters');
         }
 
 
@@ -130,20 +114,10 @@ Meteor.methods({
      * @param username - username of the editor
      */
     "update_board": async function (boardId, boardData, username) {
-        // Check for missing parameters
-        if (!boardId || !boardData || !username) {
-            throw new Meteor.Error('invalid-parameters', 'Missing parameters');
-        }
-
-        // Check if the boardId is a string
-        if (typeof boardId !== 'string') {
-            throw new Meteor.Error('invalid-boardId', 'Board ID must be a string');
-        }
-
-        // Check if the boardData is an object
-        if (typeof boardData !== 'object') {
-            throw new Meteor.Error('invalid-boardData', 'Board data must be an object');
-        }
+        // Check types of input
+        check(boardId, String);
+        check(boardData, Object);
+        check(username, String);
 
         // Retrieve the current board data
         const currentBoard = BoardCollection.findOne(boardId);
@@ -243,6 +217,9 @@ Meteor.methods({
      * @param username - username of user who deleted the board
      */
     "delete_board": async function (boardId, username) {
+        check(boardId, String)
+        check(username, String)
+
         // check board exists
         const board = BoardCollection.findOne(boardId);
         if (!board) {
