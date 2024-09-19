@@ -22,7 +22,7 @@ import {closeModalIcon, helpQuestionIcon} from "../../icons";
  * @param closeHandler - handler to call to close it
  * @param pollData - data of the poll to vote in
  */
-const VotePollModal = ({ open, closeHandler, pollData }) => {
+const VotePollModal = ({open, closeHandler, pollData}) => {
     const username = getUserInfo().username;
 
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
@@ -41,24 +41,21 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
             setErrorMessage("Please select an option before voting."); // Set the error message
         } else {
             setIsSubmitting(true); // Disable the button while submitting
-            const updatedPollData = {
-                ...pollData,
-                options: pollData.options.map(option =>
-                    option.voterUsernames.includes(username)
-                        ? {
-                            ...option,
-                            voterUsernames: option.voterUsernames.filter(voter => voter !== username)
-                        }
-                        : option
-                ).map(option =>
-                    option.optionText === selectedOption
-                        ? { ...option, voterUsernames: [...option.voterUsernames, username] }
-                        : option
-                )
-            };
+            const updatedOptionsData = pollData.options.map(option =>
+                option.voterUsernames.includes(username)
+                    ? {
+                        ...option,
+                        voterUsernames: option.voterUsernames.filter(voter => voter !== username)
+                    }
+                    : option
+            ).map(option =>
+                option.optionText === selectedOption
+                    ? {...option, voterUsernames: [...option.voterUsernames, username]}
+                    : option
+            );
 
-            // Call the new update_poll method in poll.js and pass the entire pollData
-            Meteor.call("update_poll", pollId, updatedPollData, (error) => {
+            // Call the method in poll.js
+            Meteor.call("update_poll_votes", pollId, updatedOptionsData, (error) => {
                 if (error) {
                     switch (error.reason) {
                         case 'Poll not found':
@@ -119,7 +116,7 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
 
                 {/* poll title */}
                 <div className={"header-space-centered"}>
-                    <div style={{ width: "25px", visibility: "hidden" }}></div>
+                    <div style={{width: "25px", visibility: "hidden"}}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
                     <HoverTip icon={helpQuestionIcon}
                         outerText={""}
