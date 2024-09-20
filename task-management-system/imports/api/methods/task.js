@@ -1,13 +1,14 @@
 /**
  * File Description: Task database entity
- * File version: 1.7
- * Contributors: Nikki, Sam
+ * File version: 1.8
+ * Contributors: Nikki, Sam, AUdrey
  */
 
 import {Meteor} from 'meteor/meteor';
 import {check, Match} from 'meteor/check';
 import {TaskCollection} from "/imports/api/collections/task.js";
 import "../methods/logEntry";
+import "../methods/board";
 import BoardCollection from "../collections/board";
 
 Meteor.methods({
@@ -26,7 +27,6 @@ Meteor.methods({
      * @param {string} username - username of the creator
      */
     'insert_task': async function (taskData, username) {
-
         check(taskData, {
             _id: null,
             taskName: String,
@@ -40,6 +40,34 @@ Meteor.methods({
             contributions: [Object]
         });
         check(username, String)
+
+        if (taskData.taskName === '' || taskData.taskName.length > 100) {
+            throw new Meteor.Error('add-task-failed', 'Invalid name input');
+        };
+
+        if (taskData.taskDesc === '' || taskData.taskDesc.length > 1000) { 
+            throw new Meteor.Error('add-task-failed', 'Invalid description input');
+        };
+
+
+        let dateObject = new Date(taskData.taskDeadlineDate);
+        if(taskData.taskDeadlineDate === '' || (isNaN(dateObject))){
+            throw new Meteor.Error('add-task-failed', 'Invalid date-time input');
+        }
+
+        let totalContribution = 0;
+        for(let i = 0; i < taskData.contributions.length; i++){
+            if(taskData.contributions[i].percent)
+                totalContribution += taskData.contributions[i].percent;
+        }
+        if (totalContribution > 100) {
+            throw new Meteor.Error('add-task-failed', 'Invalid contribution input');
+        };
+
+        const board = BoardCollection.findOne({_id: taskData.boardId});
+        if (!board) {
+            throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
+        }
 
         let taskId = TaskCollection.insert({
             taskName: taskData.taskName,
@@ -107,6 +135,34 @@ Meteor.methods({
             contributions: [Object]
         });
         check(username, String)
+
+        if (taskData.taskName === '' || taskData.taskName.length > 100) {
+            throw new Meteor.Error('update-task-failed', 'Invalid name input');
+        };
+
+        if (taskData.taskDesc === '' || taskData.taskDesc.length > 1000) { 
+            throw new Meteor.Error('update-task-failed', 'Invalid description input');
+        };
+
+
+        let dateObject = new Date(taskData.taskDeadlineDate);
+        if(taskData.taskDeadlineDate === '' || (isNaN(dateObject))){
+            throw new Meteor.Error('update-task-failed', 'Invalid date-time input');
+        }
+
+        let totalContribution = 0;
+        for(let i = 0; i < taskData.contributions.length; i++){
+            if(taskData.contributions[i].percent)
+                totalContribution += taskData.contributions[i].percent;
+        }
+        if (totalContribution > 100) {
+            throw new Meteor.Error('update-task-failed', 'Invalid contribution input');
+        };
+
+        const board = BoardCollection.findOne({_id: taskData.boardId});
+        if (!board) {
+            throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
+        }
 
         let logAction = '';
         const logChanges = [];
@@ -227,7 +283,7 @@ Meteor.methods({
     "delete_task": async function (taskId, username) {
         const task = TaskCollection.findOne(taskId);
         if (!task) {
-            throw new Meteor.Error('task-delete-failed', 'Task not found');
+            return;
         }
 
         // get ID of the team which the task belongs to
@@ -271,6 +327,7 @@ Meteor.methods({
                 taskPinnedDate: isPinned ? new Date() : null,
             },
         });
+        const taskAfter = TaskCollection.findOne(taskId);
 
         if (Meteor.isServer) {
             const teamId = BoardCollection.findOne(task.boardId).teamId;
@@ -285,6 +342,7 @@ Meteor.methods({
                 throw new Meteor.Error('log-insert-failed', 'Failed to log task pinning');
             }
         }
+        return taskAfter;
     },
 
     /**

@@ -9,7 +9,8 @@ import {TeamCollection} from '/imports/api/collections/team.js';
 import {generateInvitationToken} from "../../ui/components/util";
 import BoardCollection from "../collections/board";
 import PollCollection from "../collections/poll";
-import {check} from "meteor/check";
+import { check } from "meteor/check";
+import "../methods/poll";
 
 
 Meteor.methods({
@@ -208,7 +209,7 @@ Meteor.methods({
 
         // remove all related polls
         const polls = PollCollection.find({teamId: teamId}).fetch();
-
+        
         // delete each board (the board delete will delete its tasks)
         for (let i = 0, len = polls.length; i < len; i++) {
             new Promise((resolve, reject) => {
