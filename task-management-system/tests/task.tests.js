@@ -46,7 +46,8 @@ if (Meteor.isClient) {
             boardTags: [{tagName: "test1", tagColour: "#000000"}],
             boardStatuses: [
                 {"statusName": "To Do", "statusOrder": 1},
-                {"statusName": "Done", "statusOrder": 2}
+                {"statusName": "Done", "statusOrder": 2},
+                {"statusName": "test", "statusOrder": 3}
             ],
         }
 
@@ -78,6 +79,17 @@ if (Meteor.isClient) {
             boardId: "", // added dynamically during test cases
             statusName: "Done",
             tagNames: ["a", "b"],
+            contributions: [{email: "test@test.com", percent: 12}],
+        }
+
+        const testTask = {
+            taskName: "test",
+            taskDesc: "test",
+            taskDeadlineDate: "2024-12-05T17:55:00.000Z",
+            taskIsPinned: false,
+            boardId: "",
+            statusName: "test",
+            tagNames: ["test1"],
             contributions: [{email: "test@test.com", percent: 12}],
         }
 
@@ -1031,6 +1043,135 @@ if (Meteor.isClient) {
             const deletedTask = TaskCollection.findOne(taskId);
             assert.strictEqual(deletedTask, undefined);
         });
+        /**
+         * Test case to check if a task can be pinned successfully.
+         */
+        it('can pin task', function () {
 
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            // create team for board
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
+            testUnpinnedTaskData.boardId = boardId;
+
+            testUnpinnedTaskData._id = "testtestest";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testUnpinnedTaskData);
+            const testTask = TaskCollection.findOne(taskId);
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("set_is_pinned", taskId, true, testUser.username,
+                    (error, taskAfter)=>{
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(taskAfter);
+                    }
+                });
+            })
+            .then((taskAfter) => {
+                if (!taskAfter) {
+                    assert.fail("Task not found after pinning");
+                }
+                assert.strictEqual(taskAfter.taskIsPinned, true);
+                assert.notStrictEqual(taskAfter.taskPinnedDate, null);
+            })
+            .catch((error) => {
+                assert.fail("Error for pinning task: " + error.message);
+            })
+        }).timeout(10000);
+
+        /**
+         * Test case to check if a task can be unpinned successfully.
+         */
+        it('can unpin task', function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            // create team for board
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
+            testPinnedTaskData.boardId = boardId;
+
+            testPinnedTaskData._id = "teestttttttttttttttestt";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testPinnedTaskData);
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("set_is_pinned", taskId, false, testUser.username,
+                    (error, taskAfter)=>{
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(taskAfter);
+                    }
+                });
+            })
+            .then((taskAfter) => {
+                if (!taskAfter) {
+                        assert.fail("Task not found after unpinning");
+                    }
+                assert.strictEqual(taskAfter.taskIsPinned, false);
+                assert.strictEqual(taskAfter.taskPinnedDate, null);
+            })
+            .catch((error) => {
+                assert.fail("Error for unpinning task: " + error.message);
+            })
+        }).timeout(10000);
+        
+        /**
+         * Test case to check if a task can be unpinned successfully.
+         */
+        it('can remove tags and status', function () {
+
+            // create test user for logging username
+            Accounts.createUser(testUser);
+            // create team for board
+            const teamId = TeamCollection.insert(testTeamData);
+            testBoard.teamId = teamId;
+            // create board for task
+            const boardId = BoardCollection.insert(testBoard);
+            testTask.boardId = boardId;
+
+            testTask._id = "test";
+
+            // insert in a team to edit
+            const taskId = TaskCollection.insert(testTask);
+            removedTag = ["test1"];
+            removedStatus = ["test"];
+
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("remove_deleted_statuses_tags", boardId, removedStatus, removedTag,
+                    (error)=>{
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve();
+                    }
+                });
+            })
+            .then(() => {
+                TaskCollection.find({boardId: boardId, statusName: {$in: removedStatus}}).forEach(task => {
+                    assert.strictEqual(task.statusName, "To Do");
+                });
+        
+                TaskCollection.find({boardId: boardId}).forEach(task => {
+                    removedTags.forEach(tag => {
+                        assert.strictEqual(task.tagNames.includes(tag), false);
+                    });
+                });
+            })
+            .catch((error) => {
+                assert.fail("Error for removing tags and status: " + error.message);
+            })
+        }).timeout(10000);
     });
 }

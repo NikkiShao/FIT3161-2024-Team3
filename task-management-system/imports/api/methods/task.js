@@ -325,6 +325,7 @@ Meteor.methods({
                 taskPinnedDate: isPinned ? new Date() : null,
             },
         });
+        const taskAfter = TaskCollection.findOne(taskId);
 
         if (Meteor.isServer) {
             const teamId = BoardCollection.findOne(task.boardId).teamId;
@@ -339,6 +340,7 @@ Meteor.methods({
                 throw new Meteor.Error('log-insert-failed', 'Failed to log task pinning');
             }
         }
+        return taskAfter;
     },
 
     /**
