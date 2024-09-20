@@ -65,7 +65,6 @@ const VotePollModal = ({open, closeHandler, pollData}) => {
                             setErrorMessage("An unexpected error occurred.");
                     }
                 } else {
-                    // console.log("Poll successfully updated.");
                     setHasVoted(true); // Mark as voted after successful vote
                     setErrorMessage(""); // Clear any previous error messages
                     closeHandler(); // Optionally close modal after voting

@@ -23,8 +23,8 @@ export async function initialiseMailer() {
         port: 465,
         secure: true, // use SSL
         auth: {
-            user: emailUser,
-            pass: emailPass
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         }
     };
 
@@ -57,7 +57,7 @@ Meteor.methods({
         console.log("i sending to " + email)
 
         const info = await transporter.sendMail({
-            from: '"University Task Management System"<utm.s1cs03@gmail.com>', // sender address
+            from: `"University Task Management System"${process.env.EMAIL_USER}`, // sender address
             to: email, // list of receivers
             subject: `[UTM] - Team Invitation for ${teamName}`, // Subject line
             html: `
@@ -152,7 +152,7 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
     }).join('<br />');
 
     const info = await transporter.sendMail({
-        from: '"University Task Management System"<utm.s1cs03@gmail.com>', // sender address
+        from: `"University Task Management System"${process.env.EMAIL_USER}`, // sender address
         to: email, // list of receivers
         subject: `[UTM] - Upcoming Deadlines`, // Subject line
         html: `

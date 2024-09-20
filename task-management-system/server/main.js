@@ -48,7 +48,7 @@ Meteor.startup(async () => {
     // console.log(process.env.MONGO_URL)
 
     if (Meteor.isServer) {
-        Accounts.emailTemplates.from = '"University Task Management System"<utm.s1cs03@gmail.com>'
+        Accounts.emailTemplates.from = `"University Task Management System"${process.env.EMAIL_USER}`
 
         // initialise the node mailer
         await initialiseMailer()

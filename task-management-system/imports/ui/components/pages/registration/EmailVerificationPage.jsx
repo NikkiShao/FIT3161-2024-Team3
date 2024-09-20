@@ -26,9 +26,7 @@ export const EmailVerificationPage = () => {
     const {token} = useParams();
     const [loading, setLoading] = React.useState(true);
 
-    console.log(token)
     const userInfo = getUserInfo();
-    console.log(userInfo)
 
     // meteor method to verify a token
     Accounts.verifyEmail(
