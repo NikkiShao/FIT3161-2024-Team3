@@ -5,14 +5,14 @@
  * Version: 2.2
  */
 
-import React, {Fragment, useState} from 'react';
+import React, { Fragment, useState } from 'react';
 import classNames from "classnames";
-import {Modal} from 'react-responsive-modal';
+import { Modal } from 'react-responsive-modal';
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import '../../general/modal/modal.css';
-import {closeModalIcon, minusCircleIcon, subAddIcon} from "../../icons";
+import { closeModalIcon, minusCircleIcon, subAddIcon } from "../../icons";
 
 /**
  * The popup for adding a new team on the teams list page

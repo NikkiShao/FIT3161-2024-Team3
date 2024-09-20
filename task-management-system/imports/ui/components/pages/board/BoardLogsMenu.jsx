@@ -8,14 +8,14 @@
 import React from 'react';
 import WhiteBackground from "/imports/ui/components/general/whiteBackground/WhiteBackground";
 import PageLayout from "/imports/ui/enums/PageLayout";
-import {useNavigate, useParams} from "react-router-dom";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import LogEntryCollection from "../../../../api/collections/logEntry";
 import Spinner from "react-bootstrap/Spinner";
 import BoardCollection from "../../../../api/collections/board";
 import Button from "../../general/buttons/Button";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {backLeftArrow} from "../../icons";
+import { backLeftArrow } from "../../icons";
 
 
 /**

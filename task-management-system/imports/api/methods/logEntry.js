@@ -4,8 +4,8 @@
  * Contributors: Sam, Nikki
  */
 
-import {Meteor} from 'meteor/meteor';
-import {check} from 'meteor/check';
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import LogEntryCollection from '../collections/logEntry';
 import UserCollection from "../collections/user";
 import TeamCollection from "../collections/team";

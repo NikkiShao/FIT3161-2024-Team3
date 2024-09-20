@@ -7,14 +7,14 @@
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
-import {CheckCircleIcon} from "@heroicons/react/24/outline";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 import Button from "../../general/buttons/Button";
 import React from "react";
-import {useNavigate, useParams} from "react-router-dom";
-import {Accounts} from "meteor/accounts-base";
+import { useNavigate, useParams } from "react-router-dom";
+import { Accounts } from "meteor/accounts-base";
 import Spinner from "react-bootstrap/Spinner";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 /**

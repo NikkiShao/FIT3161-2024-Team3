@@ -6,19 +6,19 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Modal} from 'react-responsive-modal';
+import React, { useEffect, useState } from 'react';
+import { Modal } from 'react-responsive-modal';
 import classNames from "classnames";
 
-import {getUserInfo} from '../../util';
-import {Meteor} from 'meteor/meteor';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
+import { getUserInfo } from '../../util';
+import { Meteor } from 'meteor/meteor';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
 import TeamCollection from '../../../../api/collections/team.js'
 
 
 import Button from "../buttons/Button";
 import '../../general/modal/modal.css';
-import {closeModalIcon} from "../../icons";
+import { closeModalIcon } from "../../icons";
 
 
 const DeleteAccountModal = ({open, closeHandler}) => {

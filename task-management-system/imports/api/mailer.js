@@ -5,9 +5,9 @@
  */
 
 import nodemailer from "nodemailer";
-import {emailPass, emailUser} from "./secrets";
-import {isUrgentOverdue, timeLeft} from "../ui/components/util";
-import {Meteor} from "meteor/meteor"; // file in the same folder containing creds for mail server
+import { emailPass, emailUser } from "./secrets";
+import { isUrgentOverdue, timeLeft } from "../ui/components/util";
+import { Meteor } from "meteor/meteor"; // file in the same folder containing creds for mail server
 
 
 let transporter;

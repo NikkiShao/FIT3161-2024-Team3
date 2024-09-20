@@ -5,14 +5,14 @@
  * Version: 1.1
  */
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import classNames from "classnames";
-import {Tracker} from 'meteor/tracker';
+import { Tracker } from 'meteor/tracker';
 import "./whiteBackground.css"
 
 import PageLayout from "../../../enums/PageLayout";
 import HoverTip from "../hoverTip/HoverTip";
-import {helpQuestionIcon} from "../../icons";
+import { helpQuestionIcon } from "../../icons";
 
 
 /**

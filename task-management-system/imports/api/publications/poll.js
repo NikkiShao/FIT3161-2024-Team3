@@ -4,8 +4,8 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from 'meteor/meteor'
-import {PollCollection} from "../collections/poll";
+import { Meteor } from 'meteor/meteor'
+import { PollCollection } from "../collections/poll";
 
 /**
  * Publishes all the polls that belong to a team based on given team ID.

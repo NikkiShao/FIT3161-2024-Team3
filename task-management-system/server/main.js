@@ -1,4 +1,4 @@
-import {Meteor} from 'meteor/meteor';
+import { Meteor } from 'meteor/meteor';
 
 // Here should be all the imports
 import '/imports/api/collections/board.js';
@@ -25,8 +25,8 @@ import '/imports/api/collections/logEntry.js';
 import '/imports/api/methods/logEntry.js';
 import '/imports/api/publications/logEntry.js';
 
-import {initialiseMailer} from "../imports/api/mailer";
-import {autoSendNotification} from "./notification";
+import { initialiseMailer } from "../imports/api/mailer";
+import { autoSendNotification } from "./notification";
 import { autoCleanOldLogEntries } from "./logAutoRemoval";
 
 

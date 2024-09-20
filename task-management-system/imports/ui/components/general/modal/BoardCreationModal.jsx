@@ -5,15 +5,15 @@
  * Version: 1.1
  */
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import classNames from "classnames";
-import {Modal} from 'react-responsive-modal';
+import { Modal } from 'react-responsive-modal';
 
 import Button from "../buttons/Button";
 import Input from "../inputs/Input";
 import '../../general/modal/modal.css';
-import {getUserInfo} from "../../util";
-import {closeModalIcon} from "../../icons";
+import { getUserInfo } from "../../util";
+import { closeModalIcon } from "../../icons";
 
 /**
  * The popup for adding a new board

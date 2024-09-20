@@ -7,7 +7,7 @@
 
 import React from "react";
 import HoverTip from "../../general/hoverTip/HoverTip";
-import {helpQuestionIcon, subAddIcon} from "../../icons";
+import { helpQuestionIcon, subAddIcon } from "../../icons";
 
 const HoverTipExample = () => {
     return (

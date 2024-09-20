@@ -5,15 +5,15 @@
  * Version: 1.6
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
-import {Modal} from 'react-responsive-modal';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Modal } from 'react-responsive-modal';
 import classNames from "classnames";
 import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
-import {getUserInfo} from "../../util";
-import {closeModalIcon, helpQuestionIcon} from "../../icons";
+import { getUserInfo } from "../../util";
+import { closeModalIcon, helpQuestionIcon } from "../../icons";
 
 /**
  * Modal for voting in a poll

@@ -6,15 +6,15 @@
  */
 
 import React from 'react';
-import {Modal} from 'react-responsive-modal';
-import {CheckIcon} from "@heroicons/react/24/outline";
+import { Modal } from 'react-responsive-modal';
+import { CheckIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import HoverTip from "../hoverTip/HoverTip";
-import {useTracker} from "meteor/react-meteor-data";
+import { useTracker } from "meteor/react-meteor-data";
 import UserCollection from "../../../../api/collections/user";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import "./polls.css";
-import {closeModalIcon, helpQuestionIcon} from "../../icons";
+import { closeModalIcon, helpQuestionIcon } from "../../icons";
 
 /**
  * The modal for displaying poll results in a closed poll

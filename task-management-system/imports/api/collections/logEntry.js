@@ -4,7 +4,7 @@
  * Contributors: Nikki
  */
 
-import {Mongo} from "meteor/mongo";
+import { Mongo } from "meteor/mongo";
 
 // to set up task collection
 export const LogEntryCollection = new Mongo.Collection("log_entries");

@@ -4,9 +4,9 @@
  * Contributors: Nikki, Sam, AUdrey
  */
 
-import {Meteor} from 'meteor/meteor';
-import {check, Match} from 'meteor/check';
-import {TaskCollection} from "/imports/api/collections/task.js";
+import { Meteor } from 'meteor/meteor';
+import { check, Match } from 'meteor/check';
+import { TaskCollection } from "/imports/api/collections/task.js";
 import "../methods/logEntry";
 import "../methods/board";
 import BoardCollection from "../collections/board";

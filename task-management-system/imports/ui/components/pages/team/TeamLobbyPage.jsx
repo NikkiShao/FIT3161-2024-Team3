@@ -5,9 +5,9 @@
  * Version: 1.5
  */
 
-import React, {useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import React, { useState } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import Spinner from "react-bootstrap/Spinner";
 
 import TeamCollection from "../../../../api/collections/team";
@@ -17,14 +17,14 @@ import PollCollection from "../../../../api/collections/poll";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 import './team.css'
 import BoardCreationModal from "../../general/modal/BoardCreationModal";
 import BoardCard from "../../general/cards/BoardCard";
 import PollCreationModal from "../../general/modal/PollCreationModal";
 import PollCard from "../../general/cards/PollCard.jsx";
-import {addIcon, backLeftArrow, logsIcon, settingsIcon} from "../../icons";
+import { addIcon, backLeftArrow, logsIcon, settingsIcon } from "../../icons";
 
 
 export const TeamLobbyPage = () => {

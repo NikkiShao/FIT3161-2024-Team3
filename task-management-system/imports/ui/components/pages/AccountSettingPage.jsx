@@ -4,10 +4,10 @@
  * Version: 1.5
  */
 
-import React, {useState} from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {Meteor} from 'meteor/meteor';
-import {getUserInfo} from '../util';
+import React, { useState } from 'react';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
+import { Meteor } from 'meteor/meteor';
+import { getUserInfo } from '../util';
 
 import WhiteBackground from "../general/whiteBackground/WhiteBackground";
 import Button from "../general/buttons/Button";
@@ -18,7 +18,7 @@ import TeamCollection from '../../../api/collections/team.js'
 import UserCollection from '../../../api/collections/user.js';
 import "../pages/registration/registration.css"
 import Input from "../general/inputs/Input";
-import {saveIcon} from "../icons";
+import { saveIcon } from "../icons";
 
 /**
  * Account settings page component

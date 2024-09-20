@@ -4,9 +4,9 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from "meteor/meteor";
-import {Accounts} from "meteor/accounts-base";
-import {resetDatabase} from 'meteor/xolvio:cleaner';
+import { Meteor } from "meteor/meteor";
+import { Accounts } from "meteor/accounts-base";
+import { resetDatabase } from 'meteor/xolvio:cleaner';
 import "../imports/api/methods/user.js";
 import UserCollection from "../imports/api/collections/user";
 import sinon from 'sinon';

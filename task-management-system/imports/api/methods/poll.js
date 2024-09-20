@@ -5,7 +5,7 @@
  */
 
 import PollCollection from "../collections/poll";
-import {Meteor} from "meteor/meteor";
+import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 
 Meteor.methods({

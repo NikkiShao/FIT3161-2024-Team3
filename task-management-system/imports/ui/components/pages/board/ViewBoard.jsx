@@ -5,20 +5,20 @@
  * Version: 1.4
  */
 
-import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
-import {BoardCollection} from '/imports/api/collections/board';
-import {TaskCollection} from '/imports/api/collections/task';
-import {TeamCollection} from '/imports/api/collections/team';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
+import { BoardCollection } from '/imports/api/collections/board';
+import { TaskCollection } from '/imports/api/collections/task';
+import { TeamCollection } from '/imports/api/collections/team';
 import TaskCard from '/imports/ui/components/general/cards/TaskCard';
 import './ViewBoard.css';
 import Button from "/imports/ui/components/general/buttons/Button";
 import BaseUrlPath from "/imports/ui/enums/BaseUrlPath";
-import {getUserInfo} from "/imports/ui/components/util";
+import { getUserInfo } from "/imports/ui/components/util";
 import TaskModal from "../../general/modal/TaskModal";
 import UserCollection from "../../../../api/collections/user";
-import {addIcon, backLeftArrow, logsIcon, settingsIcon} from "../../icons";
+import { addIcon, backLeftArrow, logsIcon, settingsIcon } from "../../icons";
 
 const ViewBoardPage = () => {
     const {teamId, boardId} = useParams();

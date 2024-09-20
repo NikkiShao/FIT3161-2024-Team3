@@ -4,12 +4,12 @@
  * Contributors: Audrey, Nikki
  * Version: 2.3
  */
-import React, {Fragment, useState} from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {useNavigate, useParams} from "react-router-dom";
+import React, { Fragment, useState } from 'react';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import classNames from "classnames";
-import {Modal} from 'react-responsive-modal';
+import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 
 import TeamCollection from '../../../../api/collections/team.js'
@@ -20,9 +20,9 @@ import BaseUrlPath from "../../../enums/BaseUrlPath";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
 import Input from "../../general/inputs/Input.jsx";
-import {generateInvitationToken, getUserInfo} from "../../util";
+import { generateInvitationToken, getUserInfo } from "../../util";
 import '../../general/modal/modal.css'
-import {backLeftArrow, closeModalIcon, minusCircleIcon, saveIcon, subAddIcon} from "../../icons";
+import { backLeftArrow, closeModalIcon, minusCircleIcon, saveIcon, subAddIcon } from "../../icons";
 
 /**
  * Settings page for a team

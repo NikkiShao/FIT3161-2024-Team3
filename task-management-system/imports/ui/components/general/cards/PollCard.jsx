@@ -5,7 +5,7 @@
  * Version: 1.5
  */
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 
 // import components and styles
 import Card from "../cards/Card";
@@ -14,11 +14,11 @@ import './pollCard.css';
 import PollStatus from "../../../enums/PollStatus";
 import PollResultModal from '../modal/PollResultModal.jsx';
 import VotePollModal from '../modal/VotePollModal.jsx';
-import {getUserInfo, renderTime} from "../../util";
-import {ExclamationCircleIcon} from "@heroicons/react/16/solid";
-import {CheckIcon, XMarkIcon} from "@heroicons/react/24/outline";
+import { getUserInfo, renderTime } from "../../util";
+import { ExclamationCircleIcon } from "@heroicons/react/16/solid";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 /**

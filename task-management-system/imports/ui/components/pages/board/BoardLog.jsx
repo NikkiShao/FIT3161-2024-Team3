@@ -8,13 +8,13 @@
 import React from 'react';
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import LogEntryCollection from "../../../../api/collections/logEntry";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "../../general/buttons/Button";
 import BoardCollection from "../../../../api/collections/board";
-import {backLeftArrow} from "../../icons";
+import { backLeftArrow } from "../../icons";
 
 /**
  * Board log component

@@ -4,14 +4,14 @@
  * Contributors: Audrey, Nikki
  */
 import React from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
-import {getUserInfo, timeLeft} from '../../util';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
+import { getUserInfo, timeLeft } from '../../util';
 import TeamCollection from '../../../../api/collections/team.js';
 import TaskCollection from '../../../../api/collections/task.js';
 import BoardCollection from '../../../../api/collections/board.js';
 import Spinner from "react-bootstrap/Spinner";
 import HoverTip from "../../general/hoverTip/HoverTip";
-import {helpQuestionIcon} from "../../icons";
+import { helpQuestionIcon } from "../../icons";
 
 /**
  * Upcoming deadlines component for dashboard

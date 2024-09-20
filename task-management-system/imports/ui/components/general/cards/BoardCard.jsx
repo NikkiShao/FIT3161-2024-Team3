@@ -9,9 +9,9 @@ import React from "react";
 import classNames from "classnames";
 import Card from "./Card";
 import './boardCard.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "../buttons/Button";
-import {renderTime} from "../../util";
+import { renderTime } from "../../util";
 
 /**
  * Board card used to display brief details on any Board

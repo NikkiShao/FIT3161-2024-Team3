@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Button from "../../general/buttons/Button";
-import {backLeftArrow, subAddIcon} from "../../icons";
+import { backLeftArrow, subAddIcon } from "../../icons";
 
 const ButtonExamples = () => {
     return (

@@ -4,7 +4,7 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from "meteor/meteor";
+import { Meteor } from "meteor/meteor";
 
 // to set up user collection
 export const UserCollection = Meteor.users

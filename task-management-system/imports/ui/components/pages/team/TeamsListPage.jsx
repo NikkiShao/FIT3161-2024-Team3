@@ -5,9 +5,9 @@
  * Version: 1.4
  */
 
-import React, {useState} from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {useNavigate} from "react-router-dom";
+import React, { useState } from 'react';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
+import { useNavigate } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 
 import TeamCollection from '../../../../api/collections/team.js'
@@ -17,10 +17,10 @@ import UserCollection from "../../../../api/collections/user";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground.jsx";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import TeamCreationModal from "../../general/modal/TeamCreationModal";
 import "./team.css"
-import {addIcon} from "../../icons";
+import { addIcon } from "../../icons";
 
 export const TeamsListPage = () => {
 

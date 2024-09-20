@@ -4,10 +4,10 @@
  * Contributors: Nikki
  */
 
-import React, {useState} from "react";
-import {Navigate} from "react-router-dom";
-import {Tracker} from "meteor/tracker";
-import {Meteor} from "meteor/meteor";
+import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
+import { Tracker } from "meteor/tracker";
+import { Meteor } from "meteor/meteor";
 import RoutingAccess from "/imports/ui/enums/RoutingAccess";
 import UrlBasePath from "/imports/ui/enums/BaseUrlPath";
 import Spinner from "react-bootstrap/Spinner";

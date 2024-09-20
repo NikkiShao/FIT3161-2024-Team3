@@ -4,9 +4,9 @@
  * Contributors: Nikki, Audrey
  */
 
-import {Meteor} from "meteor/meteor";
-import {Accounts} from "meteor/accounts-base";
-import {resetDatabase} from 'meteor/xolvio:cleaner';
+import { Meteor } from "meteor/meteor";
+import { Accounts } from "meteor/accounts-base";
+import { resetDatabase } from 'meteor/xolvio:cleaner';
 import TaskCollection from "../imports/api/collections/task";
 import BoardCollection from "../imports/api/collections/board";
 import TeamCollection from "../imports/api/collections/team";

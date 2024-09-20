@@ -4,14 +4,14 @@
  * Contributors: Audrey, Nikki
  */
 import React from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
-import {getUserInfo} from '../../util';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
+import { getUserInfo } from '../../util';
 import TeamCollection from '../../../../api/collections/team.js';
 import PollCollection from '../../../../api/collections/poll.js';
 import Spinner from "react-bootstrap/Spinner";
 import HoverTip from "../../general/hoverTip/HoverTip";
 import PollCard from "../../general/cards/PollCard";
-import {helpQuestionIcon} from "../../icons";
+import { helpQuestionIcon } from "../../icons";
 
 /**
  * Unvoted polls component for dashboard

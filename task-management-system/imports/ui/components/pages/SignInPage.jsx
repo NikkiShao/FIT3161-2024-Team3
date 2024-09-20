@@ -5,9 +5,9 @@
  * Version: 1.0
  */
 
-import React, {useState} from 'react';
-import {Meteor} from 'meteor/meteor';
-import {useNavigate} from "react-router-dom";
+import React, { useState } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { useNavigate } from "react-router-dom";
 
 import WhiteBackground from "../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../enums/PageLayout";

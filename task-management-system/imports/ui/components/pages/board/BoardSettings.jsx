@@ -5,11 +5,11 @@
  * Version: 1.5
  */
 
-import React, {Fragment, useState} from 'react';
-import {Modal} from 'react-responsive-modal';
-import {useNavigate, useParams} from "react-router-dom";
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {XCircleIcon} from "@heroicons/react/24/outline";
+import React, { Fragment, useState } from 'react';
+import { Modal } from 'react-responsive-modal';
+import { useNavigate, useParams } from "react-router-dom";
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
+import { XCircleIcon } from "@heroicons/react/24/outline";
 import Spinner from "react-bootstrap/Spinner";
 
 import BoardCollection from '../../../../api/collections/board';
@@ -21,9 +21,9 @@ import Button from "../../general/buttons/Button";
 import Input from "../../general/inputs/Input";
 import classNames from "classnames";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import './board.css'
-import {backLeftArrow, closeModalIcon, saveIcon, subAddIcon} from "../../icons";
+import { backLeftArrow, closeModalIcon, saveIcon, subAddIcon } from "../../icons";
 
 /**
  * Board Settings Page

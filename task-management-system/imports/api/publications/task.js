@@ -4,8 +4,8 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from "meteor/meteor";
-import {TaskCollection} from "../collections/task.js";
+import { Meteor } from "meteor/meteor";
+import { TaskCollection } from "../collections/task.js";
 
 /**
  * Publishes all pinned services.

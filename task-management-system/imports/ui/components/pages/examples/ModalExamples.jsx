@@ -5,14 +5,14 @@
  * Version: 1.0
  */
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import classNames from "classnames";
-import {Modal} from 'react-responsive-modal';
+import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import '../../general/modal/modal.css'
 
 import Button from "../../general/buttons/Button";
-import {closeModalIcon} from "../../icons";
+import { closeModalIcon } from "../../icons";
 
 const ModalExamples = () => {
     const [open, setOpen] = useState(false);

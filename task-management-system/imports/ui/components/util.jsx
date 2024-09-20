@@ -4,9 +4,9 @@
  * Contributors: Nikki
  */
 
-import {useState} from "react";
-import {Tracker} from "meteor/tracker";
-import {Meteor} from "meteor/meteor";
+import { useState } from "react";
+import { Tracker } from "meteor/tracker";
+import { Meteor } from "meteor/meteor";
 
 /**
  * random alphanumeric characters

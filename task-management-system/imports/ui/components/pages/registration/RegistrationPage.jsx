@@ -5,10 +5,10 @@
  * Version: 1.2
  */
 
-import React, {useState} from 'react';
-import {Accounts} from 'meteor/accounts-base';
-import {useNavigate} from "react-router-dom";
-import {passwordStrength} from "check-password-strength";
+import React, { useState } from 'react';
+import { Accounts } from 'meteor/accounts-base';
+import { useNavigate } from "react-router-dom";
+import { passwordStrength } from "check-password-strength";
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
@@ -16,7 +16,7 @@ import Input from "../../general/inputs/Input";
 import Button from "../../general/buttons/Button";
 
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {backLeftArrow} from "../../icons";
+import { backLeftArrow } from "../../icons";
 import './registration.css'
 
 /**

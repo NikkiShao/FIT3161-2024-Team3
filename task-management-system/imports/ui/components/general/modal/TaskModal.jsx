@@ -4,9 +4,9 @@
  * Contributors: Sam, Nikki, Audrey
  */
 
-import React, {useState} from 'react';
-import {Modal} from 'react-responsive-modal';
-import {PlusIcon} from "@heroicons/react/24/outline";
+import React, { useState } from 'react';
+import { Modal } from 'react-responsive-modal';
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 import classNames from "classnames";
 import Button from "../buttons/Button";
@@ -14,11 +14,11 @@ import Input from "../inputs/Input";
 import '../../general/modal/modal.css'
 import TaskPin from "../cards/TaskPin";
 import TaskTag from "../cards/TaskTag";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
-import {getUserInfo, isUrgentOverdue} from "../../util";
-import {addIcon, closeModalIcon, minusCircleIcon, saveIcon} from "../../icons";
-import {isDark} from "@bkwld/light-or-dark";
+import { getUserInfo, isUrgentOverdue } from "../../util";
+import { addIcon, closeModalIcon, minusCircleIcon, saveIcon } from "../../icons";
+import { isDark } from "@bkwld/light-or-dark";
 
 /**
  * Task modal to view/edit or create tasks
