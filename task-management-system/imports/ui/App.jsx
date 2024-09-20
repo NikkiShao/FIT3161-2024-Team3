@@ -5,8 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../client/main.css"
 import "../../client/text.css"
 
-import ExamplesPage from "./components/pages/examples/Examples";
-
 import EmptyPage from "./components/pages/EmptyPage";
 
 import SignInPage from "./components/pages/SignInPage";
@@ -43,9 +41,6 @@ export const App = () => (
             <NavigationBar/>
             <main>
                 <Routes>
-
-                    {/* todo: remove examples page after development */}
-                    <Route path="/examples" element={<ExamplesPage/>}/>
 
                     {/* base & home routes */}
                     <Route path="*" element={<EmptyPage/>}/>

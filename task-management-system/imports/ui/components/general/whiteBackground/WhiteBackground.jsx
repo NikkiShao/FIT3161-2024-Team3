@@ -64,15 +64,11 @@ export const WhiteBackground = ({children, className, pageLayout, pageHelpText, 
         outerDivStyle.alignItems = "center";
         pageMainDivClasses = classNames("small-page", pageMainDivClasses);
 
-    } else if (pageLayout === PageLayout.FREE) {
-        // todo
-
     }
     // for help hover
     return (
         <div style={outerDivStyle}>
             <div {...divProps} className={pageMainDivClasses}>
-                {/*todo: make only appear when there is text*/}
                 {
                     pageHelpText ?
                     <HoverTip icon={helpQuestionIcon}
