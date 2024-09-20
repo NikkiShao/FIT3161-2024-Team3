@@ -4,7 +4,7 @@
     width: fit-content;
     min-width: 800px;
     min-height: 350px;
-    padding: 50px;
+    padding: 50px !important;
     border-radius: 25px;
 }
 

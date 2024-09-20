@@ -195,7 +195,7 @@ export const BoardSettings = () => {
                         boardTags: boardExistingTags
                     },
                     userInfo.username,
-                    (error, result) => {
+                    (error) => {
                         if (error) {
                             reject(error)
                         } else {

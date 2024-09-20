@@ -42,7 +42,7 @@ Meteor.methods({
         }
 
         //validate email input for team members attribute
-        const memberArray = new Array()
+        const memberArray = []
         for(let i=0; i<members.length; i++){
             const email = members[i];
             if(!emailRegex.test(email)){
@@ -130,7 +130,7 @@ Meteor.methods({
             throw new Meteor.Error('update-team-failed', 'Invalid team leader input');
         }
 
-        const teamMembersArray = new Array()
+        const teamMembersArray = []
         for(let i=0; i<teamsData.teamMembers.length; i++){
             const email = teamsData.teamMembers[i];
             if(!emailRegex.test(email)){
@@ -141,7 +141,7 @@ Meteor.methods({
             teamMembersArray.push(email);
         }
         //validate email for invitations
-        const invitationArray = new Array()
+        const invitationArray = []
         for(let i=0; i<teamsData.teamInvitations.length; i++){
             const invite = teamsData.teamInvitations[i];
             if(!emailRegex.test(invite.email)){

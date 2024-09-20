@@ -36,9 +36,6 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         boardDescription: "",
     });
 
-    // for date checking
-    const minDeadlineDate = new Date();
-
     // Handler for creating a new board
     const handleCreateBoard = (event) => {
         event.preventDefault();

@@ -237,7 +237,9 @@ export const RegistrationPage = () => {
                     </ul>
                 </div>
 
-                <Button type={"submit"} className={"btn-brown"}>
+                <Button type={"submit"}
+                        disabled={isSubmitting}
+                        className={"btn-brown"}>
                     Register
                 </Button>
             </form>

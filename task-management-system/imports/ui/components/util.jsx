@@ -138,30 +138,7 @@ export function getUserInfo() {
         }
     })
 
-    // console.log("Current logged in user:" + JSON.stringify(userInfo))
+    // console.log("Current logged-in user:" + JSON.stringify(userInfo))
     return userInfo;
 }
 
-/**
- * Retrieves current logged-in user's information for use in Meteor methods
- * This function does not use React hooks and is safe to use outside of React components.
- *
- * @returns an object containing the information of the user including username, email, name
- */
-export function getUserInfoSync() {
-    const user = Meteor.user();
-    const userId = Meteor.userId();
-
-    if (user && userId) {
-        return {
-            "id": userId,
-            "username": user.username,
-            "email": user.emails[0].address,
-            "verified": user.emails[0].verified,
-            "name": user.profile.name,
-            "notificationOn": user.profile.notificationOn
-        };
-    }
-
-    return null;
-}

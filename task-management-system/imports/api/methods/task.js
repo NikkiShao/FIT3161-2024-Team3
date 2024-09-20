@@ -43,11 +43,11 @@ Meteor.methods({
 
         if (taskData.taskName === '' || taskData.taskName.length > 100) {
             throw new Meteor.Error('add-task-failed', 'Invalid name input');
-        };
+        }
 
         if (taskData.taskDesc === '' || taskData.taskDesc.length > 1000) { 
             throw new Meteor.Error('add-task-failed', 'Invalid description input');
-        };
+        }
 
 
         let dateObject = new Date(taskData.taskDeadlineDate);
@@ -62,7 +62,7 @@ Meteor.methods({
         }
         if (totalContribution > 100) {
             throw new Meteor.Error('add-task-failed', 'Invalid contribution input');
-        };
+        }
 
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         for(let i=0; i<taskData.contributions.length; i++){
@@ -147,11 +147,11 @@ Meteor.methods({
 
         if (taskData.taskName === '' || taskData.taskName.length > 100) {
             throw new Meteor.Error('update-task-failed', 'Invalid name input');
-        };
+        }
 
         if (taskData.taskDesc === '' || taskData.taskDesc.length > 1000) { 
             throw new Meteor.Error('update-task-failed', 'Invalid description input');
-        };
+        }
 
 
         let dateObject = new Date(taskData.taskDeadlineDate);
@@ -166,7 +166,7 @@ Meteor.methods({
         }
         if (totalContribution > 100) {
             throw new Meteor.Error('update-task-failed', 'Invalid contribution input');
-        };
+        }
 
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         for(let i=0; i<taskData.contributions.length; i++){
@@ -245,7 +245,7 @@ Meteor.methods({
         });
 
         // Check for any new contributions added
-        taskData.contributions.slice(currentTask.contributions.length).forEach((contribution, index) => {
+        taskData.contributions.slice(currentTask.contributions.length).forEach((contribution) => {
             const user = Meteor.users.findOne({"emails.address": contribution.email});
             const username = user ? user.profile.name : contribution.email;
 

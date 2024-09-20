@@ -5,9 +5,8 @@
  */
 
 import nodemailer from "nodemailer";
-import { emailPass, emailUser } from "./secrets";
 import { isUrgentOverdue, timeLeft } from "../ui/components/util";
-import { Meteor } from "meteor/meteor"; // file in the same folder containing creds for mail server
+import { Meteor } from "meteor/meteor";
 
 
 let transporter;
@@ -94,14 +93,14 @@ Meteor.methods({
                             <p>Hello,</p>
                             <p>You have been invited to join the team <strong>${teamName}</strong>.</p>
                             <p>Please click one of the buttons below to accept or reject the invitation:</p>
-                            <a href="${process.env.ROOT_URL}accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
-                            <a href="${process.env.ROOT_URL}decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
+                            <a href="${process.env.ROOT_URL}/accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
+                            <a href="${process.env.ROOT_URL}/decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
                             <p>Thank you!</p>
                             <br/>
                             <p>Alternatively, you may click/navigate to the below URL to accept or decline: </p>
                             <ul>
-                                <li>Accept: ${process.env.ROOT_URL}accept-invite/${teamId}/${token}</li>
-                                <li>Decline: ${process.env.ROOT_URL}decline-invite/${teamId}/${token}</li>
+                                <li>Accept: ${process.env.ROOT_URL}/accept-invite/${teamId}/${token}</li>
+                                <li>Decline: ${process.env.ROOT_URL}/decline-invite/${teamId}/${token}</li>
                             </ul>
                         </div>
                 </body>
