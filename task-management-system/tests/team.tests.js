@@ -9,6 +9,9 @@ import {Accounts} from "meteor/accounts-base";
 import {resetDatabase} from 'meteor/xolvio:cleaner';
 import TeamCollection from "../imports/api/collections/team";
 import "../imports/api/methods/team";
+import BoardCollection from "../imports/api/collections/board";
+import PollCollection from "../imports/api/collections/poll";
+import TaskCollection from "../imports/api/collections/task";
 
 const assert = require('assert');
 
@@ -59,6 +62,38 @@ if (Meteor.isClient) {
                 {email: "test2@test2.com", token: "testToken1"}]
         }
 
+        const testBoard = {
+            boardName: "test board",
+            boardCode: "code123",
+            boardDeadline: "2024-12-05T17:55:00.000Z",
+            boardDescription: "description string",
+            teamId: "",
+            boardTags: [{tagName: "test1", tagColour: "#000000"}],
+            boardStatuses: [
+                {"statusName": "To Do", "statusOrder": 1},
+                {"statusName": "Done", "statusOrder": 2}
+            ],
+        }
+
+        const testUnpinnedTaskData = {
+            taskName: "test task",
+            taskDesc: "test description",
+            taskDeadlineDate: "2024-12-05T17:55:00.000Z",
+            taskIsPinned: false,
+            boardId: "", // added dynamically during test cases
+            statusName: "Done",
+            tagNames: ["a", "b"],
+            contributions: [{email: "test@test.com", percent: 12}],
+        }
+
+        const testPolls = {
+            pollTitle: "test poll",
+            pollCreationDate: "2024-09-05T17:55:00.000Z",
+            pollDeadlineDate: "2024-12-05T17:55:00.000Z",
+            pollOptions: [{optionText: "option1", voterUsernames: []}, {optionText: "option2", voterUsernames: []}],
+            teamId: "" //added during test case
+        }
+
         /**
          * Test case to check if a team can be added successfully.
          */
@@ -100,7 +135,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     '',
                     testTeamData.members,
@@ -126,7 +161,7 @@ if (Meteor.isClient) {
             });
             // assert.strictEqual(1, "2")
         
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with invalid name: too long name > 20 characters', function () {
@@ -135,7 +170,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     "teamteamteamteamteamteam",
                     testTeamData.members,
@@ -160,7 +195,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid email input for team members  
         it('errors with invalid email: invalid email format', function () {
@@ -169,7 +204,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     testTeamData.name,
                     ["email"],
@@ -193,7 +228,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid email input");
                 }
             });
-        });
+        }).timeout(10000);
         
         //test for duplicate email in the members array
         it('errors with email: duplicate member email', function () {
@@ -202,7 +237,7 @@ if (Meteor.isClient) {
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     testTeamData.name,
                     ["test1@test1.com", "test1@test1.com"],
@@ -226,7 +261,7 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for duplicate email input");
                 }
             });
-        });
+        }).timeout(10000);
 
         
         /**
@@ -258,7 +293,7 @@ if (Meteor.isClient) {
             assert.deepEqual(updatedTeam.teamMembers, ["test1@test1.com", "test2@test2.com"]);
             assert.deepEqual(updatedTeam.teamInvitations, [{email: "test3@test3.com", token: "testToken2"}]);
 
-        });
+        }).timeout(10000);
 
         //test for empty team name
         it('errors with invalid updated name: empty name', function () {
@@ -280,7 +315,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, emptyNameTeam, false,
                     (error, result) => {
                         if (error) {
@@ -300,7 +335,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid long team name
         it('errors with updated invalid name: too long name > 20 characters', function () {
@@ -322,7 +357,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, longNameTeam, false,
                     (error, result) => {
                         if (error) {
@@ -342,7 +377,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid email input for team members        
         it('errors with invalid updated email: invalid email format', function () {
@@ -364,7 +399,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -384,7 +419,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for duplicate email in the members array
         it('errors with invalid updated email: duplicate email', function () {
@@ -405,7 +440,7 @@ if (Meteor.isClient) {
                 teamInvitations: [{email: "test3@test3.com", token: "testToken2"}]
             }
 
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -425,7 +460,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for invalid email input
         it('errors with invalid updated invitation email: invalid email format', function () {
@@ -447,7 +482,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -467,7 +502,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
 
         //test for duplicate invitations
         it('errors with invalid updated invitation email: duplicate email', function () {
@@ -489,7 +524,7 @@ if (Meteor.isClient) {
             }
 
             // Wrap the Meteor.call in a Promise
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 Meteor.call("update_team", id, testTeam.teamInvitations, invalidEmailTeam, false,
                     (error, result) => {
                         if (error) {
@@ -509,7 +544,7 @@ if (Meteor.isClient) {
                 }
             });
         
-        });
+        }).timeout(10000);
         
         /**
          * Test case to check if a team can be deleted successfully.
@@ -518,17 +553,26 @@ if (Meteor.isClient) {
             // create members of team
             Accounts.createUser(testUser1);
             Accounts.createUser(testUser2);
-
-            // insert a collection
             const id = TeamCollection.insert(testTeam);
+            testBoard.teamId = id;
+            testPolls.teamId = id;
+            const boardId = BoardCollection.insert(testBoard);
+            const pollId = PollCollection.insert(testPolls);
+            testUnpinnedTaskData.boardId = boardId;
+            const taskId = TaskCollection.insert(testUnpinnedTaskData);
 
             // call delete method for deletion
             Meteor.call('delete_team', id, testUser1.username);
 
             // check deleted team is DELETED
             const deletedTeam = TeamCollection.findOne(id);
+            const deletedPoll = PollCollection.findOne(pollId);
+            const deletedTask = PollCollection.findOne(taskId);
+            const deletedBoard = PollCollection.findOne(boardId);
             assert.strictEqual(deletedTeam, undefined);
-
-        });
+            assert.strictEqual(deletedPoll, undefined);
+            assert.strictEqual(deletedTask, undefined);
+            assert.strictEqual(deletedBoard, undefined);
+        }).timeout(10000);
     });
 }

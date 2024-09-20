@@ -1,7 +1,7 @@
 /**
  * File Description: Task Modal component for adding/Viewing tasks
- * File version: 1.4
- * Contributors: Sam, Nikki
+ * File version: 1.5
+ * Contributors: Sam, Nikki, Audrey
  */
 
 import React, {useState} from 'react';
@@ -96,6 +96,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         // description
         if (!description) {
             newErrors.description = "Please fill in the description";
+            isError = true
+        } else if (description.length > 1000) {
+            newErrors.title = "Task description can not exceed 1000 characters";
             isError = true
         }
 
