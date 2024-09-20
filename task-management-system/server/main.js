@@ -32,7 +32,7 @@ import { autoCleanOldLogEntries } from "./logAutoRemoval";
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {
-        return "Verify Your Email Address";
+        return "[UTM] Verify Your Email Address";
     },
     text(user, url) {
         let emailAddress = user.emails[0].address,
@@ -45,9 +45,11 @@ Accounts.emailTemplates.verifyEmail = {
 
 Meteor.startup(async () => {
     // start up functions in the future potentially
-    console.log(process.env.MONGO_URL)
+    // console.log(process.env.MONGO_URL)
 
     if (Meteor.isServer) {
+        Accounts.emailTemplates.from = '"University Task Management System"<utm.s1cs03@gmail.com>'
+
         // initialise the node mailer
         await initialiseMailer()
 

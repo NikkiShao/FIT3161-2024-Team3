@@ -80,7 +80,7 @@ export const SignInPage = () => {
             <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
                 <div>
                     <h2 className={"text-center text-grey"}>Welcome to</h2>
-                    <h1 className={"text-center"} style={{color: "var(--navy)"}}>Task Management System</h1>
+                    <h1 className={"text-center"} style={{color: "var(--navy)"}}>University Task Management System</h1>
                 </div>
 
                 <hr className={"teams__hr"} />

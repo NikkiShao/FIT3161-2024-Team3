@@ -57,9 +57,9 @@ Meteor.methods({
         console.log("i sending to " + email)
 
         const info = await transporter.sendMail({
-            from: '"Task Management System"<invitation@tms.com>', // sender address
+            from: '"University Task Management System"<utm.s1cs03@gmail.com>', // sender address
             to: email, // list of receivers
-            subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
+            subject: `[UTM] - Team Invitation for ${teamName}`, // Subject line
             html: `
             <html lang="en">
                 <head>
@@ -152,9 +152,9 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
     }).join('<br />');
 
     const info = await transporter.sendMail({
-        from: '"Task Management System"<reminders@tms.com>', // sender address
+        from: '"University Task Management System"<utm.s1cs03@gmail.com>', // sender address
         to: email, // list of receivers
-        subject: `[Task Management System] - Upcoming Deadlines`, // Subject line
+        subject: `[UTM] - Upcoming Deadlines`, // Subject line
         html: `
     <!DOCTYPE html>
     <html lang="en">
@@ -187,7 +187,7 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
         </head>
         <body>
             <div class="email-container">
-                <h2>Task Management System: Upcoming Deadlines</h2>
+                <h2>University Task Management System: Upcoming Deadlines</h2>
                 <p>Hi ${name},</p>
                 <p>You have the following upcoming deadlines from your teams:</p>
                 ${teamSections}
