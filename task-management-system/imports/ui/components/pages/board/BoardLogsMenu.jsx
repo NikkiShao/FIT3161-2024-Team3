@@ -2,7 +2,7 @@
  * File Description: Board logs menu page
  * Updated Date: 31/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React from 'react';
@@ -122,6 +122,9 @@ export const BoardLogsMenu = () => {
             )
         }
 
+        // condition for if there are no tables AND no logs to display
+        const emptyPage = currentBoardsData.length === 0 && deletedBoardIds.length > 0 && logsData.length === 0;
+
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER} pageHelpText={helpText}>
                 <div className="header-space-between">
@@ -140,8 +143,8 @@ export const BoardLogsMenu = () => {
                 {currentBoardsTable}
                 {deletedBoardsTable}
 
-                {logsData.length === 0 ?
-                    <span className={"main-text non-clickable"}>Your logs are currently empty.</span> : null
+                { emptyPage ?
+                    <span className={"main-text text-grey non-clickable"}>Your logs are currently empty.</span> : null
                 }
             </WhiteBackground>
         )

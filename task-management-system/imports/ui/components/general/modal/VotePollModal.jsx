@@ -2,7 +2,7 @@
  * File Description: Poll Voting Modal
  * Updated Date: 09/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.5
+ * Version: 1.6
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -25,11 +25,11 @@ import {closeModalIcon, helpQuestionIcon} from "../../icons";
 const VotePollModal = ({open, closeHandler, pollData}) => {
     const username = getUserInfo().username;
 
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
     const [hasVoted, setHasVoted] = useState(false); // State to show voting message
     const [errorMessage, setErrorMessage] = useState(""); // State to show error message
-    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
 
     const pollId = pollData.pollId;
 
@@ -64,15 +64,14 @@ const VotePollModal = ({open, closeHandler, pollData}) => {
                         default:
                             setErrorMessage("An unexpected error occurred.");
                     }
-                    setIsSubmitting(false); // Enable the button after failure
                 } else {
                     // console.log("Poll successfully updated.");
                     setHasVoted(true); // Mark as voted after successful vote
                     setErrorMessage(""); // Clear any previous error messages
-                    setIsSubmitting(false); // Enable the button after success
                     closeHandler(); // Optionally close modal after voting
                     setPastOption(getUserVotedOption(pollData, username));
                 }
+                setIsSubmitting(false); // Enable the button after loaded
             });
         }
     }, [selectedOption, pollData, username, closeHandler, pollId, hasVoted]);
@@ -180,10 +179,9 @@ const VotePollModal = ({open, closeHandler, pollData}) => {
                 <Button
                     type={"submit"}
                     className="btn-brown btn-submit btn-base"
-                    onClick={handleVote}
                     disabled={isSubmitting} // Disable the button while submitting
-                >
-                    {isSubmitting ? "Submitting..." : "Vote"} {/* Change the button text based on submitting status */}
+                    onClick={handleVote}>
+                    Vote
                 </Button>
             </div>
         </Modal>

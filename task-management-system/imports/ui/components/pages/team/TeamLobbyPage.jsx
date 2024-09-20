@@ -2,7 +2,7 @@
  * File Description: Team lobby page
  * Updated Date: 06/09/2024
  * Contributors: Nikki, Mark
- * Version: 3.0
+ * Version: 1.5
  */
 
 import React, {useState} from 'react';
@@ -174,7 +174,7 @@ export const TeamLobbyPage = () => {
 
                     <div className={"teams__cards-div"}>
                         {displayedBoardCards.length ? displayedBoardCards :
-                            <span className={"main-text non-clickable"}
+                            <span className={"main-text text-grey non-clickable"}
                                   style={{marginTop: "20px", marginBottom: "20px"}}>
                                     There are no boards yet!</span>}
                     </div>
@@ -202,7 +202,7 @@ export const TeamLobbyPage = () => {
 
                     <div className={"teams__cards-div"}>
                         {displayedPollCards.length ? displayedPollCards :
-                            <span className={"main-text non-clickable"}
+                            <span className={"main-text text-grey non-clickable"}
                                   style={{marginTop: "20px"}}>There are no polls in here!</span>}
                     </div>
                 </WhiteBackground>

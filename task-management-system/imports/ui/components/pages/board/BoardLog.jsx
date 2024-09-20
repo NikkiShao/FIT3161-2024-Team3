@@ -2,7 +2,7 @@
  * File Description: Board log's page
  * Updated Date: 31/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React from 'react';
@@ -62,29 +62,36 @@ export const BoardLog = () => {
                     <div style={{width: "120px"}}/>
                 </div>
 
-                <table className={"table table-striped table-bordered table-hover non-clickable"}>
-                    <thead>
-                    <tr key={'header'} className="text-center">
-                        <th style={{width: "15%"}}>Date time</th>
-                        <th style={{width: "15%"}}>Username</th>
-                        <th style={{width: "20%"}}>Task ID</th>
-                        <th style={{width: "50%"}}>Action Description</th>
-                    </tr>
-                    </thead>
-                    <tbody className="text-center">
-                    {
-                        logsData.map((log) => (
-                            <tr key={log._id}>
-                                <td>{new Date(log.logEntryDatetime).toLocaleString()}</td>
-                                <td>{log.username}</td>
-                                <td>{log.taskId ? log.taskId : "N/A"}</td>
-                                <td>{log.logEntryAction}</td>
-                            </tr>
-                        ))
-                    }
+                {logsData.length === 0 ?
+                    <span className={"main-text text-grey non-clickable"}>
+                        Your logs for this board is empty.
+                        Note that any log older than one year is deleted
+                    </span> :
 
-                    </tbody>
-                </table>
+                    <table className={"table table-striped table-bordered table-hover non-clickable"}>
+                        <thead>
+                        <tr key={'header'} className="text-center">
+                            <th style={{width: "15%"}}>Date time</th>
+                            <th style={{width: "15%"}}>Username</th>
+                            <th style={{width: "20%"}}>Task ID</th>
+                            <th style={{width: "50%"}}>Action Description</th>
+                        </tr>
+                        </thead>
+                        <tbody className="text-center">
+                        {
+                            logsData.map((log) => (
+                                <tr key={log._id}>
+                                    <td>{new Date(log.logEntryDatetime).toLocaleString()}</td>
+                                    <td>{log.username}</td>
+                                    <td>{log.taskId ? log.taskId : "N/A"}</td>
+                                    <td>{log.logEntryAction}</td>
+                                </tr>
+                            ))
+                        }
+
+                        </tbody>
+                    </table>
+                }
 
             </WhiteBackground>
         )

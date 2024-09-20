@@ -1,7 +1,7 @@
 /**
  * File Description: Account Settings Page
  * Contributors: Mark, Audrey, Nikki
- * Version: 1.4
+ * Version: 1.5
  */
 
 import React, {useState} from 'react';
@@ -28,6 +28,9 @@ function AccountSettings() {
     const userData = getUserInfo();
     const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+    // variables
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
 
     const [nameInput, setNameInput] = useState('');
     const [emailInput, setEmailInput] = useState('');
@@ -73,6 +76,7 @@ function AccountSettings() {
     // handler for submission
     const handleSubmit = (event) => {
         event.preventDefault();
+        setIsSubmitting(true); // Disable button when loading
 
         // reset messages
         setUpdateSuccess(null);
@@ -122,7 +126,7 @@ function AccountSettings() {
         }
 
         if (Object.keys(updatedFields).length === 0) {
-            newError.updatedFields = "No changes detected";
+            setUpdateSuccess(true);
             isError = true;
         }
         setErrors(newError);
@@ -130,8 +134,7 @@ function AccountSettings() {
         if (!isError) {
 
             const updateUserPromise = new Promise((resolve, reject) => {
-                Meteor.call('update_user_info',
-                    userData.id, nameInput, emailInput, boolEmailNotificationOn,
+                Meteor.call('update_user_info', userData.id, nameInput, emailInput, boolEmailNotificationOn,
                     (error, result) => {
                         if (error) {
                             reject(error)
@@ -139,6 +142,7 @@ function AccountSettings() {
                             resolve(result)
                             setUpdateSuccess(true)
                         }
+                        setIsSubmitting(false); // Enable the button after loaded
                     })
             })
 
@@ -152,17 +156,23 @@ function AccountSettings() {
                     const updatedTeamMembers = team.teamMembers.map(member => member === userData.email ? updatedFields.email : member)
 
                     new Promise((resolve, reject) => {
-                        Meteor.call('update_team', team._id, team.teamInvitations, {
+                        Meteor.call('update_team',
+                            team._id,
+                            team.teamInvitations,
+                            {
                                 teamName: team.teamName,
                                 teamLeader: updatedTeamLeader,
                                 teamMembers: updatedTeamMembers,
                                 teamInvitations: team.teamInvitations
-                            }, true, (error, result) => {
+                            },
+                            true,
+                            (error, result) => {
                                 if (error) {
                                     reject(error)
                                 } else {
                                     resolve(result)
                                 }
+                                setIsSubmitting(false); // Enable the button after loaded
                             }
                         )
 
@@ -190,6 +200,9 @@ function AccountSettings() {
                     setErrorMessage(`Failed to update user information, please try again`);
                 })
             }
+        } else {
+            // errored
+            setIsSubmitting(false); // Enable the button after loaded
         }
     };
 
@@ -239,7 +252,10 @@ function AccountSettings() {
                     </select>
                 </div>
 
-                <Button className={"btn-brown btn-submit"} onClick={handleSubmit}>
+                <Button className={"btn-brown btn-submit"}
+                        type={"submit"}
+                        disabled={isSubmitting}
+                        onClick={handleSubmit}>
                     {saveIcon} Save Changes
                 </Button>
                 {updateSuccess === null ? null :
@@ -251,8 +267,8 @@ function AccountSettings() {
 
             <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", display: "flex", justifyContent: "end"}}>
                 <div style={{width: "fit-content"}}
-                    className={"text-red underline clickable"}
-                    onClick={onOpenModal}>
+                     className={"text-red underline clickable"}
+                     onClick={onOpenModal}>
                     Delete account and all data
                 </div>
             </div>

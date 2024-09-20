@@ -2,7 +2,7 @@
  * File Description: Board's settings page
  * Updated Date: 15/08/2024
  * Contributors: Audrey, Nikki
- * Version: 1.4
+ * Version: 1.5
  */
 
 import React, {Fragment, useState} from 'react';
@@ -32,9 +32,13 @@ export const BoardSettings = () => {
 
     const userInfo = getUserInfo();
     const navigate = useNavigate();
+
+    // url parameters
     const {boardId} = useParams();
     const {teamId} = useParams();
 
+    // variables
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
     const [boardNameInput, setBoardNameInput] = useState('');
     const [boardCodeInput, setBoardCodeInput] = useState('');
     const [boardDeadlineTimeInput, setBoardDeadlineTimeInput] = useState('');
@@ -59,7 +63,6 @@ export const BoardSettings = () => {
     const [deleteMessage, setDeleteMessage] = useState('')
 
     const startCond = (boardNameInput === '' && boardCodeInput === '' && boardDeadlineTimeInput === '' && boardDeadlineDateInput === '' && boardDescriptionInput === '');
-    const minDeadlineDate = new Date();
 
     const removeIcon = <XCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={22} height={22}/>
 
@@ -122,6 +125,8 @@ export const BoardSettings = () => {
 
     const saveChanges = (event) => {
         event.preventDefault();
+        setIsSubmitting(true); // Disable button when loading
+
         // reset the messages
         setUpdateSuccess(null)
         setDeleteMessage('')
@@ -194,7 +199,11 @@ export const BoardSettings = () => {
                         if (error) {
                             reject(error)
                         } else {
-                            Meteor.call('remove_deleted_statuses_tags', boardId, removedStatuses, removedTags, (err, res) => {
+                            Meteor.call('remove_deleted_statuses_tags',
+                                boardId,
+                                removedStatuses,
+                                removedTags,
+                                (err, res) => {
                                 if (err) {
                                     reject(err);
                                 } else {
@@ -217,10 +226,14 @@ export const BoardSettings = () => {
                                 }
                             })
                         }
+                        setIsSubmitting(false); // Enable the button after loaded
                     });
             }).catch(() => {
                 setUpdateSuccess(false)
             });
+        } else {
+            // errored
+            setIsSubmitting(false); // Enable the button after loaded
         }
     }
 
@@ -451,7 +464,10 @@ export const BoardSettings = () => {
                         </div>
 
                         {/* submit button */}
-                        <Button className="btn-brown btn-submit" type={"submit"} onClick={(e) => saveChanges(e)}>
+                        <Button className="btn-brown btn-submit"
+                                type={"submit"}
+                                disabled={isSubmitting}
+                                onClick={(e) => saveChanges(e)}>
                             {saveIcon} Save Changes
                         </Button>
                         {updateSuccess === null ? null :

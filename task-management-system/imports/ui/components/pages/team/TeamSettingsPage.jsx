@@ -2,7 +2,7 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey, Nikki
- * Version: 2.2
+ * Version: 2.3
  */
 import React, {Fragment, useState} from 'react';
 import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
@@ -32,6 +32,7 @@ export const TeamSettingsPage = () => {
     const {teamId} = useParams();
 
     // variables
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
     const [teamName, setTeamName] = useState('');
     const [teamLeader, setTeamLeader] = useState('');
     const [teamMembers, setTeamMembers] = useState([]);
@@ -82,6 +83,7 @@ export const TeamSettingsPage = () => {
     // handler for submitting changes to save
     const saveChanges = (event) => {
         event ? event.preventDefault() : null;
+        setIsSubmitting(true); // Disable button when loading
 
         setUpdateSuccess(null)
         setLeaveDeleteMessage('')
@@ -98,23 +100,26 @@ export const TeamSettingsPage = () => {
         if (teamName === '') {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
-        } else if (teamMembers.length < 1) {
-            newErrors.teamMembers = "Please fill in your team member";
-            isError = true;
+        } else if (teamName.length > 20) {
+            newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
         }
 
         setErrors(newErrors);
 
         if (!isError) {
             new Promise((resolve, reject) => {
-                Meteor.call('update_team', teamId, teamData.teamInvitations,
+                Meteor.call('update_team',
+                    teamId,
+                    teamData.teamInvitations,
                     {
                         teamName: teamName,
                         teamLeader: teamLeader,
                         teamMembers: teamMembers,
                         teamInvitations: teamInvitations,
-
-                    }, true, (error, result) => {
+                    },
+                    true,
+                    (error, result) => {
                         if (error) {
                             reject(error)
                         } else {
@@ -131,13 +136,19 @@ export const TeamSettingsPage = () => {
                             setErrors({});
                             setNewLeader('');
 
-                            // reload page
-                            window.location.reload();
+                            // reload page IF leader has changed
+                            if (teamData.teamLeader !== teamLeader) {
+                                window.location.reload();
+                            }
                         }
+                        setIsSubmitting(false); // Enable the button after loaded
                     });
             }).catch(() => {
                 setUpdateSuccess(false)
             });
+        } else {
+            // errored
+            setIsSubmitting(false); // Enable the button after loaded
         }
     };
 
@@ -179,14 +190,17 @@ export const TeamSettingsPage = () => {
         const membersWithoutUser = teamData.teamMembers.filter(m => m !== userInfo.email);
 
         new Promise((resolve, reject) => {
-            Meteor.call('update_team', teamId, teamData.teamInvitations,
+            Meteor.call('update_team',
+                teamId,
+                teamData.teamInvitations,
                 {
                     "teamName": teamData.teamName,
                     "teamLeader": needReassignLeader ? newLeader : teamLeader,
                     "teamMembers": membersWithoutUser,
                     "teamInvitations": teamData.teamInvitations,
-
-                }, true, (error, result) => {
+                },
+                true,
+                (error, result) => {
                     if (error) {
                         reject(error)
                     } else {
@@ -384,14 +398,17 @@ export const TeamSettingsPage = () => {
 
                         {/* submit button if leader */}
                         {isLeader ?
-                            <Button className="btn-brown btn-submit" type={"submit"} onClick={(e) => saveChanges(e)}>
+                            <Button className="btn-brown btn-submit"
+                                    type={"submit"}
+                                    disabled={isSubmitting}
+                                    onClick={(e) => saveChanges(e)}>
                                 {saveIcon} Save Changes
                             </Button> : null
                         }
 
                         {updateSuccess === null ? null :
                             updateSuccess ?
-                                <span className="text-green small-text non-clickable">Board has been updated!</span> :
+                                <span className="text-green small-text non-clickable">Team has been updated!</span> :
                                 <span
                                     className="text-red small-text non-clickable">Update failed, please try again.</span>
                         }
