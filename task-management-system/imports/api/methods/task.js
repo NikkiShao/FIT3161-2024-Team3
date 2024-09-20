@@ -4,9 +4,9 @@
  * Contributors: Nikki, Sam, AUdrey
  */
 
-import {Meteor} from 'meteor/meteor';
-import {check, Match} from 'meteor/check';
-import {TaskCollection} from "/imports/api/collections/task.js";
+import { Meteor } from 'meteor/meteor';
+import { check, Match } from 'meteor/check';
+import { TaskCollection } from "/imports/api/collections/task.js";
 import "../methods/logEntry";
 import "../methods/board";
 import BoardCollection from "../collections/board";
@@ -179,7 +179,9 @@ Meteor.methods({
         }
 
         if (currentTask.taskDeadlineDate !== taskData.taskDeadlineDate) {
-            logChanges.push(`task deadline changed from '${currentTask.taskDeadlineDate}' to '${taskData.taskDeadlineDate}'`);
+            const oldDate = new Date (currentTask.taskDeadlineDate).toLocaleString();
+            const newDate = new Date (taskData.taskDeadlineDate).toLocaleString();
+            logChanges.push(`task deadline changed from '${oldDate}' to '${newDate}'`);
         }
 
         if (currentTask.statusName !== taskData.statusName) {

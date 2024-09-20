@@ -4,8 +4,8 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from 'meteor/meteor'
-import {UserCollection} from "../collections/user";
+import { Meteor } from 'meteor/meteor'
+import { UserCollection } from "../collections/user";
 
 /**
  * Publishes all users.

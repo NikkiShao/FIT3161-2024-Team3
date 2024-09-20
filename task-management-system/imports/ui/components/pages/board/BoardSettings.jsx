@@ -2,14 +2,14 @@
  * File Description: Board's settings page
  * Updated Date: 15/08/2024
  * Contributors: Audrey, Nikki
- * Version: 1.4
+ * Version: 1.5
  */
 
-import React, {Fragment, useState} from 'react';
-import {Modal} from 'react-responsive-modal';
-import {useNavigate, useParams} from "react-router-dom";
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {ChevronLeftIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import React, { Fragment, useState } from 'react';
+import { Modal } from 'react-responsive-modal';
+import { useNavigate, useParams } from "react-router-dom";
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
+import { XCircleIcon } from "@heroicons/react/24/outline";
 import Spinner from "react-bootstrap/Spinner";
 
 import BoardCollection from '../../../../api/collections/board';
@@ -21,8 +21,9 @@ import Button from "../../general/buttons/Button";
 import Input from "../../general/inputs/Input";
 import classNames from "classnames";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 import './board.css'
+import { backLeftArrow, closeModalIcon, saveIcon, subAddIcon } from "../../icons";
 
 /**
  * Board Settings Page
@@ -31,9 +32,13 @@ export const BoardSettings = () => {
 
     const userInfo = getUserInfo();
     const navigate = useNavigate();
+
+    // url parameters
     const {boardId} = useParams();
     const {teamId} = useParams();
 
+    // variables
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
     const [boardNameInput, setBoardNameInput] = useState('');
     const [boardCodeInput, setBoardCodeInput] = useState('');
     const [boardDeadlineTimeInput, setBoardDeadlineTimeInput] = useState('');
@@ -58,13 +63,8 @@ export const BoardSettings = () => {
     const [deleteMessage, setDeleteMessage] = useState('')
 
     const startCond = (boardNameInput === '' && boardCodeInput === '' && boardDeadlineTimeInput === '' && boardDeadlineDateInput === '' && boardDescriptionInput === '');
-    const minDeadlineDate = new Date();
 
-    const removeIcon = <XCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2}
-                                    viewBox="0 0 24 24" width={22} height={22}/>
-    const addIcon = <PlusCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2}
-                                    viewBox="0 0 24 24" width={30} height={30}/>
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>;
+    const removeIcon = <XCircleIcon color={"var(--dark-grey)"} className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={22} height={22}/>
 
     const isLoadingTeam = useSubscribe('specific_team', teamId);
     const isLoadingBoard = useSubscribe('board_by_id', boardId);
@@ -125,6 +125,8 @@ export const BoardSettings = () => {
 
     const saveChanges = (event) => {
         event.preventDefault();
+        setIsSubmitting(true); // Disable button when loading
+
         // reset the messages
         setUpdateSuccess(null)
         setDeleteMessage('')
@@ -148,9 +150,14 @@ export const BoardSettings = () => {
             isError = true
         }
 
+        let deadlineDateObject = new Date(boardDeadlineDateInput + 'T' + boardDeadlineTimeInput);
         if (!boardDeadlineDateInput || !boardDeadlineTimeInput) {
             newErrors.boardDeadline = "Please fill in your deadline date and time";
             isError = true;
+        } else if (isNaN(deadlineDateObject)) {
+            // deadline is invalid format
+            newErrors.boardDeadline = "Deadline datetime is invalid";
+            isError = true
         }
 
         if (!boardDescriptionInput) {
@@ -182,7 +189,7 @@ export const BoardSettings = () => {
                     {
                         boardName: boardNameInput,
                         boardCode: boardCodeInput,
-                        boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}Z`,
+                        boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
                         boardDescription: boardDescriptionInput,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags
@@ -192,7 +199,11 @@ export const BoardSettings = () => {
                         if (error) {
                             reject(error)
                         } else {
-                            Meteor.call('remove_deleted_statuses_tags', boardId, removedStatuses, removedTags, (err, res) => {
+                            Meteor.call('remove_deleted_statuses_tags',
+                                boardId,
+                                removedStatuses,
+                                removedTags,
+                                (err, res) => {
                                 if (err) {
                                     reject(err);
                                 } else {
@@ -215,10 +226,14 @@ export const BoardSettings = () => {
                                 }
                             })
                         }
+                        setIsSubmitting(false); // Enable the button after loaded
                     });
             }).catch(() => {
                 setUpdateSuccess(false)
             });
+        } else {
+            // errored
+            setIsSubmitting(false); // Enable the button after loaded
         }
     }
 
@@ -261,7 +276,7 @@ export const BoardSettings = () => {
             setBoardNameInput(boardData.boardName);
             setBoardCodeInput(boardData.boardCode);
             setBoardDeadlineDateInput(boardData.boardDeadline.split('T')[0]);
-            setBoardDeadlineTimeInput(boardData.boardDeadline.split('T')[1].substring(0, 12));
+            setBoardDeadlineTimeInput(boardData.boardDeadline.split('T')[1]);
             setBoardDescriptionInput(boardData.boardDescription);
             setBoardStatuses(boardData.boardStatuses.sort((a, b) => a.statusOrder - b.statusOrder).map(status => status.statusName));
             setBoardExistingTags(boardData.boardTags);
@@ -276,7 +291,7 @@ export const BoardSettings = () => {
                                 onClick={() => {
                                     navigate('/' + BaseUrlPath.TEAMS + "/" + teamId + "/boards/" + boardId);
                                 }}>
-                            <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                            {backLeftArrow}
                             Back
                         </Button>
 
@@ -324,7 +339,6 @@ export const BoardSettings = () => {
                                     <Input
                                         className={"short-input"}
                                         type="date"
-                                        min={minDeadlineDate.toISOString().split('T')[0]}
                                         id={"boardDeadlineDate"}
                                         value={boardDeadlineDateInput}
                                         onChange={(e) => setBoardDeadlineDateInput(e.target.value)}
@@ -392,7 +406,7 @@ export const BoardSettings = () => {
                                         onChange={(e) => setBoardNewStatusInput(e.target.value)}
                                     />
                                     <button className="icon-btn" onClick={(e) => handleAddStatus(e)}>
-                                        {addIcon}
+                                        {subAddIcon}
                                     </button>
                                 </div>
 
@@ -441,7 +455,7 @@ export const BoardSettings = () => {
                                         value={boardNewTagHex}
                                         onChange={(e) => setBoardNewTagHex(e.target.value)}
                                     />
-                                    <button className="icon-btn" onClick={handleAddTag}>{addIcon}</button>
+                                    <button className="icon-btn" onClick={handleAddTag}>{subAddIcon}</button>
                                 </div>
 
                                 {errors.boardNewTag &&
@@ -450,8 +464,11 @@ export const BoardSettings = () => {
                         </div>
 
                         {/* submit button */}
-                        <Button className="btn-brown btn-submit" type={"submit"} onClick={(e) => saveChanges(e)}>
-                            Save Changes
+                        <Button className="btn-brown btn-submit"
+                                type={"submit"}
+                                disabled={isSubmitting}
+                                onClick={(e) => saveChanges(e)}>
+                            {saveIcon} Save Changes
                         </Button>
                         {updateSuccess === null ? null :
                             updateSuccess ?
@@ -461,20 +478,32 @@ export const BoardSettings = () => {
                         }
                     </form>
 
-                    <span className={"text-red underline clickable"} style={{width: "100%", textAlign: "end"}}
-                          onClick={onOpenModal}>Delete Board</span>
+                    <div style={{
+                        width: "100%",
+                        minWidth: "100%",
+                        maxWidth: "100%",
+                        display: "flex",
+                        justifyContent: "end"
+                    }}>
+                        <div style={{width: "fit-content"}}
+                             className={"text-red underline clickable"}
+                             onClick={onOpenModal}>
+                            Delete Board
+                        </div>
+                    </div>
 
                 </WhiteBackground>
                 <Modal
-                    closeIcon={closeIcon}
+                    closeIcon={closeModalIcon}
                     classNames={{modal: classNames('modal-base', '')}}
                     open={open}
                     onClose={onCloseModal}
                     center>
                     <div className={"modal-div-center"}>
-                        <h1 className={"text-center"}>Delete Board</h1>
-                        <span>You are about to delete "{boardNameInput}".</span>
-                        <span>Are you sure?</span>
+                        <h1 className={"text-center"}>Delete Board?</h1>
+                        <span>Are you sure you would like to delete the board?</span>
+                        <div className={"main-text"}>This action will be recorded in the Logs.</div>
+                        <div className={"main-text text-red"}>This action cannot be reverted.</div>
                         <div className={"button-group-row btn-submit"}>
                             <Button className={"btn-red"} onClick={deleteBoard}>Confirm</Button>
                             <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>

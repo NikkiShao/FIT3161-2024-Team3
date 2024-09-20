@@ -6,26 +6,24 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Modal} from 'react-responsive-modal';
+import React, { useEffect, useState } from 'react';
+import { Modal } from 'react-responsive-modal';
 import classNames from "classnames";
 
-import {getUserInfo} from '../../util';
-import {Meteor} from 'meteor/meteor';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
+import { getUserInfo } from '../../util';
+import { Meteor } from 'meteor/meteor';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
 import TeamCollection from '../../../../api/collections/team.js'
 
 
-import {XCircleIcon} from "@heroicons/react/24/outline";
 import Button from "../buttons/Button";
 import '../../general/modal/modal.css';
+import { closeModalIcon } from "../../icons";
 
 
 const DeleteAccountModal = ({open, closeHandler}) => {
     const userData = getUserInfo();
     const [isJoined, setIsJoined] = useState(false);
-
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     const [errorMessage, setErrorMessage] = useState(''); // State to store error message
 
@@ -74,7 +72,7 @@ const DeleteAccountModal = ({open, closeHandler}) => {
 
     return (
         <Modal
-            closeIcon={closeIcon}
+            closeIcon={closeModalIcon}
             classNames={{
                 modal: classNames('modal-base', ''),
             }}
@@ -87,9 +85,9 @@ const DeleteAccountModal = ({open, closeHandler}) => {
         >
             <div className='modal-div-center'>
                 <h1>Delete Account?</h1>
-                <div>Are you sure you would like to your account and all data associated with it?</div>
+                <div>Are you sure you would like to delete your account and all data associated with it?</div>
                 <div>You must leave all the teams first.</div>
-                <div className='text-red'>This action cannot be reverted.</div>
+                <div className={"main-text text-red"}>This action cannot be reverted.</div>
 
                 <div className="button-group-row btn-submit">
                     <Button type={"submit"}

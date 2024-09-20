@@ -7,7 +7,8 @@
 
 import classNames from "classnames";
 import React from "react";
-import {XCircleIcon} from "@heroicons/react/24/outline";
+import { XCircleIcon } from "@heroicons/react/24/outline";
+import { isDark } from '@bkwld/light-or-dark'
 
 import './card.css';
 
@@ -42,10 +43,12 @@ const TaskTag = ({
     const taskTagClasses = classNames("task-tag non-clickable", className);
     const removeTagIcon = <XCircleIcon color={"var(--navy)"} className={"clickable"}
                                        onClick={xButtonHandler ? xButtonHandler : removeTag}
-                                       strokeWidth={2} viewBox="0 0 24 24" width={20} height={20} />
+                                       strokeWidth={2} viewBox="0 0 24 24" width={20} height={20}
+                                       style={{color: isDark(tagColour) ? "var(--white)" : "var(--black)"}}
+    />
 
     return (
-        <div style={{backgroundColor: tagColour}}
+        <div style={{backgroundColor: tagColour, color: isDark(tagColour) ? "var(--white)" : "var(--black)"}}
              className={taskTagClasses}
              {...tagProps}>
             {tagName}

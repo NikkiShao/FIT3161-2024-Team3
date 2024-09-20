@@ -11,7 +11,6 @@
 export enum PageLayout {
     LARGE_CENTER,
     SMALL_CENTER,
-    FREE
 }
 
 export default PageLayout;

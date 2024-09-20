@@ -2,15 +2,14 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey, Nikki
- * Version: 2.2
+ * Version: 2.3
  */
-import React, {Fragment, useState} from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data'
-import {useNavigate, useParams} from "react-router-dom";
+import React, { Fragment, useState } from 'react';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
-import {ChevronLeftIcon, MinusCircleIcon, PlusCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import {Modal} from 'react-responsive-modal';
+import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 
 import TeamCollection from '../../../../api/collections/team.js'
@@ -21,8 +20,9 @@ import BaseUrlPath from "../../../enums/BaseUrlPath";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
 import Input from "../../general/inputs/Input.jsx";
-import {generateInvitationToken, getUserInfo} from "../../util";
+import { generateInvitationToken, getUserInfo } from "../../util";
 import '../../general/modal/modal.css'
+import { backLeftArrow, closeModalIcon, minusCircleIcon, saveIcon, subAddIcon } from "../../icons";
 
 /**
  * Settings page for a team
@@ -32,6 +32,7 @@ export const TeamSettingsPage = () => {
     const {teamId} = useParams();
 
     // variables
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
     const [teamName, setTeamName] = useState('');
     const [teamLeader, setTeamLeader] = useState('');
     const [teamMembers, setTeamMembers] = useState([]);
@@ -70,7 +71,6 @@ export const TeamSettingsPage = () => {
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
 
     // errors and messages
     const [errors, setErrors] = useState({
@@ -83,6 +83,7 @@ export const TeamSettingsPage = () => {
     // handler for submitting changes to save
     const saveChanges = (event) => {
         event ? event.preventDefault() : null;
+        setIsSubmitting(true); // Disable button when loading
 
         setUpdateSuccess(null)
         setLeaveDeleteMessage('')
@@ -99,23 +100,26 @@ export const TeamSettingsPage = () => {
         if (teamName === '') {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
-        } else if (teamMembers.length < 1) {
-            newErrors.teamMembers = "Please fill in your team member";
-            isError = true;
+        } else if (teamName.length > 20) {
+            newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
         }
 
         setErrors(newErrors);
 
         if (!isError) {
             new Promise((resolve, reject) => {
-                Meteor.call('update_team', teamId, teamData.teamInvitations,
+                Meteor.call('update_team',
+                    teamId,
+                    teamData.teamInvitations,
                     {
                         teamName: teamName,
                         teamLeader: teamLeader,
                         teamMembers: teamMembers,
                         teamInvitations: teamInvitations,
-
-                    }, true, (error, result) => {
+                    },
+                    true,
+                    (error, result) => {
                         if (error) {
                             reject(error)
                         } else {
@@ -132,13 +136,19 @@ export const TeamSettingsPage = () => {
                             setErrors({});
                             setNewLeader('');
 
-                            // reload page
-                            window.location.reload();
+                            // reload page IF leader has changed
+                            if (teamData.teamLeader !== teamLeader) {
+                                window.location.reload();
+                            }
                         }
+                        setIsSubmitting(false); // Enable the button after loaded
                     });
             }).catch(() => {
                 setUpdateSuccess(false)
             });
+        } else {
+            // errored
+            setIsSubmitting(false); // Enable the button after loaded
         }
     };
 
@@ -180,14 +190,17 @@ export const TeamSettingsPage = () => {
         const membersWithoutUser = teamData.teamMembers.filter(m => m !== userInfo.email);
 
         new Promise((resolve, reject) => {
-            Meteor.call('update_team', teamId, teamData.teamInvitations,
+            Meteor.call('update_team',
+                teamId,
+                teamData.teamInvitations,
                 {
                     "teamName": teamData.teamName,
                     "teamLeader": needReassignLeader ? newLeader : teamLeader,
                     "teamMembers": membersWithoutUser,
                     "teamInvitations": teamData.teamInvitations,
-
-                }, true, (error, result) => {
+                },
+                true,
+                (error, result) => {
                     if (error) {
                         reject(error)
                     } else {
@@ -265,7 +278,7 @@ export const TeamSettingsPage = () => {
                                 onClick={() => {
                                     navigate(`/teams/${teamId}`);
                                 }}>
-                            <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                            {backLeftArrow}
                             Back
                         </Button>
 
@@ -326,9 +339,7 @@ export const TeamSettingsPage = () => {
                                                         isLeader ?
                                                             <button className="icon-btn"
                                                                     onClick={() => handleRemoveMember(member.emails[0].address)}>
-                                                                <MinusCircleIcon color={"var(--navy)"} strokeWidth={2}
-                                                                                 viewBox="0 0 24 24" width={30}
-                                                                                 height={30}/>
+                                                                {minusCircleIcon}
                                                             </button> : null
                                                     }
                                                 </div>
@@ -357,9 +368,7 @@ export const TeamSettingsPage = () => {
                                                         isLeader ?
                                                             <button className="icon-btn"
                                                                     onClick={() => handleRemoveInvitation(invitation.email)}>
-                                                                <MinusCircleIcon color={"var(--navy)"} strokeWidth={2}
-                                                                                 viewBox="0 0 24 24" width={30}
-                                                                                 height={30}/>
+                                                                {minusCircleIcon}
                                                             </button> : null
                                                     }
                                                 </div>
@@ -381,9 +390,7 @@ export const TeamSettingsPage = () => {
                                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                                     </div>
                                     <button className="icon-btn" onClick={handleAddInvitation}>
-                                        <PlusCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24"
-                                                        width={30}
-                                                        height={30}/>
+                                        {subAddIcon}
                                     </button>
                                 </div>
                             </div> : null
@@ -391,21 +398,36 @@ export const TeamSettingsPage = () => {
 
                         {/* submit button if leader */}
                         {isLeader ?
-                            <Button className="btn-brown btn-submit" type={"submit"} onClick={(e) => saveChanges(e)}>
-                                Save Changes
+                            <Button className="btn-brown btn-submit"
+                                    type={"submit"}
+                                    disabled={isSubmitting}
+                                    onClick={(e) => saveChanges(e)}>
+                                {saveIcon} Save Changes
                             </Button> : null
                         }
 
                         {updateSuccess === null ? null :
                             updateSuccess ?
-                                <span className="text-green small-text non-clickable">Board has been updated!</span> :
+                                <span className="text-green small-text non-clickable">Team has been updated!</span> :
                                 <span
                                     className="text-red small-text non-clickable">Update failed, please try again.</span>
                         }
                     </form>
 
-                    <span className={"text-red underline clickable"} style={{width: "100%", textAlign: "end"}}
-                          onClick={onOpenModal}>Leave Team</span>
+                    <div style={{
+                        width: "100%",
+                        minWidth: "100%",
+                        maxWidth: "100%",
+                        display: "flex",
+                        justifyContent: "end"
+                    }}>
+                        <div style={{width: "fit-content"}}
+                             className={"text-red underline clickable"}
+                             onClick={onOpenModal}>
+                            Leave Team
+                        </div>
+                    </div>
+
                 </WhiteBackground>
 
                 {/* leave team modal */}
@@ -413,15 +435,16 @@ export const TeamSettingsPage = () => {
                     // if there is only 1 user left (the leader)
                     teamData.teamMembers.length === 1 ?
                         <Modal
-                            closeIcon={closeIcon}
+                            closeIcon={closeModalIcon}
                             classNames={{modal: classNames('modal-base', '')}}
                             open={open}
                             onClose={onCloseModal}
                             center>
                             <div className={"modal-div-center"}>
-                                <h1 className={"text-center"}>Delete Team</h1>
+                                <h1 className={"text-center"}>Delete Team?</h1>
                                 <span className={"main-text"}>You are the last member in the team, leaving the team will delete the team.</span>
                                 <span className={"main-text"}>Are you sure?</span>
+                                <div className={"main-text text-red"}>This action cannot be reverted.</div>
                                 <div className={"button-group-row btn-submit"}>
                                     <Button className={"btn-red"} onClick={deleteTeam}>Confirm</Button>
                                     <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>
@@ -434,7 +457,7 @@ export const TeamSettingsPage = () => {
 
                         // not the last user
                         <Modal
-                            closeIcon={closeIcon}
+                            closeIcon={closeModalIcon}
                             classNames={{
                                 modal: classNames('modal-base', ''),
                             }}
@@ -476,11 +499,12 @@ export const TeamSettingsPage = () => {
                                     : // if you are a normal team member
                                     <>
                                         <h1 className={"text-center"}>Leave Team</h1>
-                                        <div className={"main-text"}>You will permanently leave the team.</div>
-                                        <div className={"main-text"}>Are you sure?</div>
+                                        <div className={"main-text"}>Are you sure you would like to permanently leave the team?</div>
+                                        <div className={"main-text text-red"}>This action cannot be reverted.</div>
 
                                         <div className={"button-group-row btn-submit"}>
-                                            <Button className={"btn-red"} onClick={() => leaveTeam(false)}>Leave Team</Button>
+                                            <Button className={"btn-red"} onClick={() => leaveTeam(false)}>Leave
+                                                Team</Button>
                                             <Button className={"btn-grey"} onClick={onCloseModal}>Cancel</Button>
                                         </div>
                                     </>

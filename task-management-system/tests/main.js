@@ -8,9 +8,6 @@ import assert from "assert";
 import './poll.tests.js'
 
 
-
-
-
 describe("task-management-system", function () {
   it("package.json has correct name", async function () {
     const { name } = await import("../package.json");

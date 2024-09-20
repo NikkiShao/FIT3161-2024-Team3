@@ -1,10 +1,9 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../client/main.css"
-
-import ExamplesPage from "./components/pages/examples/Examples";
+import "../../client/text.css"
 
 import EmptyPage from "./components/pages/EmptyPage";
 
@@ -13,21 +12,23 @@ import RegistrationPage from "./components/pages/registration/RegistrationPage";
 import AccountCreatedPage from "./components/pages/registration/AccountCreatedPage";
 import EmailVerificationPage from "./components/pages/registration/EmailVerificationPage";
 
-import DashboardPage from "./components/pages/DashboardPage";
+import DashboardPage from "./components/pages/dashboard/DashboardPage";
+import AccountSettingPage from '../ui/components/pages/AccountSettingPage';
+import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
+
 import TeamsListPage from './components/pages/team/TeamsListPage';
 import TeamLobbyPage from "./components/pages/team/TeamLobbyPage";
+import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
+
 import ViewBoardPage from "./components/pages/board/ViewBoard"
-import AccountSettingPage from '../ui/components/pages/AccountSettingPage';
+import BoardSettings from "./components/pages/board/BoardSettings";
+import BoardLogsMenu from "./components/pages/board/BoardLogsMenu";
+import BoardLog from "./components/pages/board/BoardLog";
 
 import NavigationBar from "./components/general/navigation/NavigationBar";
 import ProtectedRoute from "./components/general/navigation/ProtectedRoute";
 import RoutingAccess from "./enums/RoutingAccess";
 import BaseUrlPath from "./enums/BaseUrlPath";
-import TeamSettingsPage from './components/pages/team/TeamSettingsPage';
-import BoardSettings from "./components/pages/board/BoardSettings";
-import InvitationResponsePage from "./components/pages/team/InvitationResponsePage";
-import BoardLogsMenu from "./components/pages/board/BoardLogsMenu";
-import BoardLog from "./components/pages/board/BoardLog";
 
 
 /**
@@ -40,9 +41,6 @@ export const App = () => (
             <NavigationBar/>
             <main>
                 <Routes>
-
-                    {/* todo: remove examples page after development */}
-                    <Route path="/examples" element={<ExamplesPage/>}/>
 
                     {/* base & home routes */}
                     <Route path="*" element={<EmptyPage/>}/>

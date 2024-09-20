@@ -88,7 +88,9 @@ Meteor.methods({
 
         // Check for changes in board deadline (as a string)
         if (currentBoard.boardDeadline !== boardData.boardDeadline) {
-            changes.push(`board deadline changed from '${currentBoard.boardDeadline}' to '${boardData.boardDeadline}'`);
+            const oldDate = new Date (currentBoard.boardDeadline).toLocaleString();
+            const newDate = new Date (boardData.boardDeadline).toLocaleString();
+            changes.push(`board deadline changed from '${oldDate}' to '${newDate}'`);
         }
 
         // Check for changes in board description

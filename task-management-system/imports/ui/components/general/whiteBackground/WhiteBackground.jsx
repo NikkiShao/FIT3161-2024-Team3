@@ -5,14 +5,14 @@
  * Version: 1.1
  */
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import classNames from "classnames";
-import {Tracker} from 'meteor/tracker';
+import { Tracker } from 'meteor/tracker';
 import "./whiteBackground.css"
 
 import PageLayout from "../../../enums/PageLayout";
 import HoverTip from "../hoverTip/HoverTip";
-import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
+import { helpQuestionIcon } from "../../icons";
 
 
 /**
@@ -64,20 +64,14 @@ export const WhiteBackground = ({children, className, pageLayout, pageHelpText, 
         outerDivStyle.alignItems = "center";
         pageMainDivClasses = classNames("small-page", pageMainDivClasses);
 
-    } else if (pageLayout === PageLayout.FREE) {
-        // todo
-
     }
     // for help hover
-    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
-
     return (
         <div style={outerDivStyle}>
             <div {...divProps} className={pageMainDivClasses}>
-                {/*todo: make only appear when there is text*/}
                 {
                     pageHelpText ?
-                    <HoverTip icon={questionIcon}
+                    <HoverTip icon={helpQuestionIcon}
                               outerText={"Help"}
                               toolTipText={pageHelpText}
                               divClassName={"page-help-tip"}

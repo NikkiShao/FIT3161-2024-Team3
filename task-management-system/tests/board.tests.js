@@ -4,12 +4,13 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from "meteor/meteor";
-import {Accounts} from "meteor/accounts-base";
-const assert = require('assert');
-import {resetDatabase} from 'meteor/xolvio:cleaner';
+import { Meteor } from "meteor/meteor";
+import { Accounts } from "meteor/accounts-base";
+import { resetDatabase } from 'meteor/xolvio:cleaner';
 import "../imports/api/methods/board";
 import BoardCollection from "../imports/api/collections/board";
+
+const assert = require('assert');
 
 /**
  * Test suite for client-side board methods.

@@ -4,8 +4,8 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from 'meteor/meteor'
-import {LogEntryCollection} from "../collections/logEntry";
+import { Meteor } from 'meteor/meteor'
+import { LogEntryCollection } from "../collections/logEntry";
 
 /**
  * Publishes all the log entries relating to a specific team for all its boards/tasks.

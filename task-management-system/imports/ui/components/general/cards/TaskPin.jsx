@@ -5,7 +5,7 @@
  * Version: 1.0
  */
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 /**
  * PinTask component for toggling the pin state of a task.

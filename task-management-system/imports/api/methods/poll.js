@@ -1,14 +1,12 @@
 /**
  * File Description: Poll database entity
- * File version: 1.3
+ * File version: 1.4
  * Contributors: Nikki, Mark
  */
 
 import PollCollection from "../collections/poll";
 import { Meteor } from "meteor/meteor";
-import BoardCollection from "../collections/board";
 import { check } from "meteor/check";
-import TeamCollection from "../collections/team";
 
 Meteor.methods({
     /**
