@@ -2,19 +2,21 @@
  * File Description: Poll Result Modal
  * Updated Date: 07/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.5
+ * Version: 1.6
  */
 
 import React from 'react';
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
+import { useParams } from "react-router-dom";
 import { Modal } from 'react-responsive-modal';
-import { CheckIcon } from "@heroicons/react/24/outline";
+import Spinner from "react-bootstrap/Spinner";
 import classNames from "classnames";
-import HoverTip from "../hoverTip/HoverTip";
-import { useTracker } from "meteor/react-meteor-data";
+import { CheckIcon } from "@heroicons/react/24/outline";
 import UserCollection from "../../../../api/collections/user";
-import { getUserInfo } from "../../util";
-import "./polls.css";
+import TeamCollection from "../../../../api/collections/team";
 import { closeModalIcon, helpQuestionIcon } from "../../icons";
+import HoverTip from "../hoverTip/HoverTip";
+import "./polls.css";
 
 /**
  * The modal for displaying poll results in a closed poll
@@ -23,41 +25,21 @@ import { closeModalIcon, helpQuestionIcon } from "../../icons";
  * @param {object} pollData - Data for the poll, including title and options with their respective votes.
  */
 const PollResultModal = ({open, closeHandler, pollData}) => {
-    const userInfo = getUserInfo();
+    const {teamId} = useParams();
 
     // Use useTracker hook to get all the user data
-    const {users, isLoading} = useTracker(() => {
-        const usernames = pollData.options.flatMap(option => option.voterUsernames);
-        
-        const subscription = Meteor.subscribe('specific_username_user', usernames);
-        
-        if (!subscription.ready()) {
-            return {users: [], isLoading: true};
-        }
+    // Fetching the team data
+    const isLoadingTeam = useSubscribe('specific_team', teamId);
+    const teamData = useTracker(() => {
+        return TeamCollection.findOne({_id: teamId});
+    });
 
-        const users = UserCollection.find({username: {$in: usernames}}).fetch();
-        
-        return {users, isLoading: false};
-    }, [pollData]);
+    const isLoadingUsers = useSubscribe('all_users');
+    const teamMembersData = useTracker(() => {
+        return UserCollection.find({"emails.address": {$in: teamData ? teamData.teamMembers : []}}).fetch();
+    });
 
-    
-    const getNamesByUsernames = (usernames) => {
-        return usernames.map(username => {
-            const user = users.find(u => u.username === username);
-            return user && user.profile && user.profile.name ? user.profile.name : "Unknown";
-        });
-    };
-    
-
-    const poll = {
-        question: pollData.title,
-        answers: pollData.options.map((option) => option.optionText),
-        answersWeight: pollData.options.map((option) => option.voterUsernames.length),
-        voters: pollData.options.map((option) => getNamesByUsernames(option.voterUsernames)),  // Use toNames here
-    };
-
-    const pollCount = poll.answersWeight.reduce((acc, curr) => acc + curr, 0);
-    const maxVotes = Math.max(...poll.answersWeight);
+    const isLoading = isLoadingTeam() || isLoadingUsers();
 
     const highestIcon = (
         <CheckIcon
@@ -69,82 +51,107 @@ const PollResultModal = ({open, closeHandler, pollData}) => {
         />
     )
 
-    return (
-        <Modal
-            closeIcon={closeModalIcon}
-            classNames={{modal: classNames('modal-base', '')}}
-            open={open}
-            onClose={closeHandler}
-            center
-        >
-            <div className={"modal-div-center"}>
-                {/* poll title */}
-                <div className={"header-space-centered"}>
-                    <div style={{width: "25px", visibility: "hidden"}}></div>
-                    <h1 className={"text-center"}> {poll.question}</h1>
-                    <HoverTip icon={helpQuestionIcon}
-                              outerText={""}
-                              toolTipText={"You may hover over any poll option that are too long to see the full text."}
-                              style={{marginBottom: "10px"}}
-                    />
-                </div>
+    if (isLoading) {
+        // loading
+        return <Spinner animation="border" variant="secondary" role="status"/>
 
-                {/* area for displaying answers */}
-                <div className="poll__main-div">
-                    {poll.answers.map((answer, i) => {
-                        const percentage = pollCount > 0
-                            ? Math.round((poll.answersWeight[i] * 100) / pollCount)
-                            : 0;
+    } else {
 
-                        return (
-                            <div key={i} className={"full-width"}>
-                                <div className='each-option'>
-                                    <div className="poll__option results">
-                                        {/* Only show HoverTip if the answer is truncated */}
-                                        {answer.length > 25 ?
-                                            (
-                                                <HoverTip
-                                                    icon={<span className='one-line'>{answer}</span>}  // Display truncated text
-                                                    outerText={""}  // No outer text
-                                                    toolTipText={answer}  // Show full answer on hover
-                                                    divClassName={"more-info-mouse"}  // Custom class name
-                                                    isBlue={false}
-                                                />
-                                            ) : (
-                                                <span className='one-line main-text'>{answer}</span>  // Display the full answer if not truncated
-                                            )}
-                                        <span className={"text-grey non-clickable"} style={{minWidth: "50px", textAlign: "end"}}>
+        const poll = {
+            question: pollData.title,
+            answers: pollData.options.map((option) => option.optionText),
+            answersWeight: pollData.options.map((option) => option.voterUsernames.length),
+            voters: pollData.options.map((option) => {
+
+                // for each option
+                return option.voterUsernames.map(username => {
+                    // map each user name to: <name> (@<username>) format
+                    const targetUser = teamMembersData.find(user => user.username === username)
+                    return targetUser?.profile?.name ? `${targetUser.profile.name} (@${username})` : username;
+                });
+            }),
+        };
+
+        const pollCount = poll.answersWeight.reduce((acc, curr) => acc + curr, 0);
+        const maxVotes = Math.max(...poll.answersWeight);
+
+        return (
+            <Modal
+                closeIcon={closeModalIcon}
+                classNames={{modal: classNames('modal-base', '')}}
+                open={open}
+                onClose={closeHandler}
+                center
+            >
+                <div className={"modal-div-center"}>
+                    {/* poll title */}
+                    <div className={"header-space-centered"}>
+                        <div style={{width: "25px", visibility: "hidden"}}></div>
+                        <h1 className={"text-center"}> {poll.question}</h1>
+                        <HoverTip icon={helpQuestionIcon}
+                                  outerText={""}
+                                  toolTipText={"You may hover over any poll option that are too long to see the full text."}
+                                  style={{marginBottom: "10px"}}
+                        />
+                    </div>
+
+                    {/* area for displaying answers */}
+                    <div className="poll__main-div">
+                        {poll.answers.map((answer, i) => {
+                            const percentage = pollCount > 0
+                                ? Math.round((poll.answersWeight[i] * 100) / pollCount)
+                                : 0;
+
+                            return (
+                                <div key={i} className={"full-width"}>
+                                    <div className='each-option'>
+                                        <div className="poll__option results">
+                                            {/* Only show HoverTip if the answer is truncated */}
+                                            {answer.length > 25 ?
+                                                (
+                                                    <HoverTip
+                                                        icon={<span className='one-line'>{answer}</span>}  // Display truncated text
+                                                        outerText={""}  // No outer text
+                                                        toolTipText={answer}  // Show full answer on hover
+                                                        divClassName={"more-info-mouse"}  // Custom class name
+                                                        isBlue={false}
+                                                    />
+                                                ) : (
+                                                    <span className='one-line main-text'>{answer}</span>  // Display the full answer if not truncated
+                                                )}
+                                            <span className={"text-grey non-clickable"} style={{minWidth: "50px", textAlign: "end"}}>
                                             {percentage}%
                                         </span>
-                                        {/* the below is the background grey that fills depending on the voting % */}
-                                        <span
-                                            className="percentage-bar"
-                                            style={{width: `${percentage}%`}}
-                                        ></span>
-                                    </div>
-                                    {/* Display closeIcon if this answer has the maximum votes */}
-                                    {poll.answersWeight[i] === maxVotes && maxVotes !== 0 && (
-                                        <span className="max-vote-icon">
+                                            {/* the below is the background grey that fills depending on the voting % */}
+                                            <span
+                                                className="percentage-bar"
+                                                style={{width: `${percentage}%`}}
+                                            ></span>
+                                        </div>
+                                        {/* Display closeIcon if this answer has the maximum votes */}
+                                        {poll.answersWeight[i] === maxVotes && maxVotes !== 0 && (
+                                            <span className="max-vote-icon">
                                             {highestIcon}
                                         </span>
-                                    )}
-                                </div>
+                                        )}
+                                    </div>
 
-                                <div className="voters">
-                                    {poll.voters[i].map((voter, j) => (
-                                        <span key={voter + j} className="text-grey small-text non-clickable">
+                                    <div className="voters">
+                                        {poll.voters[i].map((voter, j) => (
+                                            <span key={voter + j} className="text-grey small-text non-clickable">
                                             {voter}
-                                            {j < poll.voters[i].length - 1 ? ', ' : ''}
+                                                {j < poll.voters[i].length - 1 ? ', ' : ''}
                                         </span>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
-            </div>
-        </Modal>
-    );
+            </Modal>
+        );
+    }
 };
 
 export default PollResultModal;
