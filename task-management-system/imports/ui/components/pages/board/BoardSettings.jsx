@@ -137,8 +137,8 @@ export const BoardSettings = () => {
         if (!boardNameInput) {
             newErrors.boardName = "Please fill in your board name";
             isError = true;
-        } else if (boardNameInput.length > 20) {
-            newErrors.boardName = "Board name can not exceed 20 characters";
+        } else if (boardNameInput.length > 30) {
+            newErrors.boardName = "Board name can not exceed 30 characters";
             isError = true
         }
 
@@ -306,7 +306,7 @@ export const BoardSettings = () => {
                             <div className={"input-error-div"}>
                                 <Input
                                     type="text"
-                                    placeholder={"Max 20 characters"}
+                                    placeholder={"Max 30 characters"}
                                     id={"boardName"}
                                     value={boardNameInput}
                                     onChange={(e) => setBoardNameInput(e.target.value)}

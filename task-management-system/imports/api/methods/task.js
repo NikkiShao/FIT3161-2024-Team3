@@ -37,7 +37,10 @@ Meteor.methods({
             boardId: String,
             statusName: String,
             tagNames: [String],
-            contributions: [Object]
+            contributions: [{
+                percent: Number,
+                email: String,
+            }]
         });
         check(username, String)
 

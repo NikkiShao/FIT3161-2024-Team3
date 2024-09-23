@@ -110,7 +110,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
                             setBoardCodeInput('')
                             setBoardDescriptionInput('')
                             setBoardDeadlineDateInput('')
-                            setBoardDeadlineTimeInput('')
+                            setBoardDeadlineTimeInput('23:55')
                             closeHandler();
                         }
                     });
