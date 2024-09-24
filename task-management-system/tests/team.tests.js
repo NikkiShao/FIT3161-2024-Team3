@@ -97,14 +97,48 @@ if (Meteor.isClient) {
         /**
          * Test case to check if a team can be added successfully.
          */
-        it('can add a team', function () {
+        it('Can create team: team name with minimum characters and no extra member invitations', function () {
             // insert in user for leader/member
             Accounts.createUser(testUser1);
 
             // wrap insert call in promise
             return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
-                    testTeamData.name,
+                    "a",
+                    [],
+                    testTeamData.leader,
+                    false,
+                    
+                    (error, teamId) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(teamId);
+                        }
+                    }
+                );
+            }).then(teamId => {
+                // check team ID is NOT undefined
+                assert.notStrictEqual(teamId, undefined);
+                // find team object and check it is not null
+                const team = TeamCollection.findOne(teamId);
+                assert.notStrictEqual(team, null); 
+            }).catch(error => {
+                assert.fail("Error adding team. Returned with error:" + error.message);
+            });
+        }).timeout(10000);
+
+        /**
+         * Test case to check if a team can be added successfully.
+         */
+        it('Can create team: team name with minimum characters and one extra member invitations', function () {
+            // insert in user for leader/member
+            Accounts.createUser(testUser1);
+
+            // wrap insert call in promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "a",
                     testTeamData.members,
                     testTeamData.leader,
                     false,
@@ -127,8 +161,76 @@ if (Meteor.isClient) {
             });
         }).timeout(10000);
 
+        /**
+         * Test case to check if a team can be added successfully.
+         */
+        it('Can create team: team name with maximum characters and no extra member invitations', function () {
+            // insert in user for leader/member
+            Accounts.createUser(testUser1);
+
+            // wrap insert call in promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "12345678901234567890",
+                    [],
+                    testTeamData.leader,
+                    false,
+                    (error, teamId) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(teamId);
+                        }
+                    }
+                );
+            }).then(teamId => {
+                // check team ID is NOT undefined
+                assert.notStrictEqual(teamId, undefined);
+                // find team object and check it is not null
+                const team = TeamCollection.findOne(teamId);
+                assert.notStrictEqual(team, null); 
+            }).catch(error => {
+                assert.fail("Error adding team. Returned with error:" + error.message);
+            });
+        }).timeout(10000);
+
+
+        /**
+         * Test case to check if a team can be added successfully.
+         */
+        it('Can create team: team name with maximum characters and one extra member invitations', function () {
+            // insert in user for leader/member
+            Accounts.createUser(testUser1);
+
+            // wrap insert call in promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "12345678901234567890",
+                    testTeamData.members,
+                    testTeamData.leader,
+                    false,
+                    (error, teamId) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(teamId);
+                        }
+                    }
+                );
+            }).then(teamId => {
+                // check team ID is NOT undefined
+                assert.notStrictEqual(teamId, undefined);
+                // find team object and check it is not null
+                const team = TeamCollection.findOne(teamId);
+                assert.notStrictEqual(team, null); 
+            }).catch(error => {
+                assert.fail("Error adding team. Returned with error:" + error.message);
+            });
+        }).timeout(10000);
+
+
         //test for empty team name
-        it('errors with invalid name: empty name', function () {
+        it('Create team errors: an empty team name', function () {
             // insert test user
             Accounts.createUser(testUser1);
         
@@ -138,7 +240,7 @@ if (Meteor.isClient) {
             return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
                     '',
-                    testTeamData.members,
+                    [],
                     testTeamData.leader,
                     false,
             
@@ -159,24 +261,24 @@ if (Meteor.isClient) {
                     assert.fail("Did not provide required error for invalid empty name input");
                 }
             });
-            // assert.strictEqual(1, "2")
         
         }).timeout(10000);
 
-        //test for invalid long team name
-        it('errors with invalid name: too long name > 20 characters', function () {
+        //test for empty team name
+        it('Create team errors: a team name longer than the limit', function () {
             // insert test user
             Accounts.createUser(testUser1);
+        
             let isError = false;
         
             // Wrap the Meteor.call in a Promise
             return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
-                    "teamteamteamteamteamteam",
-                    testTeamData.members,
+                    '123456789012345678901',
+                    [],
                     testTeamData.leader,
                     false,
-        
+            
                     (error, result) => {
                         if (error) {
                             reject(error);
@@ -188,17 +290,52 @@ if (Meteor.isClient) {
             }).catch((error) => {
                 isError = true;
                 assert.strictEqual(error.error, "add-team-failed")
-        
+            
             }).then(() => {
                 if (!isError) {
-                    assert.fail("Did not provide required error for invalid name input that is too long");
+                    assert.fail("Did not provide required error for invalid empty name input");
+                }
+            });
+        
+        }).timeout(10000);
+
+                //test for empty team name
+        it('Create team errors: team name not a string', function () {
+            // insert test user
+            Accounts.createUser(testUser1);
+        
+            let isError = false;
+        
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    12,
+                    [],
+                    testTeamData.leader,
+                    false,
+            
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, 400)
+            
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for invalid empty name input");
                 }
             });
         
         }).timeout(10000);
 
         //test for invalid email input for team members  
-        it('errors with invalid email: invalid email format', function () {
+        it('Create team errors: invitations contain an invalid email', function () {
             // insert test user
             Accounts.createUser(testUser1);
             let isError = false;
@@ -206,8 +343,8 @@ if (Meteor.isClient) {
             // Wrap the Meteor.call in a Promise
             return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
-                    testTeamData.name,
-                    ["email"],
+                    "test",
+                    ["test2@test2.com", "invalid email"],
                     testTeamData.leader,
                     false,
         
@@ -231,7 +368,7 @@ if (Meteor.isClient) {
         }).timeout(10000);
         
         //test for duplicate email in the members array
-        it('errors with email: duplicate member email', function () {
+        it('Create team errors: invitations contain valid but duplicate emails', function () {
             // insert test user
             Accounts.createUser(testUser1);
             let isError = false;
@@ -239,9 +376,137 @@ if (Meteor.isClient) {
             // Wrap the Meteor.call in a Promise
             return new Promise((resolve, reject) => {
                 Meteor.call("add_team",
-                    testTeamData.name,
-                    ["test1@test1.com", "test1@test1.com"],
+                    "test",
+                    ["test2@test2.com", "test2@test2.com"],
                     testTeamData.leader,
+                    false,
+        
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-team-failed")
+        
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for duplicate email input");
+                }
+            });
+        }).timeout(10000);
+
+        it('Create team errors: invitations is not an array of strings', function () {
+            // insert test user
+            Accounts.createUser(testUser1);
+            let isError = false;
+        
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "test",
+                    [1, 2, 3],
+                    testTeamData.leader,
+                    false,
+        
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-team-failed")
+        
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for duplicate email input");
+                }
+            });
+        }).timeout(10000);
+
+        it('Create team errors: invitations not an array ', function () {
+            // insert test user
+            Accounts.createUser(testUser1);
+            let isError = false;
+        
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "test",
+                    1,
+                    testTeamData.leader,
+                    false,
+        
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-team-failed")
+        
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for duplicate email input");
+                }
+            });
+        }).timeout(10000);
+
+        it('Create team errors: team leader email is invalid', function () {
+            // insert test user
+            Accounts.createUser(testUser1);
+            let isError = false;
+        
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "test",
+                    [],
+                    "invalid email",
+                    false,
+        
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            }).catch((error) => {
+                isError = true;
+                assert.strictEqual(error.error, "add-team-failed")
+        
+            }).then(() => {
+                if (!isError) {
+                    assert.fail("Did not provide required error for duplicate email input");
+                }
+            });
+        }).timeout(10000);
+
+        it('Create team errors: team leader email is not a string', function () {
+            // insert test user
+            Accounts.createUser(testUser1);
+            let isError = false;
+        
+            // Wrap the Meteor.call in a Promise
+            return new Promise((resolve, reject) => {
+                Meteor.call("add_team",
+                    "test",
+                    [],
+                    1,
                     false,
         
                     (error, result) => {
