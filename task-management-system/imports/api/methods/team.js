@@ -37,6 +37,10 @@ Meteor.methods({
 
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
+        if(!emailRegex.test(leader)){
+            throw new Meteor.Error('add-team-failed', 'Invalid team leader input');
+        }
+
         //validate email input for team members attribute
         const memberArray = new Array()
         for(let i=0; i<members.length; i++){
@@ -121,6 +125,11 @@ Meteor.methods({
 
         //validate email input for team members
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+        if(!emailRegex.test(teamsData.teamLeader)){
+            throw new Meteor.Error('update-team-failed', 'Invalid team leader input');
+        }
+
         const teamMembersArray = new Array()
         for(let i=0; i<teamsData.teamMembers.length; i++){
             const email = teamsData.teamMembers[i];
@@ -141,6 +150,10 @@ Meteor.methods({
                 throw new Meteor.Error('update-team-failed', 'Duplicate email input');
             }
             invitationArray.push(invite.email);
+        }
+
+        if(teamsData.teamMembers.length < 1){
+            throw new Meteor.Error('update-team-failed', 'Invalid empty member input');
         }
 
         TeamCollection.update(teamId, {
@@ -188,7 +201,8 @@ Meteor.methods({
      * @param username - ID of user who deleted the team
      */
     "delete_team": function (teamId, username) {
-
+        check(teamId, String);
+        check(user, String);
         // remove all related boards and tasks first
         const boards = BoardCollection.find({teamId: teamId}).fetch();
 
