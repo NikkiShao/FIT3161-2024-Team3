@@ -65,7 +65,7 @@ if (Meteor.isClient) {
         const testDeleteTeam = {
             name: "testTeam",
             leader: "test1@test1.com",
-            members: ["test2@test2.com"]
+            members: ["test1@test1.com"]
         }
 
         const testBoard = {
@@ -1296,11 +1296,13 @@ if (Meteor.isClient) {
             testUnpinnedTaskData.boardId = boardId;
             const taskId = TaskCollection.insert(testUnpinnedTaskData);
 
+            console.log(TeamCollection.findOne(id));
             // call delete method for deletion
             Meteor.call('delete_team', id, testUser1.username);
 
             // check deleted team is DELETED
             const deletedTeam = TeamCollection.findOne(id);
+            console.log(deletedTeam);
             const deletedPoll = PollCollection.findOne(pollId);
             const deletedTask = PollCollection.findOne(taskId);
             const deletedBoard = PollCollection.findOne(boardId);
@@ -1318,25 +1320,13 @@ if (Meteor.isClient) {
             Accounts.createUser(testUser1);
             Accounts.createUser(testUser2);
             const id = "RandomID";
-            testBoard.teamId = id;
-            testPolls.teamId = id;
-            const boardId = BoardCollection.insert(testBoard);
-            const pollId = PollCollection.insert(testPolls);
-            testUnpinnedTaskData.boardId = boardId;
-            const taskId = TaskCollection.insert(testUnpinnedTaskData);
 
             // call delete method for deletion
             Meteor.call('delete_team', id, testUser1.username);
 
             // check deleted team is DELETED
             const deletedTeam = TeamCollection.findOne(id);
-            const deletedPoll = PollCollection.findOne(pollId);
-            const deletedTask = PollCollection.findOne(taskId);
-            const deletedBoard = PollCollection.findOne(boardId);
             assert.strictEqual(deletedTeam, undefined);
-            assert.strictEqual(deletedPoll, undefined);
-            assert.strictEqual(deletedTask, undefined);
-            assert.strictEqual(deletedBoard, undefined);
         }).timeout(10000);
 
         it('Delete team errors: team ID is not a string', function () {

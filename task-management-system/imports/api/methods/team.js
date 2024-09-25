@@ -202,7 +202,7 @@ Meteor.methods({
      */
     "delete_team": function (teamId, username) {
         check(teamId, String);
-        check(user, String);
+        check(username, String);
         // remove all related boards and tasks first
         const boards = BoardCollection.find({teamId: teamId}).fetch();
 
@@ -240,5 +240,6 @@ Meteor.methods({
         }
 
         TeamCollection.remove({_id: teamId});
+        console.log(TeamCollection.findOne(teamId));
     }
 })
