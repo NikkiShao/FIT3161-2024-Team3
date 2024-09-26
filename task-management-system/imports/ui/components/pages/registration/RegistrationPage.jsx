@@ -94,7 +94,7 @@ export const RegistrationPage = () => {
             isError = true;
 
         } else if (!alphanumericRegex.test(username)) {
-            newError.username = "Username can only consist of alphabet characters and numbers";
+            newError.username = "Username cannot have special characters";
             isError = true;
 
         } else if (username.length > 20) {

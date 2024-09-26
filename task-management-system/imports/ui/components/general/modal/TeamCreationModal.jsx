@@ -170,9 +170,10 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                 }
 
                 {/* Input field to add new members */}
-                <div className='input-group'>
+                <div className='input-group' style={{alignItems: "start"}}>
                     {members && members.length === 0 ?
-                        <label className={"main-text text-grey"}>Team Members:</label> :
+                        <label className={"main-text text-grey"} style={{marginTop: "8px"}}>Team Members:
+                        </label> :
                         <div></div>
                     }
                     <div className={"input-error-div"}>
@@ -184,7 +185,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                         />
                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                     </div>
-                    <button className="icon-btn" onClick={handleAddMember}>
+                    <button className="icon-btn" style={{marginTop: "7px"}} onClick={handleAddMember}>
                         {subAddIcon}
                     </button>
                 </div>

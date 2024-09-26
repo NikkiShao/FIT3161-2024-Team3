@@ -137,7 +137,7 @@ export const TeamsListPage = () => {
 
                             </tbody>
                         </table>
-                        : <span className={"main-text non-clickable"}>
+                        : <span className={"main-text text-grey non-clickable"}>
                             You are not in any teams yet, create a team or get your team leader to invite you to their team!
                         </span>
                 }

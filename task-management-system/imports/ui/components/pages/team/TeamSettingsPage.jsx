@@ -382,14 +382,14 @@ export const TeamSettingsPage = () => {
                         {isLeader ?
                             <div className="settings-form-input" style={{alignItems: "start"}}>
                                 <div/>
-                                <div className='ts__member-item'>
+                                <div className='ts__member-item' style={{alignItems: "start"}}>
                                     <div className={"input-error-div"}>
                                         <Input type="email" placeholder={"Input new member email"}
                                                value={newInvitation}
                                                onChange={(e) => setNewInvitation(e.target.value)}/>
                                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                                     </div>
-                                    <button className="icon-btn" onClick={handleAddInvitation}>
+                                    <button className="icon-btn" style={{marginTop: "8px"}} onClick={handleAddInvitation}>
                                         {subAddIcon}
                                     </button>
                                 </div>
