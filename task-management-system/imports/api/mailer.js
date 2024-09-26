@@ -55,6 +55,12 @@ Meteor.methods({
     "send_team_invitation" : async function (email, token, teamName, teamId) {
         console.log("i sending to " + email)
 
+        // add the final / to the root url if it doesn'cdtt have it already
+        let rootUrl = process.env.ROOT_URL;
+        if (rootUrl[rootUrl.length - 1] !== "/") {
+            rootUrl += "/"
+        }
+
         const info = await transporter.sendMail({
             from: `"University Task Management System"${process.env.EMAIL_USER}`, // sender address
             to: email, // list of receivers
@@ -93,14 +99,14 @@ Meteor.methods({
                             <p>Hello,</p>
                             <p>You have been invited to join the team <strong>${teamName}</strong>.</p>
                             <p>Please click one of the buttons below to accept or reject the invitation:</p>
-                            <a href="${process.env.ROOT_URL}/accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
-                            <a href="${process.env.ROOT_URL}/decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
+                            <a href="${rootUrl}accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
+                            <a href="${rootUrl}decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
                             <p>Thank you!</p>
                             <br/>
                             <p>Alternatively, you may click/navigate to the below URL to accept or decline: </p>
                             <ul>
-                                <li>Accept: ${process.env.ROOT_URL}/accept-invite/${teamId}/${token}</li>
-                                <li>Decline: ${process.env.ROOT_URL}/decline-invite/${teamId}/${token}</li>
+                                <li>Accept: ${rootUrl}accept-invite/${teamId}/${token}</li>
+                                <li>Decline: ${rootUrl}decline-invite/${teamId}/${token}</li>
                             </ul>
                         </div>
                 </body>
