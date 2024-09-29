@@ -64,6 +64,15 @@ Meteor.methods({
             throw new Meteor.Error('add-task-failed', 'Invalid contribution input');
         };
 
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        for(let i=0; i<taskData.contributions.length; i++){
+            console.log(taskData.contributions[i]);
+            const email = taskData.contributions[i].email;
+            if(!emailRegex.test(email)){
+                throw new Meteor.Error('add-task-failed', 'Invalid email contribution input');
+            } 
+        }
+
         const board = BoardCollection.findOne({_id: taskData.boardId});
         if (!board) {
             throw new Meteor.Error('task-missing-board', 'Could not retrieve board information');
@@ -158,6 +167,15 @@ Meteor.methods({
         if (totalContribution > 100) {
             throw new Meteor.Error('update-task-failed', 'Invalid contribution input');
         };
+
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        for(let i=0; i<taskData.contributions.length; i++){
+            console.log(taskData.contributions[i]);
+            const email = taskData.contributions[i].email;
+            if(!emailRegex.test(email)){
+                throw new Meteor.Error('update-task-failed', 'Invalid email contribution input');
+            } 
+        }
 
         const board = BoardCollection.findOne({_id: taskData.boardId});
         if (!board) {
@@ -281,6 +299,7 @@ Meteor.methods({
      * @param username - username of user who deleted the task
      */
     "delete_task": async function (taskId, username) {
+        check(taskId, String);
         const task = TaskCollection.findOne(taskId);
         if (!task) {
             return;
