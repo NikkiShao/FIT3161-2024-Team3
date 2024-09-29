@@ -160,7 +160,7 @@ export const RegistrationPage = () => {
                         // this is the SUCCESS CASE - it won't let user login by default
 
                         // method called to email user verification email
-                        Meteor.call("send_verify_email", Meteor.userId());
+                        Meteor.call("send_verify_email", username);
                         Meteor.logout()
                         // After successful activation, navigate to account created page
                         navigate('/' + BaseUrlPath.REGISTER + '/account-created/')
