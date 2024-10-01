@@ -97,11 +97,19 @@ export const TeamSettingsPage = () => {
         const newErrors = {};
         let isError = false;
 
+        // team name
         if (teamName === '') {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
         } else if (teamName.length > 20) {
             newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
+        }
+
+        // if email has text, check user hasn't forgotten to press the + button
+        if (newInvitation !== "") {
+            newErrors.email = "You still have an unconfirmed email address left in the input. " +
+                "Please press the '+' to add it or clear the input.";
             isError = true
         }
 
@@ -408,7 +416,11 @@ export const TeamSettingsPage = () => {
 
                         {updateSuccess === null ? null :
                             updateSuccess ?
-                                <span className="text-green small-text non-clickable">Team has been updated!</span> :
+                                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                    <span className="text-green small-text non-clickable">Team has been updated!</span>
+                                    <span className="text-green small-text non-clickable">Any new team invitations has been sent out! </span>
+                                </div>
+                            :
                                 <span
                                     className="text-red small-text non-clickable">Update failed, please try again.</span>
                         }

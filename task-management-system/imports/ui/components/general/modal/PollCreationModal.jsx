@@ -88,6 +88,13 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
             isError = true
         }
 
+        // if poll option has text, check user hasn't forgotten to press the + button
+        if (newOptionInput !== "") {
+            newErrors.pollOptions = "You still have an unconfirmed poll option left in the input. " +
+                "Please press the '+' to add it or clear the input.";
+            isError = true
+        }
+
         // options
         if (pollOptions.length < 2) {
             newErrors.pollOptions = "You must have at least 2 poll options";

@@ -81,6 +81,13 @@ export const TeamCreationModal = ({open, closeHandler}) => {
             isError = true
         }
 
+        // if email has text, check user hasn't forgotten to press the + button
+        if (emailInput !== "") {
+            newErrors.email = "You still have an unconfirmed email address left in the input. " +
+                "Please press the '+' to add it or clear the input.";
+            isError = true
+        }
+
         setErrors(newErrors)
 
         if (!isError) {

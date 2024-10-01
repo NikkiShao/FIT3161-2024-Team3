@@ -134,6 +134,7 @@ export const BoardSettings = () => {
         const newErrors = {};
         let isError = false;
 
+        // board name
         if (!boardNameInput) {
             newErrors.boardName = "Please fill in your board name";
             isError = true;
@@ -142,6 +143,7 @@ export const BoardSettings = () => {
             isError = true
         }
 
+        // board code
         if (!boardCodeInput) {
             newErrors.boardCode = "Please fill in your board code";
             isError = true;
@@ -150,6 +152,7 @@ export const BoardSettings = () => {
             isError = true
         }
 
+        // board deadline
         let deadlineDateObject = new Date(boardDeadlineDateInput + 'T' + boardDeadlineTimeInput);
         if (!boardDeadlineDateInput || !boardDeadlineTimeInput) {
             newErrors.boardDeadline = "Please fill in your deadline date and time";
@@ -160,11 +163,27 @@ export const BoardSettings = () => {
             isError = true
         }
 
+        // board description
         if (!boardDescriptionInput) {
             newErrors.boardDescription = "Please fill in your board description";
             isError = true;
         } else if (boardDescriptionInput.length > 150) {
             newErrors.boardDescription = "Board description can not exceed 150 characters";
+            isError = true
+        }
+
+
+        // if status input has text, check user hasn't forgotten to press the + button
+        if (boardNewStatusInput !== "") {
+            newErrors.boardNewStatus = "You still have an unconfirmed status left in the input. " +
+                "Please press the '+' to add it or clear the input.";
+            isError = true
+        }
+
+        // if poll option has text, check user hasn't forgotten to press the + button
+        if (boardNewTagName !== "") {
+            newErrors.boardNewTag = "You still have an unconfirmed new tag left in the input. " +
+                "Please press the '+' to add it or clear the input.";
             isError = true
         }
 
