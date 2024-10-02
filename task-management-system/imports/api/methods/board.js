@@ -122,11 +122,46 @@ Meteor.methods({
         });
         check(username, String);
 
+        // Check if the board exists
+        if (!BoardCollection.findOne(boardId)) {
+            throw new Meteor.Error('board-update-failed', 'Board does not exist');
+        }
+
         // Retrieve the current board data
         const currentBoard = BoardCollection.findOne(boardId);
 
         // Prepare to log changes
         let changes = [];
+
+        // Check if the board input fields are empty
+        if (boardData.boardName === "" || boardData.boardCode === "" || boardData.boardDescription === "") {
+            throw new Meteor.Error('board-update-failed', 'Inputs can not be an empty string');
+        }
+
+        // Check if the length of the board name is less or equal to 30 characters
+        if (boardData.boardName.length > 30) {
+            throw new Meteor.Error('board-update-failed', 'Board name can not exceed 30 characters');
+        }
+
+        // Check if the deadline is a valid date
+        if (isNaN(Date.parse(boardData.boardDeadline))) {
+            throw new Meteor.Error('board-update-failed', 'Invalid deadline date');
+        }
+
+        // Check if the length of the board description is less or equal to 150 characters
+        if (boardData.boardDescription.length > 150) {
+            throw new Meteor.Error('board-update-failed', 'Board description can not exceed 150 characters');
+        }
+
+        // Check if the board code is less or equal to 10 characters
+        if (boardData.boardCode.length > 10) {
+            throw new Meteor.Error('board-update-failed', 'Board code can not exceed 10 characters');
+        }
+
+        // Check if the board code is alphanumeric
+        if (!/^[A-Za-z0-9]+$/i.test(boardData.boardCode)) {
+            throw new Meteor.Error('board-update-failed', 'Board code can only contain letters and numbers');
+        }
 
         // Check for changes in board name
         if (currentBoard.boardName !== boardData.boardName) {
@@ -211,6 +246,9 @@ Meteor.methods({
                     throw new Meteor.Error('log-insert-failed', 'Failed to log board update');
                 }
             }
+        }else {
+            console.log("No changes detected, skipping update and log");
+            throw new Meteor.Error('board-update-failed', 'No changes were made to the board');
         }
     },
 
@@ -226,6 +264,7 @@ Meteor.methods({
         // check board exists
         const board = BoardCollection.findOne(boardId);
         if (!board) {
+            throw new Meteor.Error('board-delete-failed', 'Board does not exist');
             return;
         }
 
