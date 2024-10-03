@@ -246,9 +246,6 @@ Meteor.methods({
                     throw new Meteor.Error('log-insert-failed', 'Failed to log board update');
                 }
             }
-        }else {
-            console.log("No changes detected, skipping update and log");
-            throw new Meteor.Error('board-update-failed', 'No changes were made to the board');
         }
     },
 
@@ -264,7 +261,6 @@ Meteor.methods({
         // check board exists
         const board = BoardCollection.findOne(boardId);
         if (!board) {
-            throw new Meteor.Error('board-delete-failed', 'Board does not exist');
             return;
         }
 

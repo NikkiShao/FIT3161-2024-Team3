@@ -581,48 +581,6 @@ if (Meteor.isClient) {
 
 
         /**
-         * Test case for updating without any changes.
-         */
-        it('errors with invalid data during update: there is no any changes', async function () {
-            // create test user for logging username
-            Accounts.createUser(testUser);
-
-            // insert in a board to edit
-            const boardId = BoardCollection.insert(testBoard);
-
-            // create edited board object
-            const editedBoard = {
-                boardName: "test_board",
-                boardCode: "code123",
-                boardDeadline: "2025-10-02T13:55:00.000Z",
-                boardDescription: "description string",
-                teamId: "testTeamId",
-                boardTags: [{ tagName: "test1", tagColour: "#000000" }],
-                boardStatuses: [
-                    { statusName: "To Do", statusOrder: 1 },
-                    { statusName: "Done", statusOrder: 2 }
-                ],
-            };
-
-            // Call update method with no changes
-            try {
-                const resolvedError = await new Promise((resolve, reject) => {
-                    Meteor.call('update_board', boardId, editedBoard, testUser.username, (error) => {
-                        if (error) {
-                            resolve(error);
-                        } else {
-                            reject();
-                        }
-                    });
-                });
-                assert.strictEqual(resolvedError.error, "board-update-failed");
-                assert.strictEqual(resolvedError.reason, "No changes were made to the board");
-            } catch {
-                assert.fail("Updating a board without any changes did NOT give an error");
-            }
-        }).timeout(10000);
-
-        /**
          * Test case for updating with board name whose type is incorrect.
          */
         it('errors with invalid board name during update: incorrect type', async function () {
@@ -1117,32 +1075,6 @@ if (Meteor.isClient) {
             const deletedBoard = BoardCollection.findOne(boardId);
             assert.strictEqual(deletedBoard, undefined);
         });
-
-
-        /**
-         * Test case for deleting a non-existent board.
-         */
-        it('errors with deleting a non-existent boardId', async function () {
-            // create test user for logging username
-            Accounts.createUser(testUser);
-
-            // Call delete method with non-existent boardId
-            try {
-                const resolvedError = await new Promise((resolve, reject) => {
-                    Meteor.call('delete_board', "non-existent-id", testUser.username, (error) => {
-                        if (error) {
-                            resolve(error);
-                        } else {
-                            reject();
-                        }
-                    });
-                });
-                assert.strictEqual(resolvedError.error, "board-delete-failed");
-                assert.strictEqual(resolvedError.reason, "Board does not exist");
-            } catch {
-                assert.fail("Deleting a non-existent board did NOT give an error");
-            }
-        }).timeout(10000);
 
     });
 }
