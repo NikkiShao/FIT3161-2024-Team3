@@ -86,12 +86,14 @@ export const BoardSettings = () => {
         event.preventDefault();
         const newError = {}
 
-        if (boardStatuses.map((status) => status.toLowerCase()).includes(boardNewStatusInput.toLowerCase())) {
+        if (boardStatuses.map((status) => status.toLowerCase()).includes(boardNewStatusInput.toLowerCase().trim())) {
             newError.boardNewStatus = "Status has already been added";
-        } else if (!boardNewStatusInput) {
+
+        } else if (!boardNewStatusInput.trim()) {
             newError.boardNewStatus = "Please input a valid status";
+
         } else {
-            setBoardStatuses(boardStatuses.toSpliced(boardStatuses.length - 1, 0, boardNewStatusInput));
+            setBoardStatuses(boardStatuses.toSpliced(boardStatuses.length - 1, 0, boardNewStatusInput.trim()));
             setBoardNewStatusInput('');
         }
         setErrors(newError);
@@ -104,14 +106,16 @@ export const BoardSettings = () => {
 
     const handleAddTag = (event) => {
         event.preventDefault();
-        const isExist = boardExistingTags.some(tag => tag.tagName.toLowerCase() === boardNewTagName.toLowerCase());
+        const isExist = boardExistingTags.some(tag => tag.tagName.toLowerCase() === boardNewTagName.toLowerCase().trim());
         const newError = {}
         if (isExist) {
             newError.boardNewTag = "Tag has already been added";
-        } else if (!boardNewTagName || boardNewTagName === "...") {
+
+        } else if (!boardNewTagName.trim() || boardNewTagName === "...") {
             newError.boardNewTag = "Please input valid tag name";
+
         } else {
-            setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName, tagColour: boardNewTagHex}]);
+            setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName.trim(), tagColour: boardNewTagHex}]);
             setBoardNewTagName('');
             setBoardNewTagHex('#000000');
         }

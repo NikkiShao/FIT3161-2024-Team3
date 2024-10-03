@@ -166,17 +166,17 @@ export const TeamSettingsPage = () => {
         const newError = {};
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-        if (teamMembers.map((member) => member.toLowerCase()).includes(newInvitation.toLowerCase())) {
+        if (teamMembers.map((member) => member.toLowerCase()).includes(newInvitation.trim().toLowerCase())) {
             newError.email = "Member is already in the team";
 
-        } else if (teamInvitations.map((invitation) => invitation.email.toLowerCase()).includes(newInvitation.toLowerCase())) {
+        } else if (teamInvitations.map((invitation) => invitation.email.toLowerCase()).includes(newInvitation.trim().toLowerCase())) {
             newError.email = "Email has already been invited. If you would like to resend invitation, please remove the existing invitation first";
 
         } else if (!emailRegex.test(newInvitation)) {
             newError.email = "Please input a valid email address";
 
         } else {
-            setTeamInvitations([...teamInvitations, {"email": newInvitation, "token": generateInvitationToken()}]);
+            setTeamInvitations([...teamInvitations, {"email": newInvitation.trim(), "token": generateInvitationToken()}]);
             setNewInvitation('');
             setErrors({});
         }

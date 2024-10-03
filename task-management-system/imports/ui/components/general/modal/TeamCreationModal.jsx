@@ -43,17 +43,17 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         const newError = {}
 
         // test email validity
-        if (members.map((member) => member.toLowerCase()).includes(emailInput.toLowerCase())) {
+        if (members.map((member) => member.toLowerCase()).includes(emailInput.toLowerCase().trim())) {
             newError.email = "Email has already been added";
 
-        } else if (emailInput.toLowerCase() === teamLead.toLowerCase()) {
+        } else if (emailInput.toLowerCase().trim() === teamLead.toLowerCase()) {
             newError.email = "You are already in the team";
 
         } else if (!emailRegex.test(emailInput)) {
             newError.email = "Please input a valid email address";
 
         } else {
-            setMembers([...members, emailInput]);
+            setMembers([...members, emailInput.trim()]);
             setEmailInput('')
         }
         setErrors(newError)
@@ -73,7 +73,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         let isError = false;
 
         // do some error stuff here
-        if (!teamNameInput) {
+        if (!teamNameInput.trim()) {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
         } else if (teamNameInput.length > 20) {
@@ -94,7 +94,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
             // Call the Meteor method to add a new team
             new Promise((resolve, reject) => {
 
-                Meteor.call('add_team', teamNameInput, members, teamLead, true,
+                Meteor.call('add_team', teamNameInput.trim(), members, teamLead, true,
                     (error, result) => {
                         if (error) {
                             reject(`Error: ${error.message}`);

@@ -41,14 +41,14 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
         const newError = {}
 
         // test option validity
-        if (!newOptionInput) {
+        if (!newOptionInput.trim()) {
             newError.pollOptions = "Poll option cannot be empty";
 
-        } else if (pollOptions.includes(newOptionInput)) {
+        } else if (pollOptions.includes(newOptionInput.trim())) {
             newError.pollOptions = "Poll option has already been added";
 
         }  else {
-            setPollOptions([...pollOptions, newOptionInput]);
+            setPollOptions([...pollOptions, newOptionInput.trim()]);
             setNewOptionInput('')
         }
         setErrors(newError)
