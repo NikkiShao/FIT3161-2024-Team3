@@ -2,7 +2,7 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey, Nikki
- * Version: 2.3
+ * Version: 2.4
  */
 import React, { Fragment, useState } from 'react';
 import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
@@ -98,10 +98,10 @@ export const TeamSettingsPage = () => {
         let isError = false;
 
         // team name
-        if (teamName === '') {
+        if (teamName.trim() === '') {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
-        } else if (teamName.length > 20) {
+        } else if (teamName.trim().length > 20) {
             newErrors.teamName = "Team name can not exceed 20 characters";
             isError = true
         }
@@ -121,7 +121,7 @@ export const TeamSettingsPage = () => {
                     teamId,
                     teamData.teamInvitations,
                     {
-                        teamName: teamName,
+                        teamName: teamName.trim(),
                         teamLeader: teamLeader,
                         teamMembers: teamMembers,
                         teamInvitations: teamInvitations,

@@ -1,7 +1,7 @@
 /**
  * File Description: Account Settings Page
  * Contributors: Mark, Audrey, Nikki
- * Version: 1.5
+ * Version: 1.6
  */
 
 import React, { useState } from 'react';
@@ -87,14 +87,14 @@ function AccountSettings() {
         let isError = false;
 
         // Check if name has changed and validate
-        if (nameInput !== userData.name) {
-            if (nameInput === '') {
+        if (nameInput.trim() !== userData.name) {
+            if (nameInput.trim() === '') {
                 newError.name = "Please fill in your name";
                 isError = true;
             } else if (!alphanumericSpaceRegex.test(nameInput)) {
                 newError.name = "Name can only contain alphanumeric characters and spaces";
                 isError = true;
-            } else if (nameInput.length > 30) {
+            } else if (nameInput.trim().length > 30) {
                 newError.name = "Name can not exceed 30 characters";
                 isError = true;
             }
@@ -134,7 +134,11 @@ function AccountSettings() {
         if (!isError) {
 
             const updateUserPromise = new Promise((resolve, reject) => {
-                Meteor.call('update_user_info', userData.id, nameInput, emailInput, boolEmailNotificationOn,
+                Meteor.call('update_user_info',
+                    userData.id,
+                    nameInput.trim(),
+                    emailInput,
+                    boolEmailNotificationOn,
                     (error, result) => {
                         if (error) {
                             reject(error)

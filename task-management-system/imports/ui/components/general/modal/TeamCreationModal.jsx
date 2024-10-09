@@ -2,7 +2,7 @@
  * File Description: Team creation modal component
  * Updated Date: 05/08/2024
  * Contributors: Mark, Nikki
- * Version: 2.2
+ * Version: 2.3
  */
 
 import React, { Fragment, useState } from 'react';
@@ -76,7 +76,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         if (!teamNameInput.trim()) {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
-        } else if (teamNameInput.length > 20) {
+        } else if (teamNameInput.trim().length > 20) {
             newErrors.teamName = "Team name can not exceed 20 characters";
             isError = true
         }

@@ -2,7 +2,7 @@
  * File Description: Registration form page
  * Updated Date: 28/07/2024
  * Contributors: Nikki
- * Version: 1.2
+ * Version: 1.4
  */
 
 import React, { useState } from 'react';
@@ -74,22 +74,22 @@ export const RegistrationPage = () => {
 
         // Validate name
         const alphanumericSpaceRegex = /^[A-Za-z0-9 ]+$/i;
-        if (!name) {
+        if (!name.trim()) {
             newError.name = "Please fill in your displayed name";
             isError = true;
 
-        } else if (!alphanumericSpaceRegex.test(name)) {
+        } else if (!alphanumericSpaceRegex.test(name.trim())) {
             newError.name = "Name can only consist of alphabet, numbers or spaces";
             isError = true;
 
-        } else if (name.length > 30) {
+        } else if (name.trim().length > 30) {
             newError.name = "Name can not exceed 30 characters";
             isError = true;
         }
 
         // validate username
         const alphanumericRegex = /^[A-Za-z0-9]+$/i;
-        if (!username) {
+        if (!username.trim()) {
             newError.username = "Please fill in your unique username";
             isError = true;
 
@@ -97,7 +97,7 @@ export const RegistrationPage = () => {
             newError.username = "Username cannot have special characters";
             isError = true;
 
-        } else if (username.length > 20) {
+        } else if (username.trim().length > 20) {
             newError.username = "Username can not exceed 20 characters";
             isError = true;
         }
@@ -137,11 +137,11 @@ export const RegistrationPage = () => {
 
         if (!isError) {
             const newUser = {
-                username: username,
+                username: username.trim(),
                 email: email,
                 password: password,
                 profile: {
-                    name: name,
+                    name: name.trim(),
                     notificationOn: true,
                 }
             };
@@ -196,14 +196,14 @@ export const RegistrationPage = () => {
                 <div className={"input-error-div"}>
                     <Input type={"text"}
                            label={<label className={"main-text"}>Username</label>}
-                           onChange={(e) => setUsername(e.target.value.trim())}/>
+                           onChange={(e) => setUsername(e.target.value)}/>
                     {errors.username && <span className="text-red small-text">{errors.username}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"text"}
                            label={<label className={"main-text"}>Name</label>}
-                           onChange={(e) => setName(e.target.value.trim())}/>
+                           onChange={(e) => setName(e.target.value)}/>
                     {errors.name && <span className="text-red small-text">{errors.name}</span>}
                 </div>
 
@@ -217,14 +217,14 @@ export const RegistrationPage = () => {
                 <div className={"input-error-div"}>
                     <Input type={"password"}
                            label={<label className={"main-text"}>Password</label>}
-                           onChange={(e) => setPassword(e.target.value.trim())}/>
+                           onChange={(e) => setPassword(e.target.value)}/>
                     {errors.password && <span className="text-red small-text">{errors.password}</span>}
                 </div>
 
                 <div className={"input-error-div"}>
                     <Input type={"password"}
                            label={<label className={"main-text"}>Retype Password</label>}
-                           onChange={(e) => setPassword2(e.target.value.trim())}/>
+                           onChange={(e) => setPassword2(e.target.value)}/>
                     {errors.password2 && <span className="text-red small-text">{errors.password2}</span>}
                 </div>
 

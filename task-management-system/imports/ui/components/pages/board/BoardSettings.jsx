@@ -2,7 +2,7 @@
  * File Description: Board's settings page
  * Updated Date: 15/08/2024
  * Contributors: Audrey, Nikki
- * Version: 1.5
+ * Version: 1.6
  */
 
 import React, { Fragment, useState } from 'react';
@@ -139,23 +139,23 @@ export const BoardSettings = () => {
         let isError = false;
 
         // board name
-        if (!boardNameInput) {
+        if (!boardNameInput.trim()) {
             newErrors.boardName = "Please fill in your board name";
             isError = true;
-        } else if (boardNameInput.length > 30) {
+        } else if (boardNameInput.trim().length > 30) {
             newErrors.boardName = "Board name can not exceed 30 characters";
             isError = true
         }
 
         // board code
         const alphanumericRegex = /^[A-Za-z0-9]+$/i;
-        if (!boardCodeInput) {
+        if (!boardCodeInput.trim()) {
             newErrors.boardCode = "Please fill in your board code";
             isError = true;
         }  else if (!alphanumericRegex.test(boardCodeInput)) {
             newErrors.boardCode = "Board code can only contain letters and numbers";
             isError = true
-        } else if (boardCodeInput.length > 10) {
+        } else if (boardCodeInput.trim().length > 10) {
             newErrors.boardCode = "Board code can not exceed 10 characters";
             isError = true
         }
@@ -172,24 +172,24 @@ export const BoardSettings = () => {
         }
 
         // board description
-        if (!boardDescriptionInput) {
+        if (!boardDescriptionInput.trim()) {
             newErrors.boardDescription = "Please fill in your board description";
             isError = true;
-        } else if (boardDescriptionInput.length > 150) {
+        } else if (boardDescriptionInput.trim().length > 150) {
             newErrors.boardDescription = "Board description can not exceed 150 characters";
             isError = true
         }
 
 
         // if status input has text, check user hasn't forgotten to press the + button
-        if (boardNewStatusInput !== "") {
+        if (boardNewStatusInput.trim() !== "") {
             newErrors.boardNewStatus = "You still have an unconfirmed status left in the input. " +
                 "Please press the '+' to add it or clear the input.";
             isError = true
         }
 
         // if poll option has text, check user hasn't forgotten to press the + button
-        if (boardNewTagName !== "") {
+        if (boardNewTagName.trim() !== "") {
             newErrors.boardNewTag = "You still have an unconfirmed new tag left in the input. " +
                 "Please press the '+' to add it or clear the input.";
             isError = true
@@ -214,10 +214,10 @@ export const BoardSettings = () => {
             new Promise((resolve, reject) => {
                 Meteor.call('update_board', boardId,
                     {
-                        boardName: boardNameInput,
-                        boardCode: boardCodeInput,
+                        boardName: boardNameInput.trim(),
+                        boardCode: boardCodeInput.trim(),
                         boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
-                        boardDescription: boardDescriptionInput,
+                        boardDescription: boardDescriptionInput.trim(),
                         teamId: boardData.teamId,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags

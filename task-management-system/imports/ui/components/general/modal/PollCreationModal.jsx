@@ -2,7 +2,7 @@
  * File Description: Poll creation modal component
  * Updated Date: 25/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.2
  */
 
 import React, { Fragment, useState } from 'react';
@@ -69,10 +69,10 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
         let isError = false;
 
         // poll name
-        if (!pollTitleInput) {
+        if (!pollTitleInput.trim()) {
             newErrors.pollTitle = "Please fill in the poll title";
             isError = true
-        } else if (pollTitleInput.length > 50) {
+        } else if (pollTitleInput.trim().length > 50) {
             newErrors.pollTitle = "Poll title can not exceed 50 characters";
             isError = true
         }
@@ -89,7 +89,7 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
         }
 
         // if poll option has text, check user hasn't forgotten to press the + button
-        if (newOptionInput !== "") {
+        if (newOptionInput.trim() !== "") {
             newErrors.pollOptions = "You still have an unconfirmed poll option left in the input. " +
                 "Please press the '+' to add it or clear the input.";
             isError = true
@@ -106,7 +106,11 @@ export const PollCreationModal = ({teamId, open, closeHandler}) => {
         if (!isError) {
             // Call the Meteor method to add a new poll
             new Promise((resolve, reject) => {
-                Meteor.call('add_poll', pollTitleInput, deadlineDateObject.toISOString(), pollOptions, teamId,
+                Meteor.call('add_poll',
+                    pollTitleInput.trim(),
+                    deadlineDateObject.toISOString(),
+                    pollOptions,
+                    teamId,
                     (error, result) => {
                         if (error) {
                             reject(`Error: ${error.message}`);
