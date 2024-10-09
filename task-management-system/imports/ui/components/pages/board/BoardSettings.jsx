@@ -148,9 +148,13 @@ export const BoardSettings = () => {
         }
 
         // board code
+        const alphanumericRegex = /^[A-Za-z0-9]+$/i;
         if (!boardCodeInput) {
             newErrors.boardCode = "Please fill in your board code";
             isError = true;
+        }  else if (!alphanumericRegex.test(boardCodeInput)) {
+            newErrors.boardCode = "Board code can only contain letters and numbers";
+            isError = true
         } else if (boardCodeInput.length > 10) {
             newErrors.boardCode = "Board code can not exceed 10 characters";
             isError = true

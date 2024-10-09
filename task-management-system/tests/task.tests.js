@@ -2354,7 +2354,7 @@ if (Meteor.isClient) {
             assert.strictEqual(deletedTask, undefined);
         });
 
-        it('Can delete task: string task ID that does not exists in database', function () {
+        it('Delete task error: task ID is not a string', function () {
 
             // create test user for logging username
             Accounts.createUser(testUser);
