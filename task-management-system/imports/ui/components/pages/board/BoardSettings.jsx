@@ -218,6 +218,7 @@ export const BoardSettings = () => {
                         boardCode: boardCodeInput,
                         boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
                         boardDescription: boardDescriptionInput,
+                        teamId: boardData.teamId,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags
                     },
