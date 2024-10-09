@@ -7,6 +7,7 @@ import { Meteor } from 'meteor/meteor';
 import { BoardCollection } from '/imports/api/collections/board.js';
 import TaskCollection from "../collections/task";
 import "../methods/logEntry";
+import { check } from 'meteor/check';
 
 // Helper function to promisify Meteor.call
 Meteor.callPromise = function (method, ...args) {
@@ -33,6 +34,44 @@ Meteor.methods({
      * @param username - username of the creator
      */
     "add_board": async function (name, code, deadline, desc, teamId, username) {
+        check(name, String);
+        check(code, String);
+        check(deadline, String);
+        check(desc, String);
+        check(teamId, String);
+        check(username, String);
+
+        // check if the board inputs are not empty
+        if (name === "" || code === "" ||  desc === "") {
+            throw new Meteor.Error('board-insert-failed', 'Inputs can not be an empty string');
+        }
+
+        // check if the deadline is a valid date
+        if (isNaN(Date.parse(deadline))) {
+            throw new Meteor.Error('board-insert-failed', 'Invalid deadline date');
+        }
+
+        // check if the code is less or equal to 10 characters
+        if (code.length > 10) {
+            throw new Meteor.Error('board-insert-failed', 'Board code can not exceed 10 characters');
+        }
+
+        // check if the code is alphanumeric
+        if (!/^[A-Za-z0-9]+$/i.test(code)) {
+            throw new Meteor.Error('board-insert-failed', 'Board code can only contain letters and numbers');
+        }
+
+        // check if the name is less or equal to 30 characters  
+        if (name.length > 30) {
+            throw new Meteor.Error('board-insert-failed', 'Board name can not exceed 30 characters');
+        }
+
+        // check if the description is less or equal to 150 characters
+        if (desc.length > 150) {
+            throw new Meteor.Error('board-insert-failed', 'Board description can not exceed 150 characters');
+        }
+
+
 
         // Insert the new board into the collection
         const boardId = BoardCollection.insert({
@@ -70,11 +109,59 @@ Meteor.methods({
      * @param username - username of the editor
      */
     "update_board": async function (boardId, boardData, username) {
+        // Check types of input
+        check(boardId, String);
+        check(boardData, {
+            boardName: String,
+            boardCode: String,
+            boardDeadline: String,
+            boardDescription: String,
+            teamId: String,
+            boardTags: [{tagName: String, tagColour: String}],
+            boardStatuses: [{statusName: String, statusOrder: Number}]
+        });
+        check(username, String);
+
+        // Check if the board exists
+        if (!BoardCollection.findOne(boardId)) {
+            throw new Meteor.Error('board-update-failed', 'Board does not exist');
+        }
+
         // Retrieve the current board data
         const currentBoard = BoardCollection.findOne(boardId);
 
         // Prepare to log changes
         let changes = [];
+
+        // Check if the board input fields are empty
+        if (boardData.boardName === "" || boardData.boardCode === "" || boardData.boardDescription === "") {
+            throw new Meteor.Error('board-update-failed', 'Inputs can not be an empty string');
+        }
+
+        // Check if the length of the board name is less or equal to 30 characters
+        if (boardData.boardName.length > 30) {
+            throw new Meteor.Error('board-update-failed', 'Board name can not exceed 30 characters');
+        }
+
+        // Check if the deadline is a valid date
+        if (isNaN(Date.parse(boardData.boardDeadline))) {
+            throw new Meteor.Error('board-update-failed', 'Invalid deadline date');
+        }
+
+        // Check if the length of the board description is less or equal to 150 characters
+        if (boardData.boardDescription.length > 150) {
+            throw new Meteor.Error('board-update-failed', 'Board description can not exceed 150 characters');
+        }
+
+        // Check if the board code is less or equal to 10 characters
+        if (boardData.boardCode.length > 10) {
+            throw new Meteor.Error('board-update-failed', 'Board code can not exceed 10 characters');
+        }
+
+        // Check if the board code is alphanumeric
+        if (!/^[A-Za-z0-9]+$/i.test(boardData.boardCode)) {
+            throw new Meteor.Error('board-update-failed', 'Board code can only contain letters and numbers');
+        }
 
         // Check for changes in board name
         if (currentBoard.boardName !== boardData.boardName) {
@@ -170,11 +257,13 @@ Meteor.methods({
      * @param username - username of user who deleted the board
      */
     "delete_board": async function (boardId, username) {
+        check(boardId, String)
+        check(username, String)
+
         // check board exists
         const board = BoardCollection.findOne(boardId);
         if (!board) {
-
-            throw new Meteor.Error('board-delete-failed', `Board not found`);
+            return;
         }
 
         // Retrieve all tasks associated with the board
