@@ -7,13 +7,13 @@
 
 import React from "react";
 import classNames from "classnames";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Card from "./Card";
 import TaskTag from "./TaskTag";
 import TaskPin from './TaskPin';
 import './card.css';
-import {getUserInfo, isUrgentOverdue} from "../../util";
+import { getUserInfo, isUrgentOverdue } from "../../util";
 
 /**
  * Task card used to display brief details on any Task
@@ -88,7 +88,9 @@ const TaskCard = ({
 
             {/* card bottom div */}
             <div id="task__tag-div">
-                {tagNames.map((tag, index) =>
+                {tagNames
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((tag, index) =>
                     <TaskTag
                         key={index}
                         tagName={tag}

@@ -12,9 +12,13 @@ body .btn-base {
     transition-timing-function: ease-in-out;
 }
 
+body .btn-base:disabled {
+    cursor: wait;
+}
+
+
 body .btn-square {
     border-radius: 9px;
-
 }
 
 body .btn-brown {

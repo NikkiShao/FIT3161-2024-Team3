@@ -4,7 +4,7 @@
  * Contributors: Nikki
  */
 
-import {Mongo} from "meteor/mongo";
+import { Mongo } from "meteor/mongo";
 
 // to set up task collection
 export const BoardCollection = new Mongo.Collection("boards");

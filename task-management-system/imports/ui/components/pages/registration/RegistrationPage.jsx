@@ -2,28 +2,30 @@
  * File Description: Registration form page
  * Updated Date: 28/07/2024
  * Contributors: Nikki
- * Version: 1.1
+ * Version: 1.2
  */
 
-import React, {useState} from 'react';
-import {Accounts} from 'meteor/accounts-base';
-import {useNavigate, useParams} from "react-router-dom";
-import {passwordStrength} from "check-password-strength";
+import React, { useState } from 'react';
+import { Accounts } from 'meteor/accounts-base';
+import { useNavigate } from "react-router-dom";
+import { passwordStrength } from "check-password-strength";
 
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Input from "../../general/inputs/Input";
 import Button from "../../general/buttons/Button";
 
-import './registration.css'
-import {ChevronLeftIcon} from "@heroicons/react/24/outline";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
+import { backLeftArrow } from "../../icons";
+import './registration.css'
 
 /**
  * Registration page component
  */
 export const RegistrationPage = () => {
     const navigate = useNavigate();
+
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
 
     // variables to hold inputs
     const [username, setUsername] = useState('')
@@ -65,6 +67,7 @@ export const RegistrationPage = () => {
 
     const handleRegister = (event) => {
         event.preventDefault();
+        setIsSubmitting(true); // Disable button when loading
 
         let newError = {}
         let isError = false;
@@ -165,7 +168,11 @@ export const RegistrationPage = () => {
                     // After successful activation, navigate to account created page
                     navigate('/' + BaseUrlPath.REGISTER + '/account-created/')
                 }
+                setIsSubmitting(false); // Enable the button after loaded
             });
+        } else {
+            // errored
+            setIsSubmitting(false); // Enable the button after loaded
         }
     };
 
@@ -176,7 +183,7 @@ export const RegistrationPage = () => {
                     onClick={() => {
                         navigate('/' + BaseUrlPath.LOGIN)
                     }}>
-                <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                {backLeftArrow}
                 Back
             </Button>
 

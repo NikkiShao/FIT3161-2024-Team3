@@ -4,13 +4,13 @@
  * Contributors: Nikki
  */
 
-import {Meteor} from "meteor/meteor";
+import { Meteor } from "meteor/meteor";
 import UserCollection from "../imports/api/collections/user";
 import TeamCollection from "../imports/api/collections/team";
 import BoardCollection from "../imports/api/collections/board";
 import TaskCollection from "../imports/api/collections/task";
-import {isUrgentOverdue} from "../imports/ui/components/util";
-import {sendReminder} from "../imports/api/mailer";
+import { isUrgentOverdue } from "../imports/ui/components/util";
+import { sendReminder } from "../imports/api/mailer";
 
 
 /**
@@ -27,6 +27,7 @@ export function autoSendNotification (hour = 8) {
     // const minInMilliseconds = 1000 * 60 ; // for testing purposes, fires each minute
 
     // Run the task immediately and then at midnight
+    // sendReminderNotification();
     Meteor.setTimeout(() => {
         sendReminderNotification();
         Meteor.setInterval(sendReminderNotification, dayInMilliseconds);

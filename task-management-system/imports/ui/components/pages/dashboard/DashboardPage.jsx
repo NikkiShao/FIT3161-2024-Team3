@@ -7,8 +7,8 @@
 import React from 'react';
 import { getUserInfo } from "/imports/ui/components/util";
 import PinnedTasks from "/imports/ui/components/pages/dashboard/PinnedTasks";
-import UpcomingDeadlines from './dashboard/UpcomingDeadlines.jsx';
-import UnvotedPolls from './dashboard/UnvotedPolls.jsx';
+import UpcomingDeadlines from './UpcomingDeadlines.jsx';
+import UnvotedPolls from './UnvotedPolls.jsx';
 
 export const DashboardPage = () => {
     const userInfo = getUserInfo();

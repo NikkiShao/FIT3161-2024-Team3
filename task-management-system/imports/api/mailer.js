@@ -5,9 +5,9 @@
  */
 
 import nodemailer from "nodemailer";
-import {emailPass, emailUser} from "./secrets";
-import {isUrgentOverdue, timeLeft} from "../ui/components/util";
-import {Meteor} from "meteor/meteor"; // file in the same folder containing creds for mail server
+import { emailPass, emailUser } from "./secrets";
+import { isUrgentOverdue, timeLeft } from "../ui/components/util";
+import { Meteor } from "meteor/meteor"; // file in the same folder containing creds for mail server
 
 
 let transporter;
@@ -15,7 +15,7 @@ let transporter;
 /**
  * Initialises the node mailer
  */
-export function initialiseMailer() {
+export async function initialiseMailer() {
 
     // SMTP configuration with Google API
     const smtpConfig = {
@@ -23,8 +23,8 @@ export function initialiseMailer() {
         port: 465,
         secure: true, // use SSL
         auth: {
-            user: emailUser,
-            pass: emailPass
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         }
     };
 
@@ -32,11 +32,13 @@ export function initialiseMailer() {
     transporter = nodemailer.createTransport(smtpConfig);
 
     // verify connection configuration
-    transporter.verify(function (error, success) {
+    await transporter.verify(function (error, success) {
         if (error) {
             console.log(error);
+            return false;
         } else {
             console.log('Server is ready to take our messages');
+            return true;
         }
     });
 }
@@ -55,9 +57,9 @@ Meteor.methods({
         console.log("i sending to " + email)
 
         const info = await transporter.sendMail({
-            from: '"Task Management System"<invitation@tms.com>', // sender address
+            from: `"University Task Management System"${process.env.EMAIL_USER}`, // sender address
             to: email, // list of receivers
-            subject: `[Task Management System] - Team Invitation for ${teamName}`, // Subject line
+            subject: `[UTM] - Team Invitation for ${teamName}`, // Subject line
             html: `
             <html lang="en">
                 <head>
@@ -92,14 +94,14 @@ Meteor.methods({
                             <p>Hello,</p>
                             <p>You have been invited to join the team <strong>${teamName}</strong>.</p>
                             <p>Please click one of the buttons below to accept or reject the invitation:</p>
-                            <a href="http://localhost:3000/accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
-                            <a href="http://localhost:3000/decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
+                            <a href="${process.env.ROOT_URL}accept-invite/${teamId}/${token}" class="btn-base accept-button">Accept Invitation</a>
+                            <a href="${process.env.ROOT_URL}decline-invite/${teamId}/${token}" class="btn-base decline-button">Decline Invitation</a>
                             <p>Thank you!</p>
                             <br/>
                             <p>Alternatively, you may click/navigate to the below URL to accept or decline: </p>
                             <ul>
-                                <li>Accept: http://localhost:3000/accept-invite/${teamId}/${token}</li>
-                                <li>Decline: http://localhost:3000/decline-invite/${teamId}/${token}</li>
+                                <li>Accept: ${process.env.ROOT_URL}accept-invite/${teamId}/${token}</li>
+                                <li>Decline: ${process.env.ROOT_URL}decline-invite/${teamId}/${token}</li>
                             </ul>
                         </div>
                 </body>
@@ -120,6 +122,8 @@ Meteor.methods({
  * @param boardsByTeam - object containing each board that needs to be sent grouped by team IDs
  */
 export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
+
+    console.log("Sending reminder to: " + email)
 
     let teamSections = teamsToSend.map(team => {
 
@@ -148,9 +152,9 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
     }).join('<br />');
 
     const info = await transporter.sendMail({
-        from: '"Task Management System"<reminders@tms.com>', // sender address
+        from: `"University Task Management System"${process.env.EMAIL_USER}`, // sender address
         to: email, // list of receivers
-        subject: `[Task Management System] - Upcoming Deadlines`, // Subject line
+        subject: `[UTM] - Upcoming Deadlines`, // Subject line
         html: `
     <!DOCTYPE html>
     <html lang="en">
@@ -183,7 +187,7 @@ export async function sendReminder(email, name, teamsToSend, boardsByTeam) {
         </head>
         <body>
             <div class="email-container">
-                <h2>Task Management System: Upcoming Deadlines</h2>
+                <h2>University Task Management System: Upcoming Deadlines</h2>
                 <p>Hi ${name},</p>
                 <p>You have the following upcoming deadlines from your teams:</p>
                 ${teamSections}

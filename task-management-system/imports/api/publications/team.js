@@ -4,8 +4,8 @@
  * Contributors: Audrey, Nikki
  */
 
-import {Meteor} from 'meteor/meteor'
-import {TeamCollection} from "../collections/team";
+import { Meteor } from 'meteor/meteor'
+import { TeamCollection } from "../collections/team";
 
 /**
  * Publishes one team based on given team ID to the client.

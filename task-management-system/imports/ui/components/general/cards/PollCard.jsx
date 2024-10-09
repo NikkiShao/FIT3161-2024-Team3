@@ -5,20 +5,20 @@
  * Version: 1.5
  */
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 
 // import components and styles
 import Card from "../cards/Card";
 import Button from "../buttons/Button";
-import './PollCard.css';
+import './pollCard.css';
 import PollStatus from "../../../enums/PollStatus";
 import PollResultModal from '../modal/PollResultModal.jsx';
 import VotePollModal from '../modal/VotePollModal.jsx';
-import {getUserInfo, renderTime} from "../../util";
-import {ExclamationCircleIcon} from "@heroicons/react/16/solid";
-import {CheckIcon, XMarkIcon} from "@heroicons/react/24/outline";
+import { getUserInfo, renderTime } from "../../util";
+import { ExclamationCircleIcon } from "@heroicons/react/16/solid";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
 
 /**
@@ -69,7 +69,12 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName}) => {
                 }
             });
 
-            setHighestVote(highestVotedOptions.join(", "));
+            // only set the highest vote option is someone voted in the poll
+            if (maxVotes > 0) {
+                setHighestVote(highestVotedOptions.join(", "));
+            } else {
+                setHighestVote("No votes")
+            }
         }
     }
 
@@ -167,20 +172,23 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName}) => {
             <Button
                 className="btn-brown view-button"
                 onClick={handleViewPollClick}>
-                Vote
+                {pollStatus === PollStatus.CLOSED ? "View" : "Vote"}
             </Button>
 
-            <PollResultModal
-                open={isResultModalOpen}
-                closeHandler={closeResultModal}
-                pollData={{title, options}}
-            />
+            {
+                pollStatus === PollStatus.CLOSED ?
+                    <PollResultModal
+                        open={isResultModalOpen}
+                        closeHandler={closeResultModal}
+                        pollData={{title, options}}
+                    /> :
+                    <VotePollModal
+                        open={isVoteModalOpen}
+                        closeHandler={closeVoteModal}
+                        pollData={{pollId, title, options}}
+                    />
+            }
 
-            <VotePollModal
-                open={isVoteModalOpen}
-                closeHandler={closeVoteModal}
-                pollData={{pollId, title, options}}
-            />
         </Card>
     );
 };

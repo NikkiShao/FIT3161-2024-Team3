@@ -2,19 +2,18 @@
  * File Description: Poll Voting Modal
  * Updated Date: 09/09/2024
  * Contributors: Mark, Nikki
- * Version: 1.5
+ * Version: 1.6
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import classNames from "classnames";
-import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
-import { XCircleIcon } from "@heroicons/react/24/outline";
 import HoverTip from "../hoverTip/HoverTip";
 import Button from "../buttons/Button";
 import './modal.css';
 import "./polls.css";
 import { getUserInfo } from "../../util";
+import { closeModalIcon, helpQuestionIcon } from "../../icons";
 
 /**
  * Modal for voting in a poll
@@ -23,16 +22,14 @@ import { getUserInfo } from "../../util";
  * @param closeHandler - handler to call to close it
  * @param pollData - data of the poll to vote in
  */
-const VotePollModal = ({ open, closeHandler, pollData }) => {
+const VotePollModal = ({open, closeHandler, pollData}) => {
     const username = getUserInfo().username;
 
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35} />;
-
+    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
     const [pastOption, setPastOption] = useState(""); // State to hold selected option
     const [selectedOption, setSelectedOption] = useState(""); // State to hold selected option
     const [hasVoted, setHasVoted] = useState(false); // State to show voting message
     const [errorMessage, setErrorMessage] = useState(""); // State to show error message
-    const [isSubmitting, setIsSubmitting] = useState(false); // State to handle submission status
 
     const pollId = pollData.pollId;
 
@@ -44,24 +41,21 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
             setErrorMessage("Please select an option before voting."); // Set the error message
         } else {
             setIsSubmitting(true); // Disable the button while submitting
-            const updatedPollData = {
-                ...pollData,
-                options: pollData.options.map(option =>
-                    option.voterUsernames.includes(username)
-                        ? {
-                            ...option,
-                            voterUsernames: option.voterUsernames.filter(voter => voter !== username)
-                        }
-                        : option
-                ).map(option =>
-                    option.optionText === selectedOption
-                        ? { ...option, voterUsernames: [...option.voterUsernames, username] }
-                        : option
-                )
-            };
+            const updatedOptionsData = pollData.options.map(option =>
+                option.voterUsernames.includes(username)
+                    ? {
+                        ...option,
+                        voterUsernames: option.voterUsernames.filter(voter => voter !== username)
+                    }
+                    : option
+            ).map(option =>
+                option.optionText === selectedOption
+                    ? {...option, voterUsernames: [...option.voterUsernames, username]}
+                    : option
+            );
 
-            // Call the new update_poll method in poll.js and pass the entire pollData
-            Meteor.call("update_poll", pollId, updatedPollData, (error) => {
+            // Call the method in poll.js
+            Meteor.call("update_poll_votes", pollId, updatedOptionsData, (error) => {
                 if (error) {
                     switch (error.reason) {
                         case 'Poll not found':
@@ -70,15 +64,13 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
                         default:
                             setErrorMessage("An unexpected error occurred.");
                     }
-                    setIsSubmitting(false); // Enable the button after failure
                 } else {
-                    // console.log("Poll successfully updated.");
                     setHasVoted(true); // Mark as voted after successful vote
                     setErrorMessage(""); // Clear any previous error messages
-                    setIsSubmitting(false); // Enable the button after success
                     closeHandler(); // Optionally close modal after voting
                     setPastOption(getUserVotedOption(pollData, username));
                 }
+                setIsSubmitting(false); // Enable the button after loaded
             });
         }
     }, [selectedOption, pollData, username, closeHandler, pollId, hasVoted]);
@@ -111,12 +103,9 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
         setErrorMessage(""); // Clear any error messages when an option is selected
     }, []);
 
-    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16"
-        width={20} height={20} />;
-
     return (
         <Modal
-            closeIcon={closeIcon}
+            closeIcon={closeModalIcon}
             classNames={{ modal: classNames('modal-base', '') }}
             open={open}
             onClose={closeHandler}
@@ -125,9 +114,9 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
 
                 {/* poll title */}
                 <div className={"header-space-centered"}>
-                    <div style={{ width: "25px", visibility: "hidden" }}></div>
+                    <div style={{width: "25px", visibility: "hidden"}}></div>
                     <h1 className={"text-center"}> {pollData.title}</h1>
-                    <HoverTip icon={questionIcon}
+                    <HoverTip icon={helpQuestionIcon}
                         outerText={""}
                         toolTipText={"You may change your vote anytime before the poll is closed."}
                         style={{ marginBottom: "10px" }}
@@ -189,10 +178,9 @@ const VotePollModal = ({ open, closeHandler, pollData }) => {
                 <Button
                     type={"submit"}
                     className="btn-brown btn-submit btn-base"
-                    onClick={handleVote}
                     disabled={isSubmitting} // Disable the button while submitting
-                >
-                    {isSubmitting ? "Submitting..." : "Vote"} {/* Change the button text based on submitting status */}
+                    onClick={handleVote}>
+                    Vote
                 </Button>
             </div>
         </Modal>

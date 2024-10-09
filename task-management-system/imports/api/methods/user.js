@@ -4,11 +4,10 @@
  * Contributors: Nikki, Mark
  */
 
-import {Meteor} from 'meteor/meteor'
-import {check} from 'meteor/check'
-import {Accounts} from "meteor/accounts-base";
+import { Meteor } from 'meteor/meteor'
+import { check } from 'meteor/check'
+import { Accounts } from "meteor/accounts-base";
 import UserCollection from "../collections/user";
-import user from "../collections/user";
 
 Meteor.methods({
     /**

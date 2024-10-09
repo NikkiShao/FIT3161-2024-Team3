@@ -41,115 +41,11 @@
     word-break: break-word;
 }
 
+/* general classes used application wide */
 body {
     background-color: var(--cream) !important;
 }
 
-body h1 {
-    font-size: 35px;
-    font-style: normal;
-    font-weight: 500;
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--black);
-    cursor: default;
-}
-
-body h2 {
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: var(--navy);
-    font-style: normal;
-    font-weight: 500;
-    cursor: default;
-}
-
-.default__heading1 {
-    margin-top: 20px;
-}
-
-.default__heading2 {
-    margin-bottom: 0;
-}
-
-/* here are text classes */
-body .main-text {
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-body .large-text {
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    cursor: inherit;
-}
-
-body .small-text {
-    font-size: 15px;
-    font-style: normal;
-    font-weight: 480;
-    line-height: normal;
-    cursor: inherit;
-}
-
-body .menu-text {
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    cursor: inherit;
-}
-
-body .center-spaced {
-    display: flex;
-    flex-direction: column;
-    row-gap: 30px;
-}
-
-body .text-end {
-    text-align: right;
-}
-
-body .text-left-aligned {
-    text-align: left;
-}
-
-body .text-grey{
-    color: var(--dark-grey);
-}
-
-body .text-red {
-    color: var(--red);
-}
-
-body .text-dark-red{
-    color: var(--dark-red);
-}
-
-body .text-green {
-    color: var(--green);
-}
-
-::placeholder {
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 480;
-    line-height: normal;
-    color: var(--light-grey-hover) !important;
-}
-
-.underline {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-}
-
-
-
-/* general classes used application wide */
 body .table {
     margin-bottom: 50px;
     max-width: 100%;
@@ -183,14 +79,6 @@ body .table {
 .two-line {
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-}
-
-.three-line {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
@@ -293,7 +181,6 @@ body .table {
     justify-content: start;
     gap: 10px;
 }
-
 
 .input-colour-small {
     max-width: 50px !important;

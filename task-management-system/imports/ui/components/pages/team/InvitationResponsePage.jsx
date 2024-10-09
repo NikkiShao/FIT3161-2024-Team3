@@ -6,15 +6,15 @@
  */
 
 import React from 'react';
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import Spinner from "react-bootstrap/Spinner";
 import TeamCollection from "../../../../api/collections/team";
 import WhiteBackground from "../../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../../enums/PageLayout";
 import Button from "../../general/buttons/Button";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {getUserInfo} from "../../util";
+import { getUserInfo } from "../../util";
 
 
 /**

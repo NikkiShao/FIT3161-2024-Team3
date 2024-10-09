@@ -2,20 +2,20 @@
  * File Description: Board logs menu page
  * Updated Date: 31/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React from 'react';
 import WhiteBackground from "/imports/ui/components/general/whiteBackground/WhiteBackground";
 import PageLayout from "/imports/ui/enums/PageLayout";
-import {useNavigate, useParams} from "react-router-dom";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import LogEntryCollection from "../../../../api/collections/logEntry";
 import Spinner from "react-bootstrap/Spinner";
 import BoardCollection from "../../../../api/collections/board";
 import Button from "../../general/buttons/Button";
 import BaseUrlPath from "../../../enums/BaseUrlPath";
-import {ChevronLeftIcon} from "@heroicons/react/24/outline";
+import { backLeftArrow } from "../../icons";
 
 
 /**
@@ -122,6 +122,9 @@ export const BoardLogsMenu = () => {
             )
         }
 
+        // condition for if there are no tables AND no logs to display
+        const emptyPage = currentBoardsData.length === 0 && deletedBoardIds.length > 0 && logsData.length === 0;
+
         return (
             <WhiteBackground pageLayout={PageLayout.LARGE_CENTER} pageHelpText={helpText}>
                 <div className="header-space-between">
@@ -129,7 +132,7 @@ export const BoardLogsMenu = () => {
                             onClick={() => {
                                 navigate('/' + BaseUrlPath.TEAMS + "/" + teamId);
                             }}>
-                        <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                        {backLeftArrow}
                         Back
                     </Button>
 
@@ -140,8 +143,8 @@ export const BoardLogsMenu = () => {
                 {currentBoardsTable}
                 {deletedBoardsTable}
 
-                {logsData.length === 0 ?
-                    <span className={"main-text non-clickable"}>Your logs are currently empty.</span> : null
+                { emptyPage ?
+                    <span className={"main-text text-grey non-clickable"}>Your logs are currently empty.</span> : null
                 }
             </WhiteBackground>
         )

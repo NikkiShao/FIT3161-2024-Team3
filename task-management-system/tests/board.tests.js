@@ -14,7 +14,6 @@ import "../imports/api/methods/logEntry";
 
 const assert = require('assert');
 
-
 /**
  * Test suite for client-side board methods.
  */

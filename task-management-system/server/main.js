@@ -1,4 +1,4 @@
-import {Meteor} from 'meteor/meteor';
+import { Meteor } from 'meteor/meteor';
 
 // Here should be all the imports
 import '/imports/api/collections/board.js';
@@ -25,13 +25,14 @@ import '/imports/api/collections/logEntry.js';
 import '/imports/api/methods/logEntry.js';
 import '/imports/api/publications/logEntry.js';
 
-import {initialiseMailer} from "../imports/api/mailer";
-import {autoSendNotification} from "./notification";
+import { initialiseMailer } from "../imports/api/mailer";
+import { autoSendNotification } from "./notification";
+import { autoCleanOldLogEntries } from "./logAutoRemoval";
 
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {
-        return "Verify Your Email Address";
+        return "[UTM] Verify Your Email Address";
     },
     text(user, url) {
         let emailAddress = user.emails[0].address,
@@ -44,13 +45,18 @@ Accounts.emailTemplates.verifyEmail = {
 
 Meteor.startup(async () => {
     // start up functions in the future potentially
-    console.log(process.env.MONGO_URL)
+    // console.log(process.env.MONGO_URL)
 
     if (Meteor.isServer) {
+        Accounts.emailTemplates.from = `"University Task Management System"${process.env.EMAIL_USER}`
+
         // initialise the node mailer
-        initialiseMailer()
+        await initialiseMailer()
 
         // set up auto email notification
         autoSendNotification()
+
+        // set up automatic log entry cleanup
+        autoCleanOldLogEntries();
     }
 });

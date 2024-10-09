@@ -5,9 +5,9 @@
  * Version: 1.0
  */
 
-import React, {useState} from 'react';
-import {Meteor} from 'meteor/meteor';
-import {useNavigate} from "react-router-dom";
+import React, { useState } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { useNavigate } from "react-router-dom";
 
 import WhiteBackground from "../general/whiteBackground/WhiteBackground";
 import PageLayout from "../../enums/PageLayout";
@@ -80,7 +80,7 @@ export const SignInPage = () => {
             <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
                 <div>
                     <h2 className={"text-center text-grey"}>Welcome to</h2>
-                    <h1 className={"text-center"} style={{color: "var(--navy)"}}>Task Management System</h1>
+                    <h1 className={"text-center"} style={{color: "var(--navy)"}}>University Task Management System</h1>
                 </div>
 
                 <hr className={"teams__hr"} />

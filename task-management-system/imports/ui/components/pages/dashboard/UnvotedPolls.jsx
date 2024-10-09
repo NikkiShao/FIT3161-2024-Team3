@@ -4,14 +4,14 @@
  * Contributors: Audrey, Nikki
  */
 import React from 'react';
-import {useSubscribe, useTracker} from 'meteor/react-meteor-data';
-import {getUserInfo} from '../../util';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
+import { getUserInfo } from '../../util';
 import TeamCollection from '../../../../api/collections/team.js';
 import PollCollection from '../../../../api/collections/poll.js';
 import Spinner from "react-bootstrap/Spinner";
 import HoverTip from "../../general/hoverTip/HoverTip";
-import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import PollCard from "../../general/cards/PollCard";
+import { helpQuestionIcon } from "../../icons";
 
 /**
  * Unvoted polls component for dashboard
@@ -41,7 +41,6 @@ export const UnvotedPolls = () =>  {
     });
 
     // for help hover
-    const questionIcon = <QuestionMarkCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 16 16" width={25} height={25}/>;
     const helpText = "This section shows the ongoing polls you have not voted in yet.";
 
     if (isLoadingTeams() || isLoadingPolls()) {
@@ -53,12 +52,12 @@ export const UnvotedPolls = () =>  {
     } else {
         return (
             <div className={"background-base dashboard-item dashboard-deadline-column"}>
-                    <HoverTip icon={questionIcon}
+                    <HoverTip icon={helpQuestionIcon}
                               toolTipText={helpText}
                               divClassName={"page-help-tip"}
                               textClassname
                     />
-                    <h2 className={"dashboard-column-title"}>Polls To Do</h2>
+                    <h2 className={"dashboard-column-title"}>Polls To Do ({pollsToDo.length})</h2>
                     {pollsToDo.length?
                     <div className='teams__cards-div text-left-aligned'>
                         {pollsToDo.map((poll)=>(

@@ -7,16 +7,14 @@
 
 import React from 'react';
 import Button from "../../general/buttons/Button";
-import {ChevronLeftIcon, PlusCircleIcon} from "@heroicons/react/24/outline";
+import { backLeftArrow, subAddIcon } from "../../icons";
 
 const ButtonExamples = () => {
-    const plusIcon = <PlusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
-                                     height={30}/>;
     return (
         <div className="center-spaced">
             icon button:
             <button className="icon-btn">
-                {plusIcon}
+                {subAddIcon}
             </button>
 
             normal buttons:
@@ -27,7 +25,7 @@ const ButtonExamples = () => {
             <Button className={"btn-red"}>Red Button</Button>
 
             <Button className={"flex flex-row gap-2 btn-back"}>
-                <ChevronLeftIcon strokeWidth={2} viewBox="0 0 23 23" width={20} height={20}/>
+                {backLeftArrow}
                 Back
             </Button>
 

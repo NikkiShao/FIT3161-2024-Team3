@@ -4,8 +4,8 @@
  * Contributors: Audrey, Nikki
  */
 
-import {Meteor} from 'meteor/meteor'
-import {BoardCollection} from "../collections/board";
+import { Meteor } from 'meteor/meteor'
+import { BoardCollection } from "../collections/board";
 
 /**
  * Publishes all the boards that belong to any team in a given list of team IDs.

@@ -4,12 +4,13 @@
  * Contributors: Audrey, Nikki
  */
 
-import {Meteor} from 'meteor/meteor'
-import {TeamCollection} from '/imports/api/collections/team.js';
-import {generateInvitationToken} from "../../ui/components/util";
+import { Meteor } from 'meteor/meteor'
+import { TeamCollection } from '/imports/api/collections/team.js';
+import { generateInvitationToken } from "../../ui/components/util";
 import BoardCollection from "../collections/board";
 import PollCollection from "../collections/poll";
 import { check } from "meteor/check";
+import "../methods/poll";
 
 
 Meteor.methods({
@@ -35,6 +36,10 @@ Meteor.methods({
         }
 
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+        if(!emailRegex.test(leader)){
+            throw new Meteor.Error('add-team-failed', 'Invalid team leader input');
+        }
 
         //validate email input for team members attribute
         const memberArray = new Array()
@@ -120,6 +125,11 @@ Meteor.methods({
 
         //validate email input for team members
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+        if(!emailRegex.test(teamsData.teamLeader)){
+            throw new Meteor.Error('update-team-failed', 'Invalid team leader input');
+        }
+
         const teamMembersArray = new Array()
         for(let i=0; i<teamsData.teamMembers.length; i++){
             const email = teamsData.teamMembers[i];
@@ -140,6 +150,10 @@ Meteor.methods({
                 throw new Meteor.Error('update-team-failed', 'Duplicate email input');
             }
             invitationArray.push(invite.email);
+        }
+
+        if(teamsData.teamMembers.length < 1){
+            throw new Meteor.Error('update-team-failed', 'Invalid empty member input');
         }
 
         TeamCollection.update(teamId, {
@@ -187,7 +201,8 @@ Meteor.methods({
      * @param username - ID of user who deleted the team
      */
     "delete_team": function (teamId, username) {
-
+        check(teamId, String);
+        check(username, String);
         // remove all related boards and tasks first
         const boards = BoardCollection.find({teamId: teamId}).fetch();
 
@@ -208,7 +223,7 @@ Meteor.methods({
 
         // remove all related polls
         const polls = PollCollection.find({teamId: teamId}).fetch();
-
+        
         // delete each board (the board delete will delete its tasks)
         for (let i = 0, len = polls.length; i < len; i++) {
             new Promise((resolve, reject) => {
@@ -225,5 +240,6 @@ Meteor.methods({
         }
 
         TeamCollection.remove({_id: teamId});
+        console.log(TeamCollection.findOne(teamId));
     }
 })

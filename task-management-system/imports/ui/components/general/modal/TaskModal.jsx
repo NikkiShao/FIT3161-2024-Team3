@@ -1,12 +1,12 @@
 /**
  * File Description: Task Modal component for adding/Viewing tasks
- * File version: 1.4
- * Contributors: Sam, Nikki
+ * File version: 1.5
+ * Contributors: Sam, Nikki, Audrey
  */
 
-import React, {useState} from 'react';
-import {Modal} from 'react-responsive-modal';
-import {CheckIcon, MinusCircleIcon, PlusIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import React, { useState } from 'react';
+import { Modal } from 'react-responsive-modal';
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 import classNames from "classnames";
 import Button from "../buttons/Button";
@@ -14,9 +14,11 @@ import Input from "../inputs/Input";
 import '../../general/modal/modal.css'
 import TaskPin from "../cards/TaskPin";
 import TaskTag from "../cards/TaskTag";
-import {useSubscribe, useTracker} from "meteor/react-meteor-data";
+import { useSubscribe, useTracker } from "meteor/react-meteor-data";
 import TaskCollection from "../../../../api/collections/task";
-import {getUserInfo, isUrgentOverdue} from "../../util";
+import { getUserInfo, isUrgentOverdue } from "../../util";
+import { addIcon, closeModalIcon, minusCircleIcon, saveIcon } from "../../icons";
+import { isDark } from "@bkwld/light-or-dark";
 
 /**
  * Task modal to view/edit or create tasks
@@ -97,6 +99,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         if (!description) {
             newErrors.description = "Please fill in the description";
             isError = true
+        } else if (description.length > 1000) {
+            newErrors.title = "Task description can not exceed 1000 characters";
+            isError = true
         }
 
         // deadline
@@ -104,9 +109,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         if (!deadlineDate || !deadlineTime) {
             newErrors.deadline = "Please fill in the task deadline";
             isError = true
-        } else if (!taskId && deadlineDateObject < new Date()) {
-            // NEW TASK and deadline is passed, invalid
-            newErrors.deadline = "Deadline must be in the future";
+        } else if (isNaN(deadlineDateObject)) {
+            // deadline is invalid format
+            newErrors.deadline = "Deadline datetime is invalid";
             isError = true
         }
 
@@ -238,20 +243,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         setContributions(newContribution)
     }
 
-    // icons
-    const closeIcon = <XCircleIcon color={"var(--navy)"} strokeWidth={2} viewBox="0 0 24 24" width={35} height={35}/>
-
-    const plusIcon = <PlusIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
-                               style={{paddingRight: "5px"}}/>;
-    const saveIcon = <CheckIcon strokeWidth={2} viewBox="0 0 24 24" width={25} height={25}
-                                style={{paddingRight: "5px"}}/>;
-
-    const addTagIcon = <PlusIcon color={"var(--navy)"} className={"clickable"}
-                                 strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>
-
-    const minusIcon = <MinusCircleIcon color={"var(--dark-grey)"} strokeWidth={2} viewBox="0 0 24 24" width={30}
-                                       height={30}/>;
-
     // all delete task modal stuff
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const onOpenDeleteModal = () => setDeleteModalOpen(true);
@@ -288,7 +279,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
             setTitle(taskData.taskName)
             setDescription(taskData.taskDesc)
             setDeadlineDate(taskData.taskDeadlineDate.split("T")[0])
-            setDeadlineTime(taskData.taskDeadlineDate.split("T")[1].substring(0, 12))
+            setDeadlineTime(taskData.taskDeadlineDate.split("T")[1])
             setIsPinned(taskData.taskIsPinned)
             setStatus(taskData.statusName)
             setTagNames(taskData.tagNames)
@@ -312,7 +303,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                 <Modal
                     open={isOpen} // Control the visibility of the modal
                     onClose={modalCloseClearInputs} // Function to call when the modal should close
-                    closeIcon={closeIcon}
+                    closeIcon={closeModalIcon}
                     center
                     classNames={{
                         modal: classNames('modal-base modal-large'),
@@ -389,7 +380,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                         <Input
                                             type="date"
                                             style={{marginBottom: "6px"}}
-                                            min={minDeadlineDate.toISOString().split('T')[0]}
                                             id={"deadlineDate"}
                                             value={deadlineDate}
                                             onChange={(e) => setDeadlineDate(e.target.value)}
@@ -441,7 +431,9 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                             <div id={"task-modal__tags-group"}>
                                                 <div className={"task-modal__tags-display"}>
                                                     {
-                                                        tagNames.map((tagName) => {
+                                                        tagNames
+                                                            .sort((a, b) => a.localeCompare(b))
+                                                            .map((tagName) => {
                                                             // here find the tag colour that matches this name
                                                             const tagColour = tagsData.filter((tag) => {
                                                                 return tagName === tag.tagName
@@ -463,11 +455,16 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                 <div className={"task-modal__tags-display"}>
                                                     {/* populate tags based on database entry */}
                                                     {
-                                                        tagsData ? tagsData.map((tag, index) => {
+                                                        tagsData ? tagsData
+                                                            .sort((a, b) => a.tagName.localeCompare(b.tagName))
+                                                            .map((tag, index) => {
                                                             if (!tagNames.includes(tag.tagName)) {
+                                                                const addTagIcon = <PlusIcon color={isDark(tag.tagColour) ? "var(--white)" : "var(--black)"}
+                                                                                             className={"clickable"} strokeWidth={2} viewBox="0 0 24 24" width={18} height={18}/>
+
                                                                 return (
                                                                     <button key={index}
-                                                                            style={{backgroundColor: tag.tagColour}}
+                                                                            style={{backgroundColor: tag.tagColour, color: isDark(tag.tagColour) ? "var(--white)" : "var(--black)"}}
                                                                             onClick={(e) => addTag(e, tag.tagName)}
                                                                             className={"task-tag icon-btn"}
                                                                     >
@@ -517,7 +514,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                                         <button className={"icon-btn"} onClick={(e) => {
                                                             removeContribution(e, memberEmail)
                                                         }}>
-                                                            {minusIcon}
+                                                            {minusCircleIcon}
                                                         </button>
                                                     </div>
                                                 )
@@ -565,17 +562,18 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                                     {saveIcon} Save Changes
                                 </Button> :
                                 <Button type="submit" className="btn-brown btn-submit">
-                                    {plusIcon} Add Task
+                                    {addIcon} Add Task
                                 </Button>
                         }
-
                     </form>
 
                     { taskId ?
-                        <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", textAlign: "right"}}
-                             className={"text-red underline clickable"}
-                             onClick={onOpenDeleteModal}
-                        >Delete Task
+                        <div style={{width: "100%", minWidth: "100%", maxWidth: "100%", display: "flex", justifyContent: "end"}}>
+                            <div style={{width: "fit-content"}}
+                                 className={"text-red underline clickable"}
+                                 onClick={onOpenDeleteModal}>
+                                Delete Task
+                            </div>
                         </div> : null
                     }
 
@@ -585,7 +583,7 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
                 <Modal
                     open={deleteModalOpen} // Control the visibility of the modal
                     onClose={onCloseDeleteModal} // Function to call when the modal should close
-                    closeIcon={closeIcon}
+                    closeIcon={closeModalIcon}
                     center
                     classNames={{
                         modal: classNames('modal-base'),
