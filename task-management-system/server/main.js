@@ -29,6 +29,21 @@ import { initialiseMailer } from "../imports/api/mailer";
 import { autoSendNotification } from "./notification";
 import { autoCleanOldLogEntries } from "./logAutoRemoval";
 
+Accounts.validateLoginAttempt((data) => {
+
+    // if given data is an error data, return true (since it is an error thrown)
+    if (!data.user) {
+        return true;
+    }
+
+    let diff = new Date() - new Date(data.user.createdAt);
+    if (diff < 2000) {
+        console.info('New user created -- denying autologin.');
+        return false;
+    } else {
+        return true;
+    }
+});
 
 Accounts.emailTemplates.verifyEmail = {
     subject() {

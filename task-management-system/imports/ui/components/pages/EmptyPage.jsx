@@ -17,8 +17,7 @@ export const EmptyPage = () => {
 
     return (
         <WhiteBackground pageLayout={PageLayout.SMALL_CENTER}>
-            This is an empty page. There shouldn't be anything here. If you are looking for a page then your page
-            has not been routed properly, check your routes.
+            This is an empty page. There shouldn't be anything here. Please check the URL again.
         </WhiteBackground>
     )
 }

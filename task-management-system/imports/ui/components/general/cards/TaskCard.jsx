@@ -27,6 +27,7 @@ import { getUserInfo, isUrgentOverdue } from "../../util";
  * @param {string} boardId - ID of the board the tag belongs to
  * @param {[Object]} boardTags - all tags for a board, containing the name and colour keys
  * @param {string} className - other classnames to add to the style of the card
+ * @param {function} onPinChange - handler function for clicking the pin icon
  * @param cardProps - other props to add to the card
  * @returns {JSX.Element} - JSX element of the task card
  */

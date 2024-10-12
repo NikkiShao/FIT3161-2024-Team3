@@ -5,6 +5,7 @@
  */
 
 import PollCollection from "../collections/poll";
+import TeamCollection from "../collections/team";
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 

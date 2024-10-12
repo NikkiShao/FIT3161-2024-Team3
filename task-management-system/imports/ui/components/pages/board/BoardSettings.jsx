@@ -2,7 +2,7 @@
  * File Description: Board's settings page
  * Updated Date: 15/08/2024
  * Contributors: Audrey, Nikki
- * Version: 1.5
+ * Version: 1.6
  */
 
 import React, { Fragment, useState } from 'react';
@@ -86,12 +86,14 @@ export const BoardSettings = () => {
         event.preventDefault();
         const newError = {}
 
-        if (boardStatuses.map((status) => status.toLowerCase()).includes(boardNewStatusInput.toLowerCase())) {
+        if (boardStatuses.map((status) => status.toLowerCase()).includes(boardNewStatusInput.toLowerCase().trim())) {
             newError.boardNewStatus = "Status has already been added";
-        } else if (!boardNewStatusInput) {
+
+        } else if (!boardNewStatusInput.trim()) {
             newError.boardNewStatus = "Please input a valid status";
+
         } else {
-            setBoardStatuses(boardStatuses.toSpliced(boardStatuses.length - 1, 0, boardNewStatusInput));
+            setBoardStatuses(boardStatuses.toSpliced(boardStatuses.length - 1, 0, boardNewStatusInput.trim()));
             setBoardNewStatusInput('');
         }
         setErrors(newError);
@@ -104,14 +106,16 @@ export const BoardSettings = () => {
 
     const handleAddTag = (event) => {
         event.preventDefault();
-        const isExist = boardExistingTags.some(tag => tag.tagName.toLowerCase() === boardNewTagName.toLowerCase());
+        const isExist = boardExistingTags.some(tag => tag.tagName.toLowerCase() === boardNewTagName.toLowerCase().trim());
         const newError = {}
         if (isExist) {
             newError.boardNewTag = "Tag has already been added";
-        } else if (!boardNewTagName || boardNewTagName === "...") {
+
+        } else if (!boardNewTagName.trim() || boardNewTagName === "...") {
             newError.boardNewTag = "Please input valid tag name";
+
         } else {
-            setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName, tagColour: boardNewTagHex}]);
+            setBoardExistingTags([...boardExistingTags, {tagName: boardNewTagName.trim(), tagColour: boardNewTagHex}]);
             setBoardNewTagName('');
             setBoardNewTagHex('#000000');
         }
@@ -134,22 +138,29 @@ export const BoardSettings = () => {
         const newErrors = {};
         let isError = false;
 
-        if (!boardNameInput) {
+        // board name
+        if (!boardNameInput.trim()) {
             newErrors.boardName = "Please fill in your board name";
             isError = true;
-        } else if (boardNameInput.length > 20) {
-            newErrors.boardName = "Board name can not exceed 20 characters";
+        } else if (boardNameInput.trim().length > 30) {
+            newErrors.boardName = "Board name can not exceed 30 characters";
             isError = true
         }
 
-        if (!boardCodeInput) {
+        // board code
+        const alphanumericRegex = /^[A-Za-z0-9]+$/i;
+        if (!boardCodeInput.trim()) {
             newErrors.boardCode = "Please fill in your board code";
             isError = true;
-        } else if (boardCodeInput.length > 10) {
+        }  else if (!alphanumericRegex.test(boardCodeInput)) {
+            newErrors.boardCode = "Board code can only contain letters and numbers";
+            isError = true
+        } else if (boardCodeInput.trim().length > 10) {
             newErrors.boardCode = "Board code can not exceed 10 characters";
             isError = true
         }
 
+        // board deadline
         let deadlineDateObject = new Date(boardDeadlineDateInput + 'T' + boardDeadlineTimeInput);
         if (!boardDeadlineDateInput || !boardDeadlineTimeInput) {
             newErrors.boardDeadline = "Please fill in your deadline date and time";
@@ -160,11 +171,27 @@ export const BoardSettings = () => {
             isError = true
         }
 
-        if (!boardDescriptionInput) {
+        // board description
+        if (!boardDescriptionInput.trim()) {
             newErrors.boardDescription = "Please fill in your board description";
             isError = true;
-        } else if (boardDescriptionInput.length > 150) {
+        } else if (boardDescriptionInput.trim().length > 150) {
             newErrors.boardDescription = "Board description can not exceed 150 characters";
+            isError = true
+        }
+
+
+        // if status input has text, check user hasn't forgotten to press the + button
+        if (boardNewStatusInput.trim() !== "") {
+            newErrors.boardNewStatus = "You still have an unconfirmed status left in the input. " +
+                "Please press the '+' to add it or clear the input.";
+            isError = true
+        }
+
+        // if poll option has text, check user hasn't forgotten to press the + button
+        if (boardNewTagName.trim() !== "") {
+            newErrors.boardNewTag = "You still have an unconfirmed new tag left in the input. " +
+                "Please press the '+' to add it or clear the input.";
             isError = true
         }
 
@@ -187,16 +214,16 @@ export const BoardSettings = () => {
             new Promise((resolve, reject) => {
                 Meteor.call('update_board', boardId,
                     {
-                        boardName: boardNameInput,
-                        boardCode: boardCodeInput,
+                        boardName: boardNameInput.trim(),
+                        boardCode: boardCodeInput.trim(),
                         boardDeadline: `${boardDeadlineDateInput}T${boardDeadlineTimeInput}`,
-                        boardDescription: boardDescriptionInput,
+                        boardDescription: boardDescriptionInput.trim(),
                         teamId: boardData.teamId,
                         boardStatuses: boardStatusObject,
                         boardTags: boardExistingTags
                     },
                     userInfo.username,
-                    (error, result) => {
+                    (error) => {
                         if (error) {
                             reject(error)
                         } else {
@@ -307,7 +334,7 @@ export const BoardSettings = () => {
                             <div className={"input-error-div"}>
                                 <Input
                                     type="text"
-                                    placeholder={"Max 20 characters"}
+                                    placeholder={"Max 30 characters"}
                                     id={"boardName"}
                                     value={boardNameInput}
                                     onChange={(e) => setBoardNameInput(e.target.value)}

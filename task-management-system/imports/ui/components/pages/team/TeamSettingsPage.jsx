@@ -2,7 +2,7 @@
  * File Description: Team's settings page
  * Updated Date: 5/8/2024
  * Contributors: Audrey, Nikki
- * Version: 2.3
+ * Version: 2.4
  */
 import React, { Fragment, useState } from 'react';
 import { useSubscribe, useTracker } from 'meteor/react-meteor-data'
@@ -97,11 +97,19 @@ export const TeamSettingsPage = () => {
         const newErrors = {};
         let isError = false;
 
-        if (teamName === '') {
+        // team name
+        if (teamName.trim() === '') {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
-        } else if (teamName.length > 20) {
+        } else if (teamName.trim().length > 20) {
             newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
+        }
+
+        // if email has text, check user hasn't forgotten to press the + button
+        if (newInvitation !== "") {
+            newErrors.email = "You still have an unconfirmed email address left in the input. " +
+                "Please press the '+' to add it or clear the input.";
             isError = true
         }
 
@@ -113,7 +121,7 @@ export const TeamSettingsPage = () => {
                     teamId,
                     teamData.teamInvitations,
                     {
-                        teamName: teamName,
+                        teamName: teamName.trim(),
                         teamLeader: teamLeader,
                         teamMembers: teamMembers,
                         teamInvitations: teamInvitations,
@@ -158,17 +166,17 @@ export const TeamSettingsPage = () => {
         const newError = {};
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-        if (teamMembers.map((member) => member.toLowerCase()).includes(newInvitation.toLowerCase())) {
+        if (teamMembers.map((member) => member.toLowerCase()).includes(newInvitation.trim().toLowerCase())) {
             newError.email = "Member is already in the team";
 
-        } else if (teamInvitations.map((invitation) => invitation.email.toLowerCase()).includes(newInvitation.toLowerCase())) {
+        } else if (teamInvitations.map((invitation) => invitation.email.toLowerCase()).includes(newInvitation.trim().toLowerCase())) {
             newError.email = "Email has already been invited. If you would like to resend invitation, please remove the existing invitation first";
 
         } else if (!emailRegex.test(newInvitation)) {
             newError.email = "Please input a valid email address";
 
         } else {
-            setTeamInvitations([...teamInvitations, {"email": newInvitation, "token": generateInvitationToken()}]);
+            setTeamInvitations([...teamInvitations, {"email": newInvitation.trim(), "token": generateInvitationToken()}]);
             setNewInvitation('');
             setErrors({});
         }
@@ -382,14 +390,14 @@ export const TeamSettingsPage = () => {
                         {isLeader ?
                             <div className="settings-form-input" style={{alignItems: "start"}}>
                                 <div/>
-                                <div className='ts__member-item'>
+                                <div className='ts__member-item' style={{alignItems: "start"}}>
                                     <div className={"input-error-div"}>
                                         <Input type="email" placeholder={"Input new member email"}
                                                value={newInvitation}
                                                onChange={(e) => setNewInvitation(e.target.value)}/>
                                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                                     </div>
-                                    <button className="icon-btn" onClick={handleAddInvitation}>
+                                    <button className="icon-btn" style={{marginTop: "8px"}} onClick={handleAddInvitation}>
                                         {subAddIcon}
                                     </button>
                                 </div>
@@ -408,7 +416,11 @@ export const TeamSettingsPage = () => {
 
                         {updateSuccess === null ? null :
                             updateSuccess ?
-                                <span className="text-green small-text non-clickable">Team has been updated!</span> :
+                                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                    <span className="text-green small-text non-clickable">Team has been updated!</span>
+                                    <span className="text-green small-text non-clickable">Any new team invitations has been sent out! </span>
+                                </div>
+                            :
                                 <span
                                     className="text-red small-text non-clickable">Update failed, please try again.</span>
                         }

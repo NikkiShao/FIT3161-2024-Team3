@@ -97,7 +97,6 @@ const PollCard = ({pollId, title, startTime, closeTime, options, teamName}) => {
         // check if poll is open or closed
         const currentTime = new Date().toISOString();
         const current = new Date(currentTime);
-        const start = new Date(startTime); // convert ISO String to date object
         const close = new Date(closeTime);
 
         // set poll status by checking start and close time

@@ -2,7 +2,7 @@
  * File Description: Sign in/login page
  * Updated Date: 02/08/2024
  * Contributors: Nikki
- * Version: 1.0
+ * Version: 1.1
  */
 
 import React, { useState } from 'react';
@@ -92,7 +92,7 @@ export const SignInPage = () => {
                     <div className={"input-error-div"}>
                         <Input type={"text"}
                                label={<label className={"main-text"}>Username</label>}
-                               onChange={(e) => setUsername(e.target.value.trim())}
+                               onChange={(e) => setUsername(e.target.value)}
                         />
                         {errors.username && <span className="text-red small-text">{errors.username}</span>}
                     </div>

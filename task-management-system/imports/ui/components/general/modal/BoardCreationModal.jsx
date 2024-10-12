@@ -2,7 +2,7 @@
  * File Description: Board creation modal component
  * Updated Date: 05/08/2024
  * Contributors: Nikki
- * Version: 1.1
+ * Version: 1.2
  */
 
 import React, { useState } from 'react';
@@ -36,9 +36,6 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         boardDescription: "",
     });
 
-    // for date checking
-    const minDeadlineDate = new Date();
-
     // Handler for creating a new board
     const handleCreateBoard = (event) => {
         event.preventDefault();
@@ -48,23 +45,23 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         let isError = false;
 
         // board name
-        if (!boardNameInput) {
+        if (!boardNameInput.trim()) {
             newErrors.boardName = "Please fill in the board name";
             isError = true
-        } else if (boardNameInput.length > 30) {
+        } else if (boardNameInput.trim().length > 30) {
             newErrors.boardName = "Board name can not exceed 30 characters";
             isError = true
         }
 
         // board code
         const alphanumericRegex = /^[A-Za-z0-9]+$/i;
-        if (!boardCodeInput) {
+        if (!boardCodeInput.trim()) {
             newErrors.boardCode = "Please fill in the board code";
             isError = true
         } else if (!alphanumericRegex.test(boardCodeInput)) {
             newErrors.boardCode = "Board code can only contain letters and numbers";
             isError = true
-        } else if (boardCodeInput.length > 10) {
+        } else if (boardCodeInput.trim().length > 10) {
             newErrors.boardCode = "Board code can not exceed 10 characters";
             isError = true
         }
@@ -81,10 +78,10 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
         }
 
         // description
-        if (!boardDescriptionInput) {
+        if (!boardDescriptionInput.trim()) {
             newErrors.boardDescription = "Please fill in the board description";
             isError = true
-        } else if (boardDescriptionInput.length > 150) {
+        } else if (boardDescriptionInput.trim().length > 150) {
             newErrors.boardDescription = "Board description can not exceed 150 characters";
             isError = true
         }
@@ -95,10 +92,10 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
             // Call the Meteor method to add a new board
             new Promise((resolve, reject) => {
                 Meteor.call('add_board',
-                    boardNameInput,
-                    boardCodeInput,
+                    boardNameInput.trim(),
+                    boardCodeInput.trim(),
                     boardDeadlineDateInput + 'T' + boardDeadlineTimeInput,
-                    boardDescriptionInput,
+                    boardDescriptionInput.trim(),
                     teamId,
                     userInfo.username,
                     (error, result) => {
@@ -113,7 +110,7 @@ export const BoardCreationModal = ({teamId, open, closeHandler}) => {
                             setBoardCodeInput('')
                             setBoardDescriptionInput('')
                             setBoardDeadlineDateInput('')
-                            setBoardDeadlineTimeInput('')
+                            setBoardDeadlineTimeInput('23:55')
                             closeHandler();
                         }
                     });

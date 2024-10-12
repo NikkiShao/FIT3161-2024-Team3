@@ -2,7 +2,7 @@
  * File Description: Team creation modal component
  * Updated Date: 05/08/2024
  * Contributors: Mark, Nikki
- * Version: 2.2
+ * Version: 2.3
  */
 
 import React, { Fragment, useState } from 'react';
@@ -43,17 +43,17 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         const newError = {}
 
         // test email validity
-        if (members.map((member) => member.toLowerCase()).includes(emailInput.toLowerCase())) {
+        if (members.map((member) => member.toLowerCase()).includes(emailInput.toLowerCase().trim())) {
             newError.email = "Email has already been added";
 
-        } else if (emailInput.toLowerCase() === teamLead.toLowerCase()) {
+        } else if (emailInput.toLowerCase().trim() === teamLead.toLowerCase()) {
             newError.email = "You are already in the team";
 
         } else if (!emailRegex.test(emailInput)) {
             newError.email = "Please input a valid email address";
 
         } else {
-            setMembers([...members, emailInput]);
+            setMembers([...members, emailInput.trim()]);
             setEmailInput('')
         }
         setErrors(newError)
@@ -73,11 +73,18 @@ export const TeamCreationModal = ({open, closeHandler}) => {
         let isError = false;
 
         // do some error stuff here
-        if (!teamNameInput) {
+        if (!teamNameInput.trim()) {
             newErrors.teamName = "Please fill in your team name";
             isError = true;
-        } else if (teamNameInput.length > 20) {
+        } else if (teamNameInput.trim().length > 20) {
             newErrors.teamName = "Team name can not exceed 20 characters";
+            isError = true
+        }
+
+        // if email has text, check user hasn't forgotten to press the + button
+        if (emailInput !== "") {
+            newErrors.email = "You still have an unconfirmed email address left in the input. " +
+                "Please press the '+' to add it or clear the input.";
             isError = true
         }
 
@@ -87,7 +94,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
             // Call the Meteor method to add a new team
             new Promise((resolve, reject) => {
 
-                Meteor.call('add_team', teamNameInput, members, teamLead, true,
+                Meteor.call('add_team', teamNameInput.trim(), members, teamLead, true,
                     (error, result) => {
                         if (error) {
                             reject(`Error: ${error.message}`);
@@ -170,9 +177,10 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                 }
 
                 {/* Input field to add new members */}
-                <div className='input-group'>
+                <div className='input-group' style={{alignItems: "start"}}>
                     {members && members.length === 0 ?
-                        <label className={"main-text text-grey"}>Team Members:</label> :
+                        <label className={"main-text text-grey"} style={{marginTop: "8px"}}>Team Members:
+                        </label> :
                         <div></div>
                     }
                     <div className={"input-error-div"}>
@@ -184,7 +192,7 @@ export const TeamCreationModal = ({open, closeHandler}) => {
                         />
                         {errors.email && <span className="text-red small-text">{errors.email}</span>}
                     </div>
-                    <button className="icon-btn" onClick={handleAddMember}>
+                    <button className="icon-btn" style={{marginTop: "7px"}} onClick={handleAddMember}>
                         {subAddIcon}
                     </button>
                 </div>

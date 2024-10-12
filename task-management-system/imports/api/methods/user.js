@@ -11,10 +11,13 @@ import UserCollection from "../collections/user";
 
 Meteor.methods({
     /**
-     * @param {string} userId - id of the user. This is a serverside function only.
+     * @param {string} username - username of the user. This is a serverside function only.
      */
-    "send_verify_email": function (userId) {
-        Accounts.sendVerificationEmail(userId);
+    "send_verify_email": function (username) {
+        if (Meteor.isServer) {
+            const user = Accounts.findUserByUsername(username)
+            Accounts.sendVerificationEmail(user._id);
+        }
     },
 
     /**

@@ -61,9 +61,6 @@ const TaskModal = ({isOpen, onClose, boardId, taskId, tagsData, statusesData, me
         overall: ''
     })
 
-    // for date checking
-    const minDeadlineDate = new Date();
-
     // handler for modal close
     const modalCloseClearInputs = () => {
         setModalTaskId(null)
