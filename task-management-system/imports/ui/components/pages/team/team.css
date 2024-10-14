@@ -1,0 +1,63 @@
+/**
+ * File Description: Team related page css
+ * Updated Date: 20/07/2024
+ * Contributors: Mark
+ * Version: 2.0
+ */
+
+.teams__hr {
+    border-bottom: 3px solid var(--black);
+    border-color: var(--black);
+    width: 100%;
+}
+
+.teams__cards-div {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.teams__filter-button-div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 15px;
+}
+
+.teams__filter-button {
+    min-width: 50px  !important;
+}
+
+.teams__filter-button-active {
+    min-width: 50px  !important;
+    background-color: var(--light-grey-hover)  !important;
+}
+
+.ts__member-item {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+}
+
+.ts__member-item-list {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 5px;
+    width: 100%;
+}
+
+.board-log-button {
+    padding: 5px 20px !important;
+    font-size: 0.9em;
+    height: 35px !important;
+    min-width: fit-content !important;
+}

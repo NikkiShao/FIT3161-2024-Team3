@@ -1,0 +1,31 @@
+/* BACKGROUND PANEL STYLES */
+body .background-base {
+    border-radius: 25px;
+    border: 2px solid var(--brown);
+    background: var(--white);
+    backdrop-filter: blur(32px);
+    margin: 40px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
+}
+
+body .large-page {
+    height: fit-content;
+    width: 90%;
+}
+
+body .small-page {
+    height: fit-content;
+    width: 40%;
+    min-width: 600px;
+}
+
+.page-help-tip {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+

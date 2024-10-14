@@ -1,0 +1,12 @@
+
+task-management-system/node_modules/
+
+task-management-system/.meteor/
+
+.idea
+
+task-management-system/imports/api/.DS_Store
+task-management-system/imports/.DS_Store
+task-management-system/.DS_Store
+.DS_Store
+

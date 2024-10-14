@@ -1,0 +1,28 @@
+/* INPUT STYLES */
+body .input-base {
+    background: var(--white);
+    display: flex;
+    min-width: 300px;
+    height: 45px;
+    padding: 5px 15px;
+    align-items: center;
+    border-radius: 6px;
+    border: 2px solid var(--light-grey);
+}
+
+body .input::placeholder {
+    color: var(--dark-grey);
+}
+
+body label {
+    margin-bottom: 5px;
+}
+
+
+/* general input-related styles */
+.input-tiny {
+    max-width: 80px !important;
+    min-width: 80px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}

@@ -1,0 +1,26 @@
+#reg1__back {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+}
+
+#reg1-req__div {
+    cursor: default;
+    color: var(--dark-grey);
+    width: fit-content;
+    text-align: left;
+}
+
+#reg1-req__ul {
+    list-style: disc inside;
+    padding-left: 15px;
+    margin-bottom: 0;
+}
+
+#reg2__icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 15px;
+}

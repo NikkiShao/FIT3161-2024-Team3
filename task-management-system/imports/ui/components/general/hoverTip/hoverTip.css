@@ -1,0 +1,25 @@
+
+.hover-tip-base {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.tip-text-box {
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 4px;
+    background-color: var(--white-hover);
+    box-shadow: 0 0 11px rgba(33, 33, 33, .2);
+    width: fit-content;
+    max-width: 500px;
+}
+
+.tip-blue {
+    border: 2px solid var(--light-blue);
+}
+
+.tip-grey {
+    border: 2px solid var(--light-grey-hover);
+}

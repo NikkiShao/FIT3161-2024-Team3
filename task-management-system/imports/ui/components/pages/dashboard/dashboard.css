@@ -1,0 +1,47 @@
+.dashboard-container {
+    max-width: calc(100vw - 300px);
+    text-align: center;
+    padding: 20px;
+    margin: 0 auto 0 300px;
+    display: flex;
+    justify-content: center;
+    gap: 1px !important;
+}
+
+.dashboard-deadline-column {
+    min-width: calc(100vw - 800px );
+    max-width: calc(100vw - 800px );
+    height: 50vh;
+}
+
+.dashboard-pinned-column {
+    min-width: 310px;
+    max-width: 310px;
+    height: calc(100vh + 30px);
+}
+
+.dashboard-wrap-container{
+    flex-wrap: wrap;
+}
+
+.dashboard-item {
+    padding: 20px !important;
+    margin: 30px 15px !important;
+    box-sizing: border-box;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+
+}
+
+.dashboard-column-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: var(--button-grey-hover);
+    font-style: normal;
+    font-weight: 500;
+    cursor: default;
+    text-align: center;
+    width: 100%;
+}
